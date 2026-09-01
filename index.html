@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+<!-- TELA DE LOGIN -->
+<div id="loginScreen">
     <div class="login-container">
         <div class="login-box">
             <h1>Inglês com Teacher Daniel</h1>
@@ -25,6 +28,91 @@
             </form>
         </div>
     </div>
-    <script src="app.js"></script>
+</div>
+
+<!-- PAINEL DO PROFESSOR -->
+<div id="adminDashboard" class="dashboard" style="display:none;">
+    <div class="navbar">
+        <h2>Inglês com Teacher Daniel — Painel do Professor</h2>
+        <button class="btn-logout" id="adminLogout">Sair</button>
+    </div>
+    <div class="dashboard-content">
+        <h3>Visão Geral</h3>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="number" id="totalStudents">0</div>
+                <div class="label">Total de Alunos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="activeStudents">0</div>
+                <div class="label">Alunos Ativos</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="inactiveStudents">0</div>
+                <div class="label">Alunos Inativos</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Adicionar Novo Aluno</h3>
+            <form id="addStudentForm" class="add-student-form" style="margin-top:16px;">
+                <input type="text" id="newStudentName" placeholder="Nome completo" required>
+                <input type="email" id="newStudentEmail" placeholder="Email do aluno" required>
+                <input type="text" id="newStudentPassword" placeholder="Senha inicial" required>
+                <button type="submit" class="btn-add">Adicionar</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Alunos Cadastrados</h3>
+            <table class="students-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="studentsTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- PAINEL DO ALUNO -->
+<div id="studentDashboard" class="student-dashboard" style="display:none;">
+    <div class="navbar">
+        <h2 id="studentName">Olá!</h2>
+        <button class="btn-logout" id="studentLogout">Sair</button>
+    </div>
+    <div class="student-content">
+        <h3>Escolha um módulo para praticar</h3>
+        <div class="modules-grid" id="modulesGrid"></div>
+    </div>
+</div>
+
+<!-- TELA DE EXERCÍCIOS -->
+<div id="exerciseScreen" class="exercise-container" style="display:none;">
+    <div class="navbar">
+        <h2 id="exerciseTitle">Exercícios</h2>
+        <button class="btn-logout" id="studentLogout2">Sair</button>
+    </div>
+    <div class="exercise-content">
+        <div class="exercise-header">
+            <button class="btn-back" id="btnBack">← Voltar</button>
+            <p class="exercise-progress" id="exerciseProgress"></p>
+        </div>
+        <div class="exercise-card">
+            <div class="rule-box" id="ruleBox"></div>
+            <p class="question" id="questionText"></p>
+            <div class="options" id="optionsDiv"></div>
+            <div class="feedback-box" id="feedbackBox"></div>
+            <button class="btn-next" id="btnNext">Próxima questão →</button>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
 </body>
 </html>
