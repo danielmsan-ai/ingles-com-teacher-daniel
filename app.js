@@ -154,20 +154,6 @@ function showStudentPanel() {
 // INICIALIZAÇÃO
 // ============================================================
 
-window.onload = function () {
-  if (currentUser) {
-    if (currentUser.role === 'teacher') {
-      showTeacherPanel();
-    } else {
-      showStudentPanel();
-    }
-  } else {
-    showScreen('login-screen');
-  }
-
-  document.getElementById('login-btn').addEventListener('click', handleLogin);
-  document.getElementById('add-student-btn').addEventListener('click', addStudent);
-};
 // ============================================================
 // BANCO DE QUESTÕES — SIMPLE PAST (50 questões)
 // ============================================================
@@ -528,7 +514,7 @@ const simplePastQuestions = [
     options: ["was", "is", "were", "has been"],
     correct: 2,
     explanation: '"They" usa "were" no Simple Past do To Be.'
-  }
+  },
   // NEGATIVA DO SIMPLE PAST — did not / didn't (51 a 100)
   {
     rule: "Na negativa do Simple Past usamos 'didn't' (did not) + verbo no infinitivo para todos os sujeitos.",
@@ -1595,7 +1581,7 @@ const presentPerfectQuestions = [
     options: ["signed", "sign", "have signed", "are signing"],
     correct: 2,
     explanation: 'A assinatura aconteceu no passado e o resultado é o acordo oficial agora. Usamos "have signed".'
-  }
+  },
   // NEGATIVA DO PRESENT PERFECT — haven't / hasn't (51 a 100)
   {
     rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
@@ -2495,7 +2481,7 @@ const presentPerfectContinuousQuestions = [
     options: ["rocked", "rocks", "is rocking", "has been rocking"],
     correct: 3,
     explanation: 'O bebê dormindo é o resultado visível de uma ação contínua. Usamos "has been rocking".'
-  }
+  },
   // NEGATIVA DO PRESENT PERFECT CONTINUOUS — haven't been / hasn't been (51 a 100)
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
@@ -3539,7 +3525,7 @@ const simplePresentQuestions = [
     options: ["loved", "is loving", "has loved", "loves"],
     correct: 3,
     explanation: '"Loves" expressa uma preferência permanente. Usamos o Simple Present.'
-  }
+  },
   // NEGATIVA DO SIMPLE PRESENT — don't / doesn't (51 a 100)
   {
     rule: "Na negativa do Simple Present usamos 'don't' (I, you, we, they) ou 'doesn't' (he, she, it) + verbo no infinitivo.",
