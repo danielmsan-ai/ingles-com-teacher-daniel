@@ -48,7 +48,7 @@ function showScreen(screenId) {
 // ============================================================
 
 function handleLogin() {
-  console.log('Botão de login clicado!'); // Adicione esta linha
+  console.log('Botão de login clicado!'); // Mantido para depuração
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value.trim();
 
@@ -147,16 +147,12 @@ function deleteStudent(id) {
 
 function showStudentPanel() {
   showScreen('student-screen');
-  document.getElementById('student-welcome').textContent = 
+  document.getElementById('student-welcome').textContent =
     `Olá, ${currentUser.name}! Escolha um módulo para praticar:`;
 }
 
 // ============================================================
-// INICIALIZAÇÃO
-// ============================================================
-
-// ============================================================
-// BANCO DE QUESTÕES — SIMPLE PAST (50 questões)
+// BANCO DE QUESTÕES — SIMPLE PAST (150 questões)
 // ============================================================
 
 const simplePastQuestions = [
@@ -174,7 +170,7 @@ const simplePastQuestions = [
     question: "They ___ to the beach last summer.",
     options: ["go", "have gone", "went", "are going"],
     correct: 2,
-    explanation: '"Last summer" é um tempo específico no passado, então usamos "went".'
+    explanation: '"Last summer" é um tempo específico no passado. Usamos "went".'
   },
   {
     rule: "Usamos o Simple Past quando há um tempo específico na frase.",
@@ -500,7 +496,7 @@ const simplePastQuestions = [
     question: "The roads ___ very dangerous during the storm.",
     options: ["was", "is", "were", "has been"],
     correct: 2,
-    explanation: '"The roads" é plural, então usamos "were". Aqui o To Be se traduz como "estavam".'
+    explanation: '"The roads" é plural, então usamos "weren\'t". Aqui o To Be se traduz como "estavam".'
   },
   {
     rule: "Simple Past do To Be: WAS (I, he, she, it) / WERE (you, we, they e plurais).",
@@ -516,7 +512,8 @@ const simplePastQuestions = [
     correct: 2,
     explanation: '"They" usa "were" no Simple Past do To Be.'
   },
-  // NEGATIVA DO SIMPLE PAST — did not / didn't (51 a 100)
+
+  // NEGATIVA DO SIMPLE PAST — did not / didn't (51 a 80)
   {
     rule: "Na negativa do Simple Past usamos 'didn't' (did not) + verbo no infinitivo para todos os sujeitos.",
     question: "She ___ to the party last night.",
@@ -727,6 +724,7 @@ const simplePastQuestions = [
     correct: 1,
     explanation: 'Na negativa do Simple Past usamos "didn\'t" + infinitivo. O correto é "didn\'t listen".'
   },
+
   // NEGATIVA DO SIMPLE PAST COM TO BE — wasn't / weren't (81 a 100)
   {
     rule: "Na negativa do Simple Past do verbo To Be usamos 'wasn't' (I, he, she, it) ou 'weren't' (you, we, they).",
@@ -868,7 +866,8 @@ const simplePastQuestions = [
     correct: 2,
     explanation: '"You" usa "weren\'t" na negativa do Simple Past do To Be.'
   },
-      // INTERROGATIVA DO SIMPLE PAST — did (101 a 150)
+
+  // INTERROGATIVA DO SIMPLE PAST — did (101 a 130)
   {
     rule: "Na interrogativa do Simple Past usamos 'Did' + sujeito + verbo no infinitivo para todos os sujeitos.",
     question: "___ she go to the party last night?",
@@ -1079,6 +1078,7 @@ const simplePastQuestions = [
     correct: 3,
     explanation: 'Na interrogativa do Simple Past usamos "Did" + sujeito + infinitivo. O correto é "Did she bring".'
   },
+
   // INTERROGATIVA DO SIMPLE PAST COM TO BE — Was / Were (131 a 150)
   {
     rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
@@ -1223,7 +1223,7 @@ const simplePastQuestions = [
 ];
 
 // ============================================================
-// BANCO DE QUESTÕES — PRESENT PERFECT (50 questões)
+// BANCO DE QUESTÕES — PRESENT PERFECT (150 questões)
 // ============================================================
 
 const presentPerfectQuestions = [
@@ -1583,7 +1583,8 @@ const presentPerfectQuestions = [
     correct: 2,
     explanation: 'A assinatura aconteceu no passado e o resultado é o acordo oficial agora. Usamos "have signed".'
   },
-  // NEGATIVA DO PRESENT PERFECT — haven't / hasn't (51 a 100)
+
+  // NEGATIVA DO PRESENT PERFECT — haven't / hasn't (51 a 80)
   {
     rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
     question: "She ___ her homework yet.",
@@ -1790,7 +1791,11 @@ const presentPerfectQuestions = [
   {
     rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
     question: "We ___ to our neighbors since they moved in.",
-    options: ["hasn't talked", "didn't talked", "haven't talked"],
+    options: ["hasn't talked", "didn't talked", "haven't talked", "don't talked"],
+    correct: 2,
+    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t talked".'
+  },
+
   // INTERROGATIVA DO PRESENT PERFECT — Have / Has (101 a 150)
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
@@ -2122,8 +2127,9 @@ const presentPerfectQuestions = [
     explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we had". "Ever" confirma o Present Perfect.'
   },
 ];
+
 // ============================================================
-// BANCO DE QUESTÕES — PRESENT PERFECT CONTINUOUS (50 questões)
+// BANCO DE QUESTÕES — PRESENT PERFECT CONTINUOUS (150 questões)
 // ============================================================
 
 const presentPerfectContinuousQuestions = [
@@ -2483,7 +2489,8 @@ const presentPerfectContinuousQuestions = [
     correct: 3,
     explanation: 'O bebê dormindo é o resultado visível de uma ação contínua. Usamos "has been rocking".'
   },
-  // NEGATIVA DO PRESENT PERFECT CONTINUOUS — haven't been / hasn't been (51 a 100)
+
+  // NEGATIVA DO PRESENT PERFECT CONTINUOUS — haven't been / hasn't been (51 a 80)
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
     question: "She ___ well lately. She looks pale.",
@@ -2827,6 +2834,7 @@ const presentPerfectContinuousQuestions = [
     correct: 1,
     explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been doing".'
   },
+
   // INTERROGATIVA DO PRESENT PERFECT CONTINUOUS — Have / Has + been + verbo com -ing (101 a 150)
   {
     rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
@@ -3163,11 +3171,11 @@ const presentPerfectContinuousQuestions = [
     options: ["Did he been giving", "Have he been giving", "Has he been giving", "Does he been giving"],
     correct: 2,
     explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been giving".'
-  },    
+  },
 ];
 
 // ============================================================
-// BANCO DE QUESTÕES — SIMPLE PRESENT (50 questões)
+// BANCO DE QUESTÕES — SIMPLE PRESENT (150 questões)
 // ============================================================
 
 const simplePresentQuestions = [
@@ -3527,7 +3535,8 @@ const simplePresentQuestions = [
     correct: 3,
     explanation: '"Loves" expressa uma preferência permanente. Usamos o Simple Present.'
   },
-  // NEGATIVA DO SIMPLE PRESENT — don't / doesn't (51 a 100)
+
+  // NEGATIVA DO SIMPLE PRESENT — don't / doesn't (51 a 80)
   {
     rule: "Na negativa do Simple Present usamos 'don't' (I, you, we, they) ou 'doesn't' (he, she, it) + verbo no infinitivo.",
     question: "She ___ coffee in the morning.",
@@ -3738,6 +3747,7 @@ const simplePresentQuestions = [
     correct: 2,
     explanation: '"We" usa "don\'t" + infinitivo. O correto é "don\'t charge".'
   },
+
   // NEGATIVA DO SIMPLE PRESENT COM TO BE — isn't / aren't (81 a 100)
   {
     rule: "Na negativa do Simple Present do verbo To Be usamos 'isn't' (he, she, it) ou 'aren't' (you, we, they) ou 'am not' (I).",
@@ -3852,7 +3862,7 @@ const simplePresentQuestions = [
     explanation: '"We" usa "aren\'t" na negativa do Simple Present do To Be.'
   },
   {
-    rule: "Na negativa do Simple Present do verbo To Be usamos 'isn't' (he, she, it) ou 'ären't' (you, we, they) ou 'am not' (I).",
+    rule: "Na negativa do Simple Present do verbo To Be usamos 'isn't' (he, she, it) ou 'aren't' (you, we, they) ou 'am not' (I).",
     question: "The food ___ as good as it looks.",
     options: ["aren't as good", "don't be as good", "isn't as good", "doesn't be as good"],
     correct: 2,
@@ -3879,7 +3889,8 @@ const simplePresentQuestions = [
     correct: 2,
     explanation: '"The instructions" é plural, então usamos "aren\'t".'
   },
-   // INTERROGATIVA DO SIMPLE PRESENT — Do / Does (101 a 150)
+
+  // INTERROGATIVA DO SIMPLE PRESENT — Do / Does (101 a 130)
   {
     rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
     question: "___ she drink coffee in the morning?",
@@ -4090,6 +4101,7 @@ const simplePresentQuestions = [
     correct: 3,
     explanation: '"We" usa "Do" na interrogativa do Simple Present. O correto é "Do we have".'
   },
+
   // INTERROGATIVA DO SIMPLE PRESENT COM TO BE — Is / Are / Am (131 a 150)
   {
     rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
@@ -4141,415 +4153,5 @@ const simplePresentQuestions = [
     explanation: '"I" usa "Am" na interrogativa do Simple Present do To Be.'
   },
   {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ the prices reasonable at that store?",
-    options: ["Does the prices be reasonable", "Is the prices reasonable", "Are the prices reasonable", "Do the prices be reasonable"],
-    correct: 2,
-    explanation: '"The prices" é plural, então usamos "Are".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ she aware of the new rules?",
-    options: ["Does she be aware", "Are she aware", "Is she aware", "Do she be aware"],
-    correct: 2,
-    explanation: '"She" usa "Is" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ they from the same country?",
-    options: ["Does they be from", "Is they from", "Are they from", "Do they be from"],
-    correct: 2,
-    explanation: '"They" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ he responsible for that decision?",
-    options: ["Does he be responsible", "Are he responsible", "Is he responsible", "Do he be responsible"],
-    correct: 2,
-    explanation: '"He" usa "Is" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ I the only one who thinks this is wrong?",
-    options: ["Does I be", "Are I", "Is I", "Am I"],
-    correct: 3,
-    explanation: '"I" usa "Am" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ the coffee hot enough?",
-    options: ["Does the coffee be hot", "Are the coffee hot", "Is the coffee hot", "Do the coffee be hot"],
-    correct: 2,
-    explanation: '"The coffee" equivale a "it", então usamos "Is".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ you comfortable with the new schedule?",
-    options: ["Does you be comfortable", "Is you comfortable", "Are you comfortable", "Do you be comfortable"],
-    correct: 2,
-    explanation: '"You" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ the results what you expected?",
-    options: ["Does the results be", "Is the results", "Are the results", "Do the results be"],
-    correct: 2,
-    explanation: '"The results" é plural, então usamos "Are".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ we allowed to park here?",
-    options: ["Does we be allowed", "Is we allowed", "Are we allowed", "Do we be allowed"],
-    correct: 2,
-    explanation: '"We" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ she the new manager?",
-    options: ["Does she be", "Are she", "Is she", "Do she be"],
-    correct: 2,
-    explanation: '"She" usa "Is" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ they interested in the proposal?",
-    options: ["Does they be interested", "Is they interested", "Are they interested", "Do they be interested"],
-    correct: 2,
-    explanation: '"They" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ I doing this correctly?",
-    options: ["Does I be doing", "Are I doing", "Is I doing", "Am I doing"],
-    correct: 3,
-    explanation: '"I" usa "Am" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ the instructions clear enough for everyone?",
-    options: ["Does the instructions be clear", "Is the instructions clear", "Are the instructions clear", "Do the instructions be clear"],
-    correct: 2,
-    explanation: '"The instructions" é plural, então usamos "Are".'
-  },   
-];
-// ============================================================
-// CONFIGURAÇÃO DOS MÓDULOS
-// ============================================================
+    rule: "
 
-const modules = [
-  {
-    id: 'simplePast',
-    title: 'Simple Past',
-    questions: simplePastQuestions
-  },
-  {
-    id: 'presentPerfect',
-    title: 'Present Perfect',
-    questions: presentPerfectQuestions
-  },
-  {
-    id: 'presentPerfectContinuous',
-    title: 'Present Perfect Continuous',
-    questions: presentPerfectContinuousQuestions
-  },
-  {
-    id: 'simplePresent',
-    title: 'Simple Present',
-    questions: simplePresentQuestions
-  }
-];
-
-// ============================================================
-// ESTADO DO QUIZ
-// ============================================================
-
-let currentModule = null;
-let currentQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let answers = [];
-
-// ============================================================
-// SORTEIO ALEATÓRIO DE QUESTÕES
-// ============================================================
-
-function shuffleArray(array) {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-}
-
-function getRandomQuestions(questions, count = 5) {
-  const shuffled = shuffleArray(questions);
-  return shuffled.slice(0, count);
-}
-
-// ============================================================
-// INICIAR MÓDULO
-// ============================================================
-
-function startModule(moduleId) {
-  const module = modules.find(m => m.id === moduleId);
-  if (!module) return;
-
-  currentModule = module;
-  currentQuestions = getRandomQuestions(module.questions, 5);
-  currentQuestionIndex = 0;
-  score = 0;
-  answers = [];
-
-  showScreen('quiz-screen');
-  renderQuestion();
-}
-
-// ============================================================
-// RENDERIZAR QUESTÃO
-// ============================================================
-
-function renderQuestion() {
-  const question = currentQuestions[currentQuestionIndex];
-  const total = currentQuestions.length;
-  const current = currentQuestionIndex + 1;
-
-  document.getElementById('quiz-module-title').textContent = currentModule.title;
-  document.getElementById('quiz-progress').textContent = `Questão ${current} de ${total}`;
-  document.getElementById('quiz-rule').textContent = question.rule;
-  document.getElementById('quiz-question').textContent = question.question;
-
-  const optionsContainer = document.getElementById('quiz-options');
-  optionsContainer.innerHTML = '';
-
-  const letters = ['a', 'b', 'c', 'd'];
-
-  question.options.forEach((option, index) => {
-    const button = document.createElement('button');
-    button.classList.add('option-btn');
-    button.textContent = `${letters[index]}) ${option}`;
-    button.addEventListener('click', () => selectAnswer(index, button));
-    optionsContainer.appendChild(button);
-  });
-
-  document.getElementById('quiz-feedback').textContent = '';
-  document.getElementById('quiz-feedback').className = 'feedback';
-  document.getElementById('next-btn').style.display = 'none';
-}
-
-// ============================================================
-// SELECIONAR RESPOSTA
-// ============================================================
-
-function selectAnswer(selectedIndex, selectedButton) {
-  const question = currentQuestions[currentQuestionIndex];
-  const isCorrect = selectedIndex === question.correct;
-
-  const allButtons = document.querySelectorAll('.option-btn');
-  allButtons.forEach(btn => btn.disabled = true);
-
-  const feedbackEl = document.getElementById('quiz-feedback');
-
-  if (isCorrect) {
-    selectedButton.classList.add('correct');
-    feedbackEl.textContent = `✓ Correto! ${question.explanation}`;
-    feedbackEl.className = 'feedback correct';
-    score++;
-  } else {
-    selectedButton.classList.add('incorrect');
-    allButtons[question.correct].classList.add('correct');
-    feedbackEl.textContent = `✗ Incorreto. ${question.explanation}`;
-    feedbackEl.className = 'feedback incorrect';
-  }
-
-  answers.push({
-    question: question.question,
-    selected: selectedIndex,
-    correct: question.correct,
-    isCorrect
-  });
-
-  document.getElementById('next-btn').style.display = 'block';
-}
-
-// ============================================================
-// PRÓXIMA QUESTÃO
-// ============================================================
-
-function nextQuestion() {
-  currentQuestionIndex++;
-
-  if (currentQuestionIndex >= currentQuestions.length) {
-    showResult();
-  } else {
-    renderQuestion();
-  }
-}
-
-// ============================================================
-// MOSTRAR RESULTADO
-// ============================================================
-
-function showResult() {
-  showScreen('result-screen');
-
-  const total = currentQuestions.length;
-  const percentage = Math.round((score / total) * 100);
-
-  document.getElementById('result-module-title').textContent = currentModule.title;
-  document.getElementById('result-score').textContent = `Você acertou ${score} de ${total} questões (${percentage}%)`;
-
-  let message = '';
-  if (percentage === 100) {
-    message = 'Perfeito! Você dominou este módulo!';
-  } else if (percentage >= 80) {
-    message = 'Muito bem! Continue praticando!';
-  } else if (percentage >= 60) {
-    message = 'Bom trabalho! Revise as questões que errou e tente novamente.';
-  } else {
-    message = 'Continue estudando! Você vai melhorar com a prática.';
-  }
-
-  document.getElementById('result-message').textContent = message;
-
-  saveStudentResult(score, total, percentage);
-}
-
-// ============================================================
-// SALVAR RESULTADO DO ALUNO
-// ============================================================
-
-function saveStudentResult(score, total, percentage) {
-  if (!currentUser || currentUser.role !== 'student') return;
-
-  const results = JSON.parse(localStorage.getItem('results')) || [];
-
-  results.push({
-    studentId: currentUser.id,
-    studentName: currentUser.name,
-    module: currentModule.title,
-    score,
-    total,
-    percentage,
-    date: new Date().toLocaleDateString('pt-BR')
-  });
-
-  localStorage.setItem('results', JSON.stringify(results));
-}
-
-// ============================================================
-// PAINEL DO PROFESSOR — VER RESULTADOS
-// ============================================================
-
-function renderResults() {
-  const results = JSON.parse(localStorage.getItem('results')) || [];
-  const container = document.getElementById('results-list');
-
-  if (results.length === 0) {
-    container.innerHTML = '<p>Nenhum resultado registrado ainda.</p>';
-    return;
-  }
-
-  const grouped = {};
-  results.forEach(r => {
-    if (!grouped[r.studentName]) grouped[r.studentName] = [];
-    grouped[r.studentName].push(r);
-  });
-
-  container.innerHTML = Object.entries(grouped).map(([name, studentResults]) => `
-    <div class="student-results">
-      <h3>${name}</h3>
-      ${studentResults.map(r => `
-        <div class="result-item">
-          <span>${r.date}</span>
-          <span>${r.module}</span>
-          <span>${r.score}/${r.total} (${r.percentage}%)</span>
-        </div>
-      `).join('')}
-    </div>
-  `).join('');
-}
-
-// ============================================================
-// EVENTOS DOS BOTÕES
-// ============================================================
-
-document.addEventListener('DOMContentLoaded', function () {
-
-  // Login
-  const loginBtn = document.getElementById('login-btn');
-  if (loginBtn) {
-    loginBtn.addEventListener('click', handleLogin);
-  }
-
-  // Adicionar aluno
-  const addStudentBtn = document.getElementById('add-student-btn');
-  if (addStudentBtn) {
-    addStudentBtn.addEventListener('click', addStudent);
-  }
-
-  // Próxima questão
-  const nextBtn = document.getElementById('next-btn');
-  if (nextBtn) {
-    nextBtn.addEventListener('click', nextQuestion);
-  }
-
-  // Tentar novamente
-  const retryBtn = document.getElementById('retry-btn');
-  if (retryBtn) {
-    retryBtn.addEventListener('click', () => startModule(currentModule.id));
-  }
-
-  // Voltar ao painel do aluno
-  const backBtn = document.getElementById('back-btn');
-  if (backBtn) {
-    backBtn.addEventListener('click', showStudentPanel);
-  }
-
-  // Logout professor
-  const logoutTeacherBtn = document.getElementById('logout-teacher-btn');
-  if (logoutTeacherBtn) {
-    logoutTeacherBtn.addEventListener('click', logout);
-  }
-
-  // Logout aluno
-  const logoutStudentBtn = document.getElementById('logout-student-btn');
-  if (logoutStudentBtn) {
-    logoutStudentBtn.addEventListener('click', logout);
-  }
-
-  // Ver resultados (professor)
-  const viewResultsBtn = document.getElementById('view-results-btn');
-  if (viewResultsBtn) {
-    viewResultsBtn.addEventListener('click', () => {
-      renderResults();
-      showScreen('results-screen');
-    });
-  }
-
-  // Voltar ao painel do professor
-  const backTeacherBtn = document.getElementById('back-teacher-btn');
-  if (backTeacherBtn) {
-    backTeacherBtn.addEventListener('click', showTeacherPanel);
-  }
-
-  // Botões dos módulos
-  modules.forEach(module => {
-    const btn = document.getElementById(`btn-${module.id}`);
-    if (btn) {
-      btn.addEventListener('click', () => startModule(module.id));
-    }
-  });
-
-  // Verificar sessão ativa
-  if (currentUser) {
-    if (currentUser.role === 'teacher') {
-      showTeacherPanel();
-    } else {
-      showStudentPanel();
-    }
-  } else {
-    showScreen('login-screen');
-  }
-
-});
