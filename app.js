@@ -1,6 +1,6 @@
 // ===== CONFIGURAÇÃO =====
 const ADMIN_EMAIL = "teacherdanielvip@gmail.com";
-const ADMIN_PASSWORD = "SUA_SENHA_AQUI"; // Troque pela sua senha
+const ADMIN_PASSWORD = "Gust@vo2017"; // Troque pela sua senha
 
 // ===== BANCO DE DADOS LOCAL (localStorage) =====
 function getStudents() {
