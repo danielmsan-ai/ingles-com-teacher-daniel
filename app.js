@@ -1790,7 +1790,7 @@ const presentPerfectQuestions = [
   {
     rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
     question: "We ___ to our neighbors since they moved in.",
-    options: ["hasn't talked", "didn't talked", "haven't talked
+    options: ["hasn't talked", "didn't talked", "haven't talked"],
   // INTERROGATIVA DO PRESENT PERFECT — Have / Has (101 a 150)
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
