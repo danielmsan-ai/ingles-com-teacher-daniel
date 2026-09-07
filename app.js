@@ -48,6 +48,7 @@ function showScreen(screenId) {
 // ============================================================
 
 function handleLogin() {
+  console.log('Botão de login clicado!'); // Adicione esta linha
   const email = document.getElementById('login-email').value.trim();
   const password = document.getElementById('login-password').value.trim();
 
