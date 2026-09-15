@@ -4154,4 +4154,49 @@ const simplePresentQuestions = [
   },
   {
     rule: "
+// ============================================================
+// INICIALIZAÇÃO E LISTENERS DE EVENTOS
+// ============================================================
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Tenta logar automaticamente se houver um usuário salvo
+  if (currentUser) {
+    if (currentUser.role === 'teacher') {
+      showTeacherPanel();
+    } else {
+      showStudentPanel();
+    }
+  } else {
+    showScreen('login-screen');
+  }
+
+  // Listener para o botão de login
+  const loginButton = document.getElementById('login-btn');
+  if (loginButton) {
+    loginButton.addEventListener('click', handleLogin);
+  }
+
+  // Listeners para os botões de logout
+  const logoutTeacherButton = document.getElementById('logout-teacher-btn');
+  if (logoutTeacherButton) {
+    logoutTeacherButton.addEventListener('click', logout);
+  }
+
+  const logoutStudentButton = document.getElementById('logout-student-btn');
+  if (logoutStudentButton) {
+    logoutStudentButton.addEventListener('click', logout);
+  }
+
+  // Listeners para os botões de adicionar aluno
+  const addStudentButton = document.getElementById('add-student-btn');
+  if (addStudentButton) {
+    addStudentButton.addEventListener('click', addStudent);
+  }
+
+  // Aqui você precisará adicionar os listeners para os botões dos módulos
+  // e para os botões de navegação do quiz (próxima questão, tentar novamente, voltar)
+  // quando essas funcionalidades forem implementadas ou ativadas.
+  // Por exemplo:
+  // document.getElementById('btn-simplePast').addEventListener('click', () => startQuiz('simplePast'));
+  // document.getElementById('next-btn').addEventListener('click', nextQuestion);
+});
