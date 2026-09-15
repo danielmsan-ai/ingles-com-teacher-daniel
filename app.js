@@ -4151,9 +4151,9 @@ const simplePresentQuestions = [
     options: ["Does I be late", "Are I late", "Is I late", "Am I late"],
     correct: 3,
     explanation: '"I" usa "Am" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "
+  } // Esta é a última questão completa do array simplePresentQuestions
+]; // ESTA LINHA FECHA O ARRAY simplePresentQuestions
+
 // ============================================================
 // INICIALIZAÇÃO E LISTENERS DE EVENTOS
 // ============================================================
