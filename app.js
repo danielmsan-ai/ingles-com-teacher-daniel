@@ -4193,6 +4193,26 @@ document.addEventListener('DOMContentLoaded', () => {
     addStudentButton.addEventListener('click', addStudent);
   }
 
+    // Listeners para os botões dos módulos
+  const btnSimplePast = document.getElementById('btn-simplePast');
+  if (btnSimplePast) {
+    btnSimplePast.addEventListener('click', () => startQuiz('simplePast'));
+  }
+
+  const btnPresentPerfect = document.getElementById('btn-presentPerfect');
+  if (btnPresentPerfect) {
+    btnPresentPerfect.addEventListener('click', () => startQuiz('presentPerfect'));
+  }
+
+  const btnPresentPerfectContinuous = document.getElementById('btn-presentPerfectContinuous');
+  if (btnPresentPerfectContinuous) {
+    btnPresentPerfectContinuous.addEventListener('click', () => startQuiz('presentPerfectContinuous'));
+  }
+
+  const btnSimplePresent = document.getElementById('btn-simplePresent');
+  if (btnSimplePresent) {
+    btnSimplePresent.addEventListener('click', () => startQuiz('simplePresent'));
+  }
   // Aqui você precisará adicionar os listeners para os botões dos módulos
   // e para os botões de navegação do quiz (próxima questão, tentar novamente, voltar)
   // quando essas funcionalidades forem implementadas ou ativadas.
