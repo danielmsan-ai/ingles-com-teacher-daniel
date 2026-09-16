@@ -4155,5 +4155,104 @@ const simplePresentQuestions = [
     correct: 3,
     explanation: '"They" usa "Do" na interrogativa do Simple Present. O correto é "Do they take".'
   },
+  
 
+  // ============================================================
+// INICIALIZAÇÃO E LISTENERS DE EVENTOS
+// ============================================================
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Exibe a tela de login ao carregar a página
+  showScreen('login-screen');
+
+  // Listener para o botão de login
+  const loginButton = document.getElementById('login-btn');
+  if (loginButton) {
+    loginButton.addEventListener('click', handleLogin);
+  }
+
+  // Listeners para os botões de logout
+  const logoutTeacherBtn = document.getElementById('logout-teacher-btn');
+  if (logoutTeacherBtn) {
+    logoutTeacherBtn.addEventListener('click', logout);
+  }
+
+  const logoutStudentBtn = document.getElementById('logout-student-btn');
+  if (logoutStudentBtn) {
+    logoutStudentBtn.addEventListener('click', logout);
+  }
+
+  // Listener para o botão de adicionar aluno (painel do professor)
+  const addStudentBtn = document.getElementById('add-student-btn');
+  if (addStudentBtn) {
+    addStudentBtn.addEventListener('click', addStudent);
+  }
+
+  // Listeners para os botões dos módulos do aluno
+  document.getElementById('btn-simplePast')?.addEventListener('click', () => startQuiz('simplePast'));
+  document.getElementById('btn-presentPerfect')?.addEventListener('click', () => startQuiz('presentPerfect'));
+  document.getElementById('btn-presentPerfectContinuous')?.addEventListener('click', () => startQuiz('presentPerfectContinuous'));
+  document.getElementById('btn-simplePresent')?.addEventListener('click', () => startQuiz('simplePresent'));
+
+  // Listener para o botão "Próxima questão" no quiz
+  document.getElementById('next-btn')?.addEventListener('click', nextQuestion);
+
+  // Listener para o botão "Tentar novamente" na tela de resultado
+  document.getElementById('retry-btn')?.addEventListener('click', resetQuiz);
+
+  // Listener para o botão "Voltar aos módulos" na tela de resultado
+  document.getElementById('back-btn')?.addEventListener('click', () => showScreen('student-screen'));
+
+  // Listener para o botão "Ver resultados" no painel do professor
+  document.getElementById('view-results-btn')?.addEventListener('click', () => {
+    showScreen('results-screen');
+    renderStudentResults();
+  });
+
+  // Listener para o botão "Voltar" na tela de resultados do professor
+  document.getElementById('back-teacher-btn')?.addEventListener('click', () => showScreen('teacher-screen'));
+
+  // Verifica se há um usuário logado ao carregar a página e redireciona
+  if (currentUser) {
+    if (currentUser.role === 'teacher') {
+      showTeacherPanel();
+    } else {
+      showStudentPanel();
+    }
+  } else {
+    showScreen('login-screen');
+  }
+});
+
+// Adiciona um listener para o evento 'keydown' no documento
+document.addEventListener('keydown', (event) => {
+  // Verifica se a tecla pressionada foi 'Enter'
+  if (event.key === 'Enter') {
+    // Verifica se a tela de login está ativa
+    const loginScreen = document.getElementById('login-screen');
+    if (loginScreen && loginScreen.classList.contains('active')) {
+      // Chama a função handleLogin se a tela de login estiver ativa
+      handleLogin();
+    }
+    // Verifica se a tela do quiz está ativa e o botão "Próxima questão" está visível
+    const quizScreen = document.getElementById('quiz-screen');
+    const nextButton = document.getElementById('next-btn');
+    if (quizScreen && quizScreen.classList.contains('active') && nextButton && nextButton.style.display === 'block') {
+      nextQuestion();
+    }
+  }
+});
+
+// Adiciona um listener para o clique nas opções do quiz
+document.getElementById('quiz-options')?.addEventListener('click', (event) => {
+  if (event.target.classList.contains('option-btn')) {
+    // Encontra o índice da opção clicada
+    const optionsContainer = document.getElementById('quiz-options');
+    const options = Array.from(optionsContainer.children);
+    const clickedIndex = options.indexOf(event.target);
+
+    // Seleciona a opção e verifica a resposta
+    selectOption(clickedIndex);
+    checkAnswer();
+  }
+});
