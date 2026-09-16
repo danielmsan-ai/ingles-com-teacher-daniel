@@ -18,9 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     topicButtons.forEach(button => {
         button.addEventListener('click', (event) => {
-            event.preventDefault(); // Esta linha foi removida/comentada
             const topic = button.textContent; // Pega o texto do botão como o nome do tópico
-            alert(`Você clicou para praticar: ${topic}. Em breve, os exercícios estarão aqui!`); // Esta linha foi removida/comentada
             console.log(`Aluno ${loggedInUser.username} clicou no tópico: ${topic}`);
 
             // Futuramente, aqui chamaremos uma função para carregar os exercícios
