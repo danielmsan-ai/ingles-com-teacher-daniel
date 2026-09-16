@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor Dashboard - English Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para o dashboard do professor */
+        .dashboard-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-container h2 {
+            color: #4CAF50;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .dashboard-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .dashboard-section h3 {
+            color: #333;
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .student-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .student-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .student-list li:last-child {
+            border-bottom: none;
+        }
+        .student-list button {
+            background-color: #e74c3c; /* Vermelho para excluir */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .student-list button:hover {
+            background-color: #c0392b;
+        }
+        .frequency-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .frequency-item:last-child {
+            border-bottom: none;
+        }
+        .logout-button {
+            display: block;
+            width: fit-content;
+            margin: 30px auto 0;
+            background-color: #f39c12; /* Laranja para logout */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Painel do Professor</h1>
+    </header>
+    <main>
+        <div class="dashboard-container">
+            <h2>Bem-vindo, Professor!</h2>
+
+            <section class="dashboard-section">
+                <h3>Gerenciamento de Alunos</h3>
+                <div class="student-list">
+                    <p>Aqui você poderá ver e excluir alunos.</p>
+                    <ul>
+                        <li>
+                            <span>Aluno Exemplo 1</span>
+                            <button data-student-id="1">Excluir</button>
+                        </li>
+                        <li>
+                            <span>Aluno Exemplo 2</span>
+                            <button data-student-id="2">Excluir</button>
+                        </li>
+                        <!-- Mais alunos serão adicionados aqui dinamicamente -->
+                    </ul>
+                </div>
+            </section>
+
+            <section class="dashboard-section">
+                <h3>Controle de Frequência</h3>
+                <div class="frequency-data">
+                    <p>Aqui você verá a frequência de acesso dos alunos.</p>
+                    <div class="frequency-item">
+                        <span>Aluno Exemplo 1:</span> Acessou 5 vezes esta semana.
+                    </div>
+                    <div class="frequency-item">
+                        <span>Aluno Exemplo 2:</span> Acessou 2 vezes esta semana.
+                    </div>
+                    <!-- Dados de frequência serão adicionados aqui dinamicamente -->
+                </div>
+            </section>
+
+            <button class="logout-button" onclick="location.href='index.html'">Sair</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 English Practice. Todos os direitos reservados.</p>
+    </footer>
+    <script src="teacher-dashboard.js"></script> <!-- Criaremos este script depois -->
+</body>
+</html>
