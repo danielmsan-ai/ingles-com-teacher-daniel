@@ -20,7 +20,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Para 'mc', 'correctAnswer' é o texto da opção correta.
     // Para 'rewrite', 'correctAnswer' é a frase completa esperada.
     exercises = [
-        // Múltipla Escolha (25 exercícios)
+       document.addEventListener('DOMContentLoaded', () => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+    // Redireciona se não houver usuário logado ou se não for um aluno
+    if (!loggedInUser || loggedInUser.type !== 'student') {
+        alert('Acesso não autorizado. Por favor, faça login como aluno.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const exerciseArea = document.getElementById('exercise-area');
+    const prevButton = document.getElementById('prev-exercise');
+    const nextButton = document.getElementById('next-exercise');
+
+    let currentExerciseIndex = 0;
+    let exercises = []; // Será preenchido com os exercícios afirmativos e negativos
+
+    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
+    // Tipo 'mc' para Múltipla Escolha, 'rewrite' para Reescrever
+    // Para 'mc', 'correctAnswer' é o texto da opção correta.
+    // Para 'rewrite', 'correctAnswer' é a frase completa esperada.
+    exercises = [
+        // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         {
             id: 1,
             type: 'mc',
@@ -397,6 +419,386 @@ document.addEventListener('DOMContentLoaded', () => {
             question: "Rewrite the sentence using the Simple Present: The store (open) at 9 AM.",
             correctAnswer: "The store opens at 9 AM.",
             hint: "'The store' é 3ª pessoa do singular."
+        },
+
+        // --- EXERCÍCIOS NEGATIVOS (50) ---
+        // Múltipla Escolha (25 exercícios)
+        {
+            id: 51,
+            type: 'mc',
+            question: "She ___ (not like) coffee.",
+            options: ["don't like", "doesn't like", "not likes"],
+            correctAnswer: "doesn't like",
+            hint: "Use 'doesn't' para a 3ª pessoa do singular na negativa, e o verbo na forma base."
+        },
+        {
+            id: 52,
+            type: 'mc',
+            question: "They ___ (not play) soccer on weekdays.",
+            options: ["doesn't play", "don't play", "not plays"],
+            correctAnswer: "don't play",
+            hint: "Use 'don't' para 'they' na negativa."
+        },
+        {
+            id: 53,
+            type: 'mc',
+            question: "He ___ (not work) on Sundays.",
+            options: ["don't work", "doesn't work", "not works"],
+            correctAnswer: "doesn't work",
+            hint: "Lembre-se do 'doesn't' para a 3ª pessoa do singular."
+        },
+        {
+            id: 54,
+            type: 'mc',
+            question: "We ___ (not speak) French.",
+            options: ["doesn't speak", "don't speak", "not speaks"],
+            correctAnswer: "don't speak",
+            hint: "Use 'don't' para 'we' na negativa."
+        },
+        {
+            id: 55,
+            type: 'mc',
+            question: "The cat ___ (not eat) vegetables.",
+            options: ["don't eat", "doesn't eat", "not eats"],
+            correctAnswer: "doesn't eat",
+            hint: "'The cat' é 3ª pessoa do singular."
+        },
+        {
+            id: 56,
+            type: 'mc',
+            question: "I ___ (not understand) this lesson.",
+            options: ["doesn't understand", "don't understand", "not understands"],
+            correctAnswer: "don't understand",
+            hint: "Use 'don't' para 'I' na negativa."
+        },
+        {
+            id: 57,
+            type: 'mc',
+            question: "My brother ___ (not live) here anymore.",
+            options: ["don't live", "doesn't live", "not lives"],
+            correctAnswer: "doesn't live",
+            hint: "'My brother' é 3ª pessoa do singular."
+        },
+        {
+            id: 58,
+            type: 'mc',
+            question: "Birds ___ (not fly) at night.",
+            options: ["doesn't fly", "don't fly", "not flies"],
+            correctAnswer: "don't fly",
+            hint: "'Birds' é plural."
+        },
+        {
+            id: 59,
+            type: 'mc',
+            question: "You ___ (not like) spicy food.",
+            options: ["doesn't like", "don't like", "not likes"],
+            correctAnswer: "don't like",
+            hint: "Use 'don't' para 'you' na negativa."
+        },
+        {
+            id: 60,
+            type: 'mc',
+            question: "It ___ (not rain) much in the desert.",
+            options: ["don't rain", "doesn't rain", "not rains"],
+            correctAnswer: "doesn't rain",
+            hint: "'It' é 3ª pessoa do singular."
+        },
+        {
+            id: 61,
+            type: 'mc',
+            question: "My parents ___ (not watch) TV very often.",
+            options: ["doesn't watch", "don't watch", "not watches"],
+            correctAnswer: "don't watch",
+            hint: "'My parents' é plural."
+        },
+        {
+            id: 62,
+            type: 'mc',
+            question: "The students ___ (not finish) their homework.",
+            options: ["doesn't finish", "don't finish", "not finishes"],
+            correctAnswer: "don't finish",
+            hint: "'The students' é plural."
+        },
+        {
+            id: 63,
+            type: 'mc',
+            question: "She ___ (not go) to parties.",
+            options: ["don't go", "doesn't go", "not goes"],
+            correctAnswer: "doesn't go",
+            hint: "Lembre-se do 'doesn't' para a 3ª pessoa do singular."
+        },
+        {
+            id: 64,
+            type: 'mc',
+            question: "We ___ (not have) much time.",
+            options: ["doesn't have", "don't have", "not has"],
+            correctAnswer: "don't have",
+            hint: "Use 'don't' para 'we' na negativa."
+        },
+        {
+            id: 65,
+            type: 'mc',
+            question: "He ___ (not read) newspapers.",
+            options: ["don't read", "doesn't read", "not reads"],
+            correctAnswer: "doesn't read",
+            hint: "Lembre-se do 'doesn't' para a 3ª pessoa do singular."
+        },
+        {
+            id: 66,
+            type: 'mc',
+            question: "They ___ (not want) to leave.",
+            options: ["doesn't want", "don't want", "not wants"],
+            correctAnswer: "don't want",
+            hint: "Use 'don't' para 'they' na negativa."
+        },
+        {
+            id: 67,
+            type: 'mc',
+            question: "The baby ___ (not cry) a lot.",
+            options: ["don't cry", "doesn't cry", "not cries"],
+            correctAnswer: "doesn't cry",
+            hint: "'The baby' é 3ª pessoa do singular."
+        },
+        {
+            id: 68,
+            type: 'mc',
+            question: "I ___ (not believe) in ghosts.",
+            options: ["doesn't believe", "don't believe", "not believes"],
+            correctAnswer: "don't believe",
+            hint: "Use 'don't' para 'I' na negativa."
+        },
+        {
+            id: 69,
+            type: 'mc',
+            question: "She ___ (not teach) history.",
+            options: ["don't teach", "doesn't teach", "not teaches"],
+            correctAnswer: "doesn't teach",
+            hint: "Lembre-se do 'doesn't' para a 3ª pessoa do singular."
+        },
+        {
+            id: 70,
+            type: 'mc',
+            question: "We ___ (not travel) during winter.",
+            options: ["doesn't travel", "don't travel", "not travels"],
+            correctAnswer: "don't travel",
+            hint: "Use 'don't' para 'we' na negativa."
+        },
+        {
+            id: 71,
+            type: 'mc',
+            question: "He ___ (not like) to wake up early.",
+            options: ["don't like", "doesn't like", "not likes"],
+            correctAnswer: "doesn't like",
+            hint: "Lembre-se do 'doesn't' para a 3ª pessoa do singular."
+        },
+        {
+            id: 72,
+            type: 'mc',
+            question: "They ___ (not know) the answer.",
+            options: ["doesn't know", "don't know", "not knows"],
+            correctAnswer: "don't know",
+            hint: "Use 'don't' para 'they' na negativa."
+        },
+        {
+            id: 73,
+            type: 'mc',
+            question: "The car ___ (not start) in the cold.",
+            options: ["don't start", "doesn't start", "not starts"],
+            correctAnswer: "doesn't start",
+            hint: "'The car' é 3ª pessoa do singular."
+        },
+        {
+            id: 74,
+            type: 'mc',
+            question: "You ___ (not smoke).",
+            options: ["doesn't smoke", "don't smoke", "not smokes"],
+            correctAnswer: "don't smoke",
+            hint: "Use 'don't' para 'you' na negativa."
+        },
+        {
+            id: 75,
+            type: 'mc',
+            question: "My friend ___ (not speak) German.",
+            options: ["don't speak", "doesn't speak", "not speaks"],
+            correctAnswer: "doesn't speak",
+            hint: "'My friend' é 3ª pessoa do singular."
+        },
+
+        // Reescrever Frases (25 exercícios)
+        {
+            id: 76,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: I like pizza.",
+            correctAnswer: "I don't like pizza.",
+            hint: "Use 'don't' para 'I'."
+        },
+        {
+            id: 77,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: She works on Saturdays.",
+            correctAnswer: "She doesn't work on Saturdays.",
+            hint: "Use 'doesn't' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 78,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: They live in a big house.",
+            correctAnswer: "They don't live in a big house.",
+            hint: "Use 'don't' para 'they'."
+        },
+        {
+            id: 79,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: He watches TV every night.",
+            correctAnswer: "He doesn't watch TV every night.",
+            hint: "Use 'doesn't' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 80,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: We study English.",
+            correctAnswer: "We don't study English.",
+            hint: "Use 'don't' para 'we'."
+        },
+        {
+            id: 81,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: The dog barks a lot.",
+            correctAnswer: "The dog doesn't bark a lot.",
+            hint: "Use 'doesn't' para 'the dog' e o verbo na forma base."
+        },
+        {
+            id: 82,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: You listen to rock music.",
+            correctAnswer: "You don't listen to rock music.",
+            hint: "Use 'don't' para 'you'."
+        },
+        {
+            id: 83,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: My brother plays video games.",
+            correctAnswer: "My brother doesn't play video games.",
+            hint: "Use 'doesn't' para 'my brother' e o verbo na forma base."
+        },
+        {
+            id: 84,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: They have a car.",
+            correctAnswer: "They don't have a car.",
+            hint: "Use 'don't' para 'they'."
+        },
+        {
+            id: 85,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: She studies French.",
+            correctAnswer: "She doesn't study French.",
+            hint: "Use 'doesn't' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 86,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: He teaches math.",
+            correctAnswer: "He doesn't teach math.",
+            hint: "Use 'doesn't' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 87,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: I believe in magic.",
+            correctAnswer: "I don't believe in magic.",
+            hint: "Use 'don't' para 'I'."
+        },
+        {
+            id: 88,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: The children play outside.",
+            correctAnswer: "The children don't play outside.",
+            hint: "Use 'don't' para 'the children'."
+        },
+        {
+            id: 89,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: My father drives fast.",
+            correctAnswer: "My father doesn't drive fast.",
+            hint: "Use 'doesn't' para 'my father' e o verbo na forma base."
+        },
+        {
+            id: 90,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: We live near the beach.",
+            correctAnswer: "We don't live near the beach.",
+            hint: "Use 'don't' para 'we'."
+        },
+        {
+            id: 91,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: She reads many books.",
+            correctAnswer: "She doesn't read many books.",
+            hint: "Use 'doesn't' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 92,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: He fixes computers.",
+            correctAnswer: "He doesn't fix computers.",
+            hint: "Use 'doesn't' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 93,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: They visit us often.",
+            correctAnswer: "They don't visit us often.",
+            hint: "Use 'don't' para 'they'."
+        },
+        {
+            id: 94,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: The cat sleeps on the bed.",
+            correctAnswer: "The cat doesn't sleep on the bed.",
+            hint: "Use 'doesn't' para 'the cat' e o verbo na forma base."
+        },
+        {
+            id: 95,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: I drink soda.",
+            correctAnswer: "I don't drink soda.",
+            hint: "Use 'don't' para 'I'."
+        },
+        {
+            id: 96,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: She washes her car.",
+            correctAnswer: "She doesn't wash her car.",
+            hint: "Use 'doesn't' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 97,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: We love chocolate.",
+            correctAnswer: "We don't love chocolate.",
+            hint: "Use 'don't' para 'we'."
+        },
+        {
+            id: 98,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: He does his homework.",
+            correctAnswer: "He doesn't do his homework.",
+            hint: "Use 'doesn't' para 'he' e o verbo 'do' na forma base."
+        },
+        {
+            id: 99,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: They study every night.",
+            correctAnswer: "They don't study every night.",
+            hint: "Use 'don't' para 'they'."
+        },
+        {
+            id: 100,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the negative form: The store opens early.",
+            correctAnswer: "The store doesn't open early.",
+            hint: "Use 'doesn't' para 'the store' e o verbo na forma base."
         }
     ];
 
