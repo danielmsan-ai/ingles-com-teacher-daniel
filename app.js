@@ -152,6 +152,212 @@ function showStudentPanel() {
 }
 
 // ============================================================
+// LÓGICA DO QUIZ
+// ============================================================
+
+let currentModule = '';
+let currentQuestions = [];
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedOption = null;
+
+function startQuiz(moduleName) {
+  console.log(`Iniciando quiz do módulo: ${moduleName}`); // Linha de depuração adicionada
+
+  currentModule = moduleName;
+  score = 0;
+  currentQuestionIndex = 0;
+  selectedOption = null;
+
+  // Seleciona o banco de questões correto
+  switch (moduleName) {
+    case 'simplePast':
+      currentQuestions = simplePastQuestions;
+      document.getElementById('quiz-module-title').textContent = 'Módulo: Simple Past';
+      break;
+    case 'presentPerfect':
+      currentQuestions = presentPerfectQuestions;
+      document.getElementById('quiz-module-title').textContent = 'Módulo: Present Perfect';
+      break;
+    case 'presentPerfectContinuous':
+      currentQuestions = presentPerfectContinuousQuestions;
+      document.getElementById('quiz-module-title').textContent = 'Módulo: Present Perfect Continuous';
+      break;
+    case 'simplePresent':
+      currentQuestions = simplePresentQuestions;
+      document.getElementById('quiz-module-title').textContent = 'Módulo: Simple Present';
+      break;
+    default:
+      alert('Módulo não encontrado!');
+      return;
+  }
+
+  // Embaralha as questões para cada quiz
+  currentQuestions = shuffleArray(currentQuestions);
+
+  showScreen('quiz-screen');
+  renderQuestion();
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function renderQuestion() {
+  const questionData = currentQuestions[currentQuestionIndex];
+  document.getElementById('quiz-progress').textContent =
+    `Questão ${currentQuestionIndex + 1} de ${currentQuestions.length}`;
+  document.getElementById('quiz-rule').textContent = questionData.rule;
+  document.getElementById('quiz-question').textContent = questionData.question;
+
+  const optionsContainer = document.getElementById('quiz-options');
+  optionsContainer.innerHTML = ''; // Limpa opções anteriores
+  questionData.options.forEach((option, index) => {
+    const button = document.createElement('button');
+    button.classList.add('option-btn');
+    button.textContent = option;
+    button.onclick = () => selectOption(index);
+    optionsContainer.appendChild(button);
+  });
+
+  document.getElementById('quiz-feedback').textContent = '';
+  document.getElementById('next-btn').style.display = 'none';
+  selectedOption = null; // Reseta a opção selecionada
+  // Remove classes de feedback de todas as opções
+  document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.classList.remove('correct', 'incorrect', 'selected');
+    btn.disabled = false; // Garante que os botões estão habilitados para a nova questão
+  });
+}
+
+function selectOption(index) {
+  if (selectedOption !== null) return; // Impede múltiplas seleções
+  selectedOption = index;
+
+  // Adiciona classe 'selected' e remove de outros
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.classList.remove('selected');
+    if (i === index) {
+      btn.classList.add('selected');
+    }
+  });
+}
+
+function checkAnswer() {
+  if (selectedOption === null) {
+    alert('Por favor, selecione uma opção antes de verificar.');
+    return;
+  }
+
+  const questionData = currentQuestions[currentQuestionIndex];
+  const feedbackDiv = document.getElementById('quiz-feedback');
+  const optionsButtons = document.querySelectorAll('.option-btn');
+
+  optionsButtons.forEach((btn, i) => {
+    btn.disabled = true; // Desabilita botões após a resposta
+    if (i === questionData.correct) {
+      btn.classList.add('correct');
+    } else if (i === selectedOption) {
+      btn.classList.add('incorrect');
+    }
+  });
+
+  if (selectedOption === questionData.correct) {
+    score++;
+    feedbackDiv.innerHTML = `<p class="feedback-correct">Correto! 🎉</p><p>${questionData.explanation}</p>`;
+  } else {
+    feedbackDiv.innerHTML = `<p class="feedback-incorrect">Incorreto. A resposta correta era: "${questionData.options[questionData.correct]}".</p><p>${questionData.explanation}</p>`;
+  }
+
+  document.getElementById('next-btn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  if (currentQuestionIndex < currentQuestions.length) {
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function showResult() {
+  showScreen('result-screen');
+  document.getElementById('result-module-title').textContent = `Resultados do Módulo: ${document.getElementById('quiz-module-title').textContent.split(': ')[1]}`;
+  document.getElementById('result-score').textContent = `Você acertou ${score} de ${currentQuestions.length} questões.`;
+
+  let message = '';
+  const percentage = (score / currentQuestions.length) * 100;
+  if (percentage >= 80) {
+    message = 'Parabéns! Excelente desempenho! 🏆';
+  } else if (percentage >= 50) {
+    message = 'Muito bom! Continue praticando para melhorar. 💪';
+  } else {
+    message = 'Você pode melhorar! Revise as regras e tente novamente. 📚';
+  }
+  document.getElementById('result-message').textContent = message;
+
+  saveResult(); // Salva o resultado do aluno
+}
+
+function resetQuiz() {
+  currentModule = '';
+  currentQuestions = [];
+  currentQuestionIndex = 0;
+  score = 0;
+  selectedOption = null;
+  showScreen('student-screen'); // Volta para a tela de seleção de módulos
+}
+
+// ============================================================
+// GERENCIAMENTO DE RESULTADOS (PARA PROFESSOR E ALUNO)
+// ============================================================
+
+// Estrutura para armazenar resultados:
+// { userId: 1, module: 'simplePast', score: 10, total: 15, date: '2026-09-15T10:00:00Z' }
+let results = JSON.parse(localStorage.getItem('results')) || [];
+
+function saveResult() {
+  if (!currentUser || currentUser.role !== 'student') return; // Apenas alunos salvam resultados
+
+  const newResult = {
+    userId: currentUser.id,
+    userName: currentUser.name, // Adiciona o nome do aluno para facilitar a exibição
+    module: currentModule,
+    score: score,
+    total: currentQuestions.length,
+    date: new Date().toISOString()
+  };
+  results.push(newResult);
+  localStorage.setItem('results', JSON.stringify(results));
+}
+
+function renderStudentResults() {
+  // Esta função seria para a tela de resultados do professor ou para o próprio aluno ver seu histórico
+  // Por enquanto, vamos deixá-la aqui para referência.
+  const resultsListDiv = document.getElementById('results-list');
+  if (!resultsListDiv) return;
+
+  const studentResults = results.filter(r => r.userId === currentUser.id);
+
+  if (studentResults.length === 0) {
+    resultsListDiv.innerHTML = '<p>Nenhum resultado registrado ainda.</p>';
+    return;
+  }
+
+  resultsListDiv.innerHTML = studentResults.map(r => `
+    <div class="result-item">
+      <span>Módulo: ${r.module} - Pontuação: ${r.score}/${r.total} (${((r.score / r.total) * 100).toFixed(0)}%)</span>
+      <span>Data: ${new Date(r.date).toLocaleDateString()} ${new Date(r.date).toLocaleTimeString()}</span>
+    </div>
+  `).join('');
+}
+
+// ============================================================
 // BANCO DE QUESTÕES — SIMPLE PAST (150 questões)
 // ============================================================
 
@@ -1131,8 +1337,71 @@ const simplePastQuestions = [
   },
   {
     rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ the roads dangerous during the storm?",
-    options: ["Did the roads be dangerous", "Was the roads dangerous", "Were the roads dangerous", "Does the roads be dangerous"],
+    question: "___ the children quiet during the class?",
+    options: ["Did the children be quiet", "Was the children quiet", "Were the children quiet", "Does the children be quiet"],
+    correct: 2,
+    explanation: '"The children" é plural, então usamos "Were".'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ I clear in my explanation?",
+    options: ["Did I be clear", "Were I clear", "Was I clear", "Does I be clear"],
+    correct: 2,
+    explanation: '"I" usa "Was" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ the weather cold last week?",
+    options: ["Did the weather be cold", "Were the weather cold", "Was the weather cold", "Does the weather be cold"],
+    correct: 2,
+    explanation: '"The weather" equivale a "it", então usamos "Was".'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ they happy with the service?",
+    options: ["Did they be happy", "Was they happy", "Were they happy", "Does they be happy"],
+    correct: 2,
+    explanation: '"They" usa "Were" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ he the best player on the team?",
+    options: ["Did he be", "Were he", "Was he", "Does he be"],
+    correct: 2,
+    explanation: '"He" usa "Was" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ you busy yesterday afternoon?",
+    options: ["Did you be busy", "Was you busy", "Were you busy", "Does you be busy"],
+    correct: 2,
+    explanation: '"You" usa "Were" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ the food delicious at the party?",
+    options: ["Did the food be delicious", "Were the food delicious", "Was the food delicious", "Does the food be delicious"],
+    correct: 2,
+    explanation: '"The food" equivale a "it", então usamos "Was".'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ we supposed to meet at 10 a.m.?",
+    options: ["Did we be", "Was we", "Were we", "Does we be"],
+    correct: 2,
+    explanation: '"We" usa "Were" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ she aware of the changes?",
+    options: ["Did she be aware", "Were she aware", "Was she aware", "Does she be aware"],
+    correct: 2,
+    explanation: '"She" usa "Was" na interrogativa do Simple Past do To Be.'
+  },
+  {
+    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
+    question: "___ the roads slippery after the rain?",
+    options: ["Did the roads be slippery", "Was the roads slippery", "Were the roads slippery", "Does the roads be slippery"],
     correct: 2,
     explanation: '"The roads" é plural, então usamos "Were".'
   },
@@ -1145,80 +1414,17 @@ const simplePastQuestions = [
   },
   {
     rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ the food at the event good?",
-    options: ["Did the food be good", "Were the food good", "Was the food good", "Does the food be good"],
-    correct: 2,
-    explanation: '"The food" equivale a "it", então usamos "Was".'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ they satisfied with the service?",
-    options: ["Did they be satisfied", "Was they satisfied", "Were they satisfied", "Does they be satisfied"],
-    correct: 2,
-    explanation: '"They" usa "Were" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ he aware of the problem?",
-    options: ["Did he be aware", "Were he aware", "Was he aware", "Does he be aware"],
-    correct: 2,
-    explanation: '"He" usa "Was" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ you comfortable in the new apartment?",
-    options: ["Did you be comfortable", "Was you comfortable", "Were you comfortable", "Does you be comfortable"],
-    correct: 2,
-    explanation: '"You" usa "Were" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ the concert as good as you expected?",
-    options: ["Did the concert be good", "Were the concert good", "Was the concert good", "Does the concert be good"],
+    question: "___ the concert crowded?",
+    options: ["Did the concert be crowded", "Were the concert crowded", "Was the concert crowded", "Does the concert be crowded"],
     correct: 2,
     explanation: '"The concert" equivale a "it", então usamos "Was".'
   },
   {
     rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ we right to make that decision?",
-    options: ["Did we be right", "Was we right", "Were we right", "Does we be right"],
-    correct: 2,
-    explanation: '"We" usa "Were" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ she tired after the long trip?",
-    options: ["Did she be tired", "Were she tired", "Was she tired", "Does she be tired"],
-    correct: 2,
-    explanation: '"She" usa "Was" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ the children excited about the trip?",
-    options: ["Did the children be excited", "Was the children excited", "Were the children excited", "Does the children be excited"],
-    correct: 2,
-    explanation: '"The children" é plural, então usamos "Were".'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ it cold enough to snow last winter?",
-    options: ["Did it be cold", "Were it cold", "Was it cold", "Does it be cold"],
-    correct: 2,
-    explanation: '"It" usa "Was" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ they ready for the challenge?",
-    options: ["Did they be ready", "Was they ready", "Were they ready", "Does they be ready"],
+    question: "___ they interested in the offer?",
+    options: ["Did they be interested", "Was they interested", "Were they interested", "Does they be interested"],
     correct: 2,
     explanation: '"They" usa "Were" na interrogativa do Simple Past do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Past do verbo To Be usamos 'Was' (I, he, she, it) ou 'Were' (you, we, they) + sujeito.",
-    question: "___ he the best player on the team?",
-    options: ["Did he be the best", "Were he the best", "Was he the best", "Does he be the best"],
-    correct: 2,
-    explanation: '"He" usa "Was" na interrogativa do Simple Past do To Be.'
   },
 ];
 
@@ -1228,903 +1434,1068 @@ const simplePastQuestions = [
 
 const presentPerfectQuestions = [
 
-  // REGRA PRIMÁRIA — sem tempo específico na frase (1 a 20)
+  // REGRA PRIMÁRIA — ação no passado com resultado no presente (1 a 30)
   {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "She ___ to Japan.",
-    options: ["has been", "went", "goes", "is going"],
-    correct: 0,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "has been". Não sabemos quando foi.'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "They ___ this movie before.",
-    options: ["watched", "watch", "are watching", "have watched"],
-    correct: 3,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have watched".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "He ___ three languages.",
-    options: ["learns", "learned", "has learned", "is learning"],
-    correct: 2,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "has learned".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "I ___ sushi before.",
-    options: ["have tried", "tried", "try", "am trying"],
-    correct: 0,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have tried". Não sabemos quando a pessoa experimentou.'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "We ___ that restaurant.",
-    options: ["visited", "visit", "are visiting", "have visited"],
-    correct: 3,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "have visited".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "She ___ her wallet.",
-    options: ["loses", "lost", "has lost", "is losing"],
-    correct: 2,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "has lost". O resultado ainda é relevante agora.'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "He ___ a novel.",
-    options: ["has written", "wrote", "writes", "is writing"],
-    correct: 0,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "has written".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "They ___ the problem.",
-    options: ["solved", "solve", "are solving", "have solved"],
-    correct: 3,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have solved".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "I ___ this song many times.",
-    options: ["hear", "heard", "have heard", "am hearing"],
-    correct: 2,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "have heard".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "She ___ a lot recently.",
-    options: ["has changed", "changed", "changes", "is changing"],
-    correct: 0,
-    explanation: '"Recently" não é um tempo específico como "yesterday" ou "last week". Usamos o Present Perfect: "has changed".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "We ___ the new shopping mall.",
-    options: ["visited", "visit", "are visiting", "have visited"],
-    correct: 3,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "have visited".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "He ___ his driving license.",
-    options: ["gets", "got", "has gotten", "is getting"],
-    correct: 2,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "has gotten".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "They ___ to fix the issue.",
-    options: ["have tried", "tried", "try", "are trying"],
-    correct: 0,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "have tried".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "I ___ that book.",
-    options: ["reads", "read", "am reading", "have read"],
-    correct: 3,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have read".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "She ___ her mind about the trip.",
-    options: ["changed", "changes", "has changed", "is changing"],
-    correct: 2,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "has changed".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "We ___ this problem before.",
-    options: ["have faced", "faced", "face", "are facing"],
-    correct: 0,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have faced".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "He ___ the answer.",
-    options: ["finds", "found", "is finding", "has found"],
-    correct: 3,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "has found".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "They ___ their homework.",
-    options: ["finished", "finish", "have finished", "are finishing"],
-    correct: 2,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "have finished".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "I ___ him somewhere before.",
-    options: ["have seen", "saw", "see", "am seeing"],
-    correct: 0,
-    explanation: 'Sem tempo específico na frase, usamos o Present Perfect: "have seen".'
-  },
-  {
-    rule: "Usamos o Present Perfect quando não há um tempo específico na frase.",
-    question: "She ___ a new job.",
-    options: ["finds", "found", "is finding", "has found"],
-    correct: 3,
-    explanation: 'Sem tempo específico, usamos o Present Perfect: "has found".'
-  },
-
-  // REGRA SECUNDÁRIA — ever, already, yet, just (21 a 35)
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "Have you ___ visited the Amazon rainforest?",
-    options: ["ever", "yesterday", "last year", "in 2020"],
-    correct: 0,
-    explanation: '"Ever" é uma das palavras-chave do Present Perfect. Pergunta sobre alguma experiência na vida.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "She has ___ finished her presentation.",
-    options: ["last week", "ago", "just", "yesterday"],
-    correct: 2,
-    explanation: '"Just" indica que algo aconteceu muito recentemente. É uma palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "Have they arrived ___?",
-    options: ["already", "yet", "ever", "just"],
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I can't find my keys. I ___ them.",
+    options: ["lost", "have lost", "was losing", "lose"],
     correct: 1,
-    explanation: '"Yet" é usado em perguntas e frases negativas no Present Perfect para indicar se algo aconteceu até agora.'
+    explanation: 'A ação de perder as chaves aconteceu no passado, mas o resultado (não ter as chaves agora) é relevante no presente. Usamos "have lost".'
   },
   {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "I have ___ seen that movie. I don't need to watch it again.",
-    options: ["yet", "ever", "never", "already"],
-    correct: 3,
-    explanation: '"Already" indica que algo aconteceu antes do esperado. É palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "He has ___ eaten dinner. He's not hungry.",
-    options: ["already", "yet", "never", "ever"],
-    correct: 0,
-    explanation: '"Already" indica que a ação foi concluída antes do esperado. Usamos com Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "Have you ___ tried skydiving?",
-    options: ["yesterday", "last month", "in 2019", "ever"],
-    correct: 3,
-    explanation: '"Ever" pergunta sobre qualquer momento na vida da pessoa. É palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "She has ___ arrived. She's at the door right now.",
-    options: ["yet", "ever", "just", "already"],
-    correct: 2,
-    explanation: '"Just" indica que algo aconteceu há pouquíssimo tempo. É palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "They haven't called me ___.",
-    options: ["already", "just", "ever", "yet"],
-    correct: 3,
-    explanation: '"Yet" em frases negativas indica que algo não aconteceu até o momento presente.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "I have ___ been to Africa. It was an incredible experience.",
-    options: ["ever", "yet", "never", "already"],
-    correct: 0,
-    explanation: '"Ever" aqui confirma uma experiência de vida. É palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "He hasn't finished his homework ___.",
-    options: ["already", "just", "ever", "yet"],
-    correct: 3,
-    explanation: '"Yet" em frases negativas indica que algo ainda não aconteceu até agora.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "We have ___ decided where to go on vacation.",
-    options: ["yet", "already", "ever", "just"],
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ her leg, so she can't play soccer today.",
+    options: ["broke", "has broken", "was breaking", "breaks"],
     correct: 1,
-    explanation: '"Already" indica que a decisão foi tomada antes do esperado. Palavra-chave do Present Perfect.'
+    explanation: 'Ela quebrou a perna no passado, e o resultado (não poder jogar hoje) afeta o presente. Usamos "has broken".'
   },
   {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "Has she ___ met a famous person?",
-    options: ["already", "yet", "just", "ever"],
-    correct: 3,
-    explanation: '"Ever" em perguntas questiona se algo aconteceu em algum momento da vida.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "They have ___ landed. The plane touched down a minute ago.",
-    options: ["yet", "ever", "just", "already"],
-    correct: 2,
-    explanation: '"Just" indica que algo aconteceu há pouquíssimo tempo. Palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "I have ___ read that book twice this year.",
-    options: ["already", "yet", "just", "ever"],
-    correct: 0,
-    explanation: '"Already" indica que algo foi concluído antes do esperado. Palavra-chave do Present Perfect.'
-  },
-  {
-    rule: 'Palavras como "ever", "already", "yet" e "just" indicam Present Perfect.',
-    question: "Have you packed your bags ___?",
-    options: ["already", "just", "ever", "yet"],
-    correct: 3,
-    explanation: '"Yet" em perguntas questiona se algo já aconteceu até o momento presente.'
-  },
-
-  // REGRA TERCIÁRIA — passado com conexão com o presente (36 a 50)
-  {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "She ___ to forgive others. She is a much happier person now.",
-    options: ["learned", "learns", "has learned", "is learning"],
-    correct: 2,
-    explanation: 'A aprendizagem aconteceu no passado mas tem impacto direto no presente. Usamos "has learned".'
-  },
-  {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "He ___ his leg. That's why he's using crutches.",
-    options: ["breaks", "broke", "is breaking", "has broken"],
-    correct: 3,
-    explanation: 'A perna foi quebrada no passado e a consequência é visível agora. Usamos "has broken".'
-  },
-  {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
     question: "They ___ all the food. There's nothing left.",
-    options: ["have eaten", "ate", "eat", "are eating"],
-    correct: 0,
-    explanation: 'A comida foi consumida no passado e o resultado é evidente agora. Usamos "have eaten".'
+    options: ["ate", "have eaten", "were eating", "eat"],
+    correct: 1,
+    explanation: 'Eles comeram a comida no passado, e o resultado (não ter mais comida) é relevante agora. Usamos "have eaten".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "I ___ my keys. I can't open the door.",
-    options: ["lost", "lose", "am losing", "have lost"],
-    correct: 3,
-    explanation: 'As chaves foram perdidas no passado e a consequência é sentida agora. Usamos "have lost".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his homework, so he is free to play now.",
+    options: ["finished", "has finished", "was finishing", "finishes"],
+    correct: 1,
+    explanation: 'Ele terminou a tarefa no passado, e o resultado (estar livre agora) é relevante no presente. Usamos "has finished".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "She ___ a new dress for the party. She looks beautiful.",
-    options: ["buys", "bought", "has bought", "is buying"],
-    correct: 2,
-    explanation: 'A compra aconteceu no passado e o resultado é visível no presente. Usamos "has bought".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "We ___ a new car. It's parked outside.",
+    options: ["bought", "have bought", "were buying", "buy"],
+    correct: 1,
+    explanation: 'Compramos o carro no passado, e o resultado (ter um carro novo agora) é relevante no presente. Usamos "have bought".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "He ___ his passport. He can't travel.",
-    options: ["has lost", "lost", "loses", "is losing"],
-    correct: 0,
-    explanation: 'O passaporte foi perdido no passado e a consequência é sentida agora. Usamos "has lost".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "The train ___ yet, so we have to wait.",
+    options: ["didn't arrive", "hasn't arrived", "wasn't arriving", "doesn't arrive"],
+    correct: 1,
+    explanation: 'O trem não chegou no passado (até agora), e o resultado (ter que esperar) é relevante no presente. Usamos "hasn\'t arrived".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I ___ my wallet. I need to go back home.",
+    options: ["forgot", "have forgotten", "was forgetting", "forget"],
+    correct: 1,
+    explanation: 'Esqueci a carteira no passado, e o resultado (precisar voltar) é relevante no presente. Usamos "have forgotten".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ a new job. She starts next week.",
+    options: ["found", "has found", "was finding", "finds"],
+    correct: 1,
+    explanation: 'Ela encontrou um emprego no passado, e o resultado (começar na próxima semana) é relevante no presente. Usamos "has found".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "They ___ their house. It looks beautiful now.",
+    options: ["painted", "have painted", "were painting", "paint"],
+    correct: 1,
+    explanation: 'Eles pintaram a casa no passado, e o resultado (estar bonita agora) é relevante no presente. Usamos "have painted".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his exams. He's very happy.",
+    options: ["passed", "has passed", "was passing", "passes"],
+    correct: 1,
+    explanation: 'Ele passou nos exames no passado, e o resultado (estar feliz agora) é relevante no presente. Usamos "has passed".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "We ___ to London many times. We know the city well.",
+    options: ["went", "have been", "were going", "go"],
+    correct: 1,
+    explanation: 'Fomos a Londres no passado, e o resultado (conhecer bem a cidade) é relevante no presente. Usamos "have been".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I ___ my hand. It hurts a lot.",
+    options: ["cut", "have cut", "was cutting", "cut"],
+    correct: 1,
+    explanation: 'Cortei a mão no passado, e o resultado (estar doendo agora) é relevante no presente. Usamos "have cut".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ her phone. She can't call anyone.",
+    options: ["lost", "has lost", "was losing", "loses"],
+    correct: 1,
+    explanation: 'Ela perdeu o telefone no passado, e o resultado (não poder ligar) é relevante no presente. Usamos "has lost".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "They ___ the project. They are celebrating now.",
+    options: ["finished", "have finished", "were finishing", "finish"],
+    correct: 1,
+    explanation: 'Eles terminaram o projeto no passado, e o resultado (estar celebrando) é relevante no presente. Usamos "have finished".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his car. It's all clean now.",
+    options: ["washed", "has washed", "was washing", "washes"],
+    correct: 1,
+    explanation: 'Ele lavou o carro no passado, e o resultado (estar limpo agora) é relevante no presente. Usamos "has washed".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "We ___ a new house. We are moving next month.",
+    options: ["bought", "have bought", "were buying", "buy"],
+    correct: 1,
+    explanation: 'Compramos a casa no passado, e o resultado (mudar no próximo mês) é relevante no presente. Usamos "have bought".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I ___ to that restaurant before. The food is great.",
+    options: ["went", "have been", "was going", "go"],
+    correct: 1,
+    explanation: 'Fui a esse restaurante no passado, e o resultado (saber que a comida é boa) é relevante no presente. Usamos "have been".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ her hair. It looks different.",
+    options: ["cut", "has cut", "was cutting", "cuts"],
+    correct: 1,
+    explanation: 'Ela cortou o cabelo no passado, e o resultado (parecer diferente) é relevante no presente. Usamos "has cut".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "They ___ a new movie. It's in cinemas now.",
+    options: ["released", "have released", "were releasing", "release"],
+    correct: 1,
+    explanation: 'Eles lançaram o filme no passado, e o resultado (estar nos cinemas agora) é relevante no presente. Usamos "have released".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his phone. He can't find it anywhere.",
+    options: ["lost", "has lost", "was losing", "loses"],
+    correct: 1,
+    explanation: 'Ele perdeu o telefone no passado, e o resultado (não conseguir encontrá-lo) é relevante no presente. Usamos "has lost".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
     question: "We ___ all the tickets. The show is sold out.",
-    options: ["sold", "sell", "are selling", "have sold"],
-    correct: 3,
-    explanation: 'Os ingressos foram vendidos no passado e o resultado é visível agora. Usamos "have sold".'
+    options: ["bought", "have bought", "were buying", "buy"],
+    correct: 1,
+    explanation: 'Compramos os ingressos no passado, e o resultado (o show estar esgotado) é relevante no presente. Usamos "have bought".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "She ___ weight. She looks so healthy now.",
-    options: ["loses", "lost", "has lost", "is losing"],
-    correct: 2,
-    explanation: 'O emagrecimento aconteceu no passado e o resultado é visível no presente. Usamos "has lost".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I ___ my homework. Now I can relax.",
+    options: ["did", "have done", "was doing", "do"],
+    correct: 1,
+    explanation: 'Fiz a tarefa no passado, e o resultado (poder relaxar agora) é relevante no presente. Usamos "have done".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "They ___ a new house. They're moving next week.",
-    options: ["have bought", "bought", "buy", "are buying"],
-    correct: 0,
-    explanation: 'A compra aconteceu no passado e tem consequência direta no presente. Usamos "have bought".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ a new dress. She's wearing it tonight.",
+    options: ["bought", "has bought", "was buying", "buys"],
+    correct: 1,
+    explanation: 'Ela comprou o vestido no passado, e o resultado (usá-lo hoje à noite) é relevante no presente. Usamos "has bought".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "I ___ my report. My boss can read it now.",
-    options: ["finished", "finish", "am finishing", "have finished"],
-    correct: 3,
-    explanation: 'O relatório foi concluído no passado e está disponível agora. Usamos "have finished".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "They ___ the window. It's broken.",
+    options: ["broke", "have broken", "were breaking", "break"],
+    correct: 1,
+    explanation: 'Eles quebraram a janela no passado, e o resultado (estar quebrada) é relevante no presente. Usamos "have broken".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "He ___ English for years. He's fluent now.",
-    options: ["studies", "studied", "has studied", "is studying"],
-    correct: 2,
-    explanation: 'O estudo aconteceu no passado e o resultado é a fluência atual. Usamos "has studied".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his hand. He can't write.",
+    options: ["hurt", "has hurt", "was hurting", "hurts"],
+    correct: 1,
+    explanation: 'Ele machucou a mão no passado, e o resultado (não poder escrever) é relevante no presente. Usamos "has hurt".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "She ___ the instructions. She knows what to do.",
-    options: ["has read", "read", "reads", "is reading"],
-    correct: 0,
-    explanation: 'A leitura aconteceu no passado e o resultado é o conhecimento atual. Usamos "has read".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "We ___ the news. It's very shocking.",
+    options: ["heard", "have heard", "were hearing", "hear"],
+    correct: 1,
+    explanation: 'Ouvimos a notícia no passado, e o resultado (ser chocante) é relevante no presente. Usamos "have heard".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "We ___ our flight. We need to book another one.",
-    options: ["missed", "miss", "are missing", "have missed"],
-    correct: 3,
-    explanation: 'O voo foi perdido no passado e a consequência é sentida agora. Usamos "have missed".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "I ___ my passport. I can't travel.",
+    options: ["lost", "have lost", "was losing", "lose"],
+    correct: 1,
+    explanation: 'Perdi o passaporte no passado, e o resultado (não poder viajar) é relevante no presente. Usamos "have lost".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "He ___ a lot since we last met. I barely recognize him.",
-    options: ["changes", "changed", "is changing", "has changed"],
-    correct: 3,
-    explanation: 'A mudança aconteceu no passado e o resultado é visível agora. Usamos "has changed".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "She ___ her car. It's in the garage for repairs.",
+    options: ["damaged", "has damaged", "was damaging", "damages"],
+    correct: 1,
+    explanation: 'Ela danificou o carro no passado, e o resultado (estar na garagem) é relevante no presente. Usamos "has damaged".'
   },
   {
-    rule: "O Present Perfect conecta um fato do passado com uma consequência ou relevância no presente.",
-    question: "They ___ the contract. The deal is official.",
-    options: ["signed", "sign", "have signed", "are signing"],
-    correct: 2,
-    explanation: 'A assinatura aconteceu no passado e o resultado é o acordo oficial agora. Usamos "have signed".'
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "They ___ their flight. They will miss the meeting.",
+    options: ["missed", "have missed", "were missing", "miss"],
+    correct: 1,
+    explanation: 'Eles perderam o voo no passado, e o resultado (perder a reunião) é relevante no presente. Usamos "have missed".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram no passado, mas têm um resultado ou relevância no presente.",
+    question: "He ___ his job. He's looking for a new one.",
+    options: ["lost", "has lost", "was losing", "loses"],
+    correct: 1,
+    explanation: 'Ele perdeu o emprego no passado, e o resultado (estar procurando um novo) é relevante no presente. Usamos "has lost".'
   },
 
-  // NEGATIVA DO PRESENT PERFECT — haven't / hasn't (51 a 80)
+  // REGRA SECUNDÁRIA — ações que começaram no passado e continuam no presente (31 a 50)
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ her homework yet.",
-    options: ["hasn't finished", "didn't finished", "hasn't finish", "don't finished"],
-    correct: 0,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t finished". "Yet" confirma o uso do Present Perfect.'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "I ___ here for five years.",
+    options: ["lived", "have lived", "was living", "live"],
+    correct: 1,
+    explanation: 'A ação de morar começou no passado e continua até agora ("for five years"). Usamos "have lived".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ to Europe before.",
-    options: ["hasn't been", "didn't been", "haven't been", "don't been"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t been".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "She ___ in this company since 2020.",
+    options: ["worked", "has worked", "was working", "works"],
+    correct: 1,
+    explanation: 'A ação de trabalhar começou em 2020 e continua até agora ("since 2020"). Usamos "has worked".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ his keys anywhere.",
-    options: ["haven't found", "didn't found", "hasn't find", "hasn't found"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t found".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "They ___ married for ten years.",
+    options: ["were", "have been", "are being", "are"],
+    correct: 1,
+    explanation: 'O estado de casados começou no passado e continua até agora ("for ten years"). Usamos "have been".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ that movie yet.",
-    options: ["hasn't seen", "didn't seen", "haven't saw", "haven't seen"],
-    correct: 3,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t seen". "Yet" confirma o Present Perfect.'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "He ___ that car since he was 18.",
+    options: ["owned", "has owned", "was owning", "owns"],
+    correct: 1,
+    explanation: 'A ação de possuir o carro começou no passado e continua até agora ("since he was 18"). Usamos "has owned".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ our decision yet.",
-    options: ["hasn't made", "didn't made", "haven't made", "don't made"],
-    correct: 2,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t made".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "We ___ each other since childhood.",
+    options: ["knew", "have known", "were knowing", "know"],
+    correct: 1,
+    explanation: 'A ação de se conhecer começou na infância e continua até agora ("since childhood"). Usamos "have known".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ to him since last week.",
-    options: ["haven't spoken", "didn't spoken", "hasn't spoke", "hasn't spoken"],
-    correct: 3,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t spoken". "Since" confirma o Present Perfect.'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "I ___ English for seven years.",
+    options: ["studied", "have studied", "was studying", "study"],
+    correct: 1,
+    explanation: 'A ação de estudar começou no passado e continua até agora ("for seven years"). Usamos "have studied".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ the report yet.",
-    options: ["hasn't submitted", "didn't submitted", "haven't submitted", "don't submitted"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t submitted".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "She ___ a teacher since she graduated.",
+    options: ["was", "has been", "is being", "is"],
+    correct: 1,
+    explanation: 'O estado de ser professora começou no passado e continua até agora ("since she graduated"). Usamos "has been".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ lunch yet. He's still hungry.",
-    options: ["haven't had", "didn't had", "hasn't have", "hasn't had"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t had".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "They ___ in this city for a long time.",
+    options: ["lived", "have lived", "were living", "live"],
+    correct: 1,
+    explanation: 'A ação de morar começou no passado e continua até agora ("for a long time"). Usamos "have lived".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ my brother in two years.",
-    options: ["hasn't seen", "didn't seen", "haven't saw", "haven't seen"],
-    correct: 3,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t seen".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "He ___ sick since Monday.",
+    options: ["was", "has been", "is being", "is"],
+    correct: 1,
+    explanation: 'O estado de estar doente começou na segunda e continua até agora ("since Monday"). Usamos "has been".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ from the client yet.",
-    options: ["hasn't heard", "didn't heard", "haven't heard", "don't heard"],
-    correct: 2,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t heard".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "We ___ this house for twenty years.",
+    options: ["owned", "have owned", "were owning", "own"],
+    correct: 1,
+    explanation: 'A ação de possuir a casa começou no passado e continua até agora ("for twenty years"). Usamos "have owned".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ her new apartment yet.",
-    options: ["haven't decorated", "didn't decorated", "hasn't decorate", "hasn't decorated"],
-    correct: 3,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t decorated".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "I ___ my best friend for fifteen years.",
+    options: ["knew", "have known", "was knowing", "know"],
+    correct: 1,
+    explanation: 'A ação de conhecer começou no passado e continua até agora ("for fifteen years"). Usamos "have known".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ the problem yet.",
-    options: ["hasn't solved", "didn't solved", "haven't solved", "don't solved"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t solved".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "She ___ her current job for three years.",
+    options: ["had", "has had", "was having", "has"],
+    correct: 1,
+    explanation: 'A ação de ter o emprego começou no passado e continua até agora ("for three years"). Usamos "has had".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ his old friends in years.",
-    options: ["haven't visited", "didn't visited", "hasn't visit", "hasn't visited"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t visited".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "They ___ in that apartment since last year.",
+    options: ["lived", "have lived", "were living", "live"],
+    correct: 1,
+    explanation: 'A ação de morar começou no passado e continua até agora ("since last year"). Usamos "have lived".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ the book you recommended.",
-    options: ["hasn't read", "didn't read", "haven't read", "don't read"],
-    correct: 2,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t read".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "He ___ a doctor for over ten years.",
+    options: ["was", "has been", "is being", "is"],
+    correct: 1,
+    explanation: 'O estado de ser médico começou no passado e continua até agora ("for over ten years"). Usamos "has been".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ a vacation in three years.",
-    options: ["hasn't taken", "didn't taken", "haven't took", "haven't taken"],
-    correct: 3,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t taken".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "We ___ here since 9 a.m.",
+    options: ["waited", "have waited", "were waiting", "wait"],
+    correct: 1,
+    explanation: 'A ação de esperar começou às 9h e continua até agora ("since 9 a.m."). Usamos "have waited".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ her passport yet.",
-    options: ["haven't renewed", "didn't renewed", "hasn't renew", "hasn't renewed"],
-    correct: 3,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t renewed".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "I ___ this book for two weeks.",
+    options: ["read", "have read", "was reading", "read"],
+    correct: 1,
+    explanation: 'A ação de ler começou no passado e continua até agora ("for two weeks"). Usamos "have read".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ their new house yet.",
-    options: ["hasn't moved into", "didn't moved into", "haven't moved into", "don't moved into"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t moved into".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "She ___ her car for a long time.",
+    options: ["drove", "has driven", "was driving", "drives"],
+    correct: 1,
+    explanation: 'A ação de dirigir o carro começou no passado e continua até agora ("for a long time"). Usamos "has driven".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ his salary raise yet.",
-    options: ["haven't received", "didn't received", "hasn't receive", "hasn't received"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t received".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "They ___ friends since elementary school.",
+    options: ["were", "have been", "are being", "are"],
+    correct: 1,
+    explanation: 'O estado de serem amigos começou no passado e continua até agora ("since elementary school"). Usamos "have been".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ sushi before. I'm nervous to try it.",
-    options: ["hasn't tried", "didn't tried", "haven't tried", "don't tried"],
-    correct: 2,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t tried".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "He ___ in this house all his life.",
+    options: ["lived", "has lived", "was living", "lives"],
+    correct: 1,
+    explanation: 'A ação de morar começou no passado e continua até agora ("all his life"). Usamos "has lived".'
   },
   {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ anything about the new policy yet.",
-    options: ["hasn't decided", "didn't decided", "haven't decided", "don't decided"],
-    correct: 2,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t decided".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ her driving test yet.",
-    options: ["haven't passed", "didn't passed", "hasn't pass", "hasn't passed"],
-    correct: 3,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t passed".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ a answer from the company yet.",
-    options: ["hasn't gotten", "didn't gotten", "haven't gotten", "don't gotten"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t gotten".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ his room yet. It's still a mess.",
-    options: ["haven't cleaned", "didn't cleaned", "hasn't clean", "hasn't cleaned"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t cleaned".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ to my doctor about this issue.",
-    options: ["hasn't talked", "didn't talked", "haven't talked", "don't talked"],
-    correct: 2,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t talked".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ our flight tickets yet.",
-    options: ["hasn't booked", "didn't booked", "haven't booked", "don't booked"],
-    correct: 2,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t booked".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "She ___ her mind about the job offer.",
-    options: ["haven't made up", "didn't made up", "hasn't make up", "hasn't made up"],
-    correct: 3,
-    explanation: '"She" usa "hasn\'t" + particípio. O correto é "hasn\'t made up".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "They ___ the new employee yet.",
-    options: ["hasn't met", "didn't met", "haven't met", "don't met"],
-    correct: 2,
-    explanation: '"They" usa "haven\'t" + particípio. O correto é "haven\'t met".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "He ___ his phone since this morning.",
-    options: ["haven't found", "didn't found", "hasn't find", "hasn't found"],
-    correct: 3,
-    explanation: '"He" usa "hasn\'t" + particípio. O correto é "hasn\'t found". "Since" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "I ___ enough water today. I'm so thirsty.",
-    options: ["hasn't drunk", "didn't drunk", "haven't drank", "haven't drunk"],
-    correct: 3,
-    explanation: '"I" usa "haven\'t" + particípio. O correto é "haven\'t drunk".'
-  },
-  {
-    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
-    question: "We ___ to our neighbors since they moved in.",
-    options: ["hasn't talked", "didn't talked", "haven't talked", "don't talked"],
-    correct: 2,
-    explanation: '"We" usa "haven\'t" + particípio. O correto é "haven\'t talked".'
+    rule: "Usamos o Present Perfect para ações que começaram no passado e continuam até o presente, geralmente com 'for' (por um período) ou 'since' (desde um ponto no tempo).",
+    question: "We ___ to this song many times since it came out.",
+    options: ["listened", "have listened", "were listening", "listen"],
+    correct: 1,
+    explanation: 'A ação de ouvir começou no passado e continua até agora ("since it came out"). Usamos "have listened".'
   },
 
-  // INTERROGATIVA DO PRESENT PERFECT — Have / Has (101 a 150)
+  // REGRA TERCIÁRIA — experiências de vida (51 a 70)
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "I ___ to Paris.",
+    options: ["was", "have been", "went", "go"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já fui a Paris"). Não importa quando, apenas que aconteceu. Usamos "have been".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "She ___ a famous person.",
+    options: ["met", "has met", "was meeting", "meets"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já conheceu uma pessoa famosa"). Usamos "has met".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "They ___ sushi before.",
+    options: ["didn't eat", "haven't eaten", "weren't eating", "don't eat"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("nunca comeram sushi antes"). Usamos "haven\'t eaten".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "Have you ___ a horse?",
+    options: ["rode", "ridden", "ride", "riding"],
+    correct: 1,
+    explanation: 'Pergunta sobre uma experiência de vida ("já andou a cavalo?"). Usamos o particípio passado "ridden".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "He ___ a lot of interesting places.",
+    options: ["visited", "has visited", "was visiting", "visits"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já visitou muitos lugares interessantes"). Usamos "has visited".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "I ___ that movie.",
+    options: ["saw", "have seen", "was seeing", "see"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já vi aquele filme"). Usamos "have seen".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "She ___ a book in English.",
+    options: ["read", "has read", "was reading", "reads"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já leu um livro em inglês"). Usamos "has read" (pronunciado "red").'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "They ___ a marathon.",
+    options: ["ran", "have run", "were running", "run"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já correram uma maratona"). Usamos "have run".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "He ___ a foreign country.",
+    options: ["never left", "has never left", "was never leaving", "never leaves"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("nunca saiu do país"). Usamos "has never left".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "Have you ever ___ a snake?",
+    options: ["touched", "touch", "touching", "touches"],
+    correct: 0,
+    explanation: 'Pergunta sobre uma experiência de vida ("já tocou em uma cobra?"). Usamos o particípio passado "touched".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "I ___ a lot of different foods.",
+    options: ["tried", "have tried", "was trying", "try"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já experimentei muitas comidas diferentes"). Usamos "have tried".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "She ___ a car accident.",
+    options: ["had", "has had", "was having", "has"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já sofreu um acidente de carro"). Usamos "has had".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "They ___ in a plane.",
+    options: ["never flew", "have never flown", "were never flying", "never fly"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("nunca voaram de avião"). Usamos "have never flown".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "He ___ a professional athlete.",
+    options: ["was", "has been", "is being", "is"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já foi um atleta profissional"). Usamos "has been".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "We ___ a lot of challenges.",
+    options: ["faced", "have faced", "were facing", "face"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já enfrentamos muitos desafios"). Usamos "have faced".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "I ___ a famous painting.",
+    options: ["saw", "have seen", "was seeing", "see"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já vi uma pintura famosa"). Usamos "have seen".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "She ___ a speech in front of many people.",
+    options: ["gave", "has given", "was giving", "gives"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já fez um discurso para muitas pessoas"). Usamos "has given".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "They ___ a musical instrument.",
+    options: ["played", "have played", "were playing", "play"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já tocaram um instrumento musical"). Usamos "have played".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "He ___ a different culture.",
+    options: ["experienced", "has experienced", "was experiencing", "experiences"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já experimentou uma cultura diferente"). Usamos "has experienced".'
+  },
+  {
+    rule: "Usamos o Present Perfect para falar sobre experiências de vida, sem especificar quando elas aconteceram. Frequentemente usamos 'ever' (alguma vez) ou 'never' (nunca).",
+    question: "We ___ a lot of interesting people.",
+    options: ["met", "have met", "were meeting", "meet"],
+    correct: 1,
+    explanation: 'É uma experiência de vida ("já conhecemos muitas pessoas interessantes"). Usamos "have met".'
+  },
+
+  // REGRA QUARTA — ações recentes com 'just', 'already', 'yet' (71 a 90)
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "I ___ finished my dinner. I'm full.",
+    options: ["just", "have just", "was just", "am just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "have just finished".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "She ___ arrived. She's at the door.",
+    options: ["just", "has just", "was just", "is just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "has just arrived".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "They ___ left. You just missed them.",
+    options: ["just", "have just", "were just", "are just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "have just left".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "He ___ seen that movie. It was great.",
+    options: ["just", "has just", "was just", "is just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "has just seen".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "We ___ bought a new car. It's outside.",
+    options: ["just", "have just", "were just", "are just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "have just bought".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "I ___ finished my homework.",
+    options: ["already", "have already", "was already", "am already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "have already finished".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "She ___ seen that movie.",
+    options: ["already", "has already", "was already", "is already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "has already seen".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "They ___ eaten dinner.",
+    options: ["already", "have already", "were already", "are already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "have already eaten".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "He ___ paid the bill.",
+    options: ["already", "has already", "was already", "is already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "has already paid".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "We ___ booked our flights.",
+    options: ["already", "have already", "were already", "are already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "have already booked".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "Has he finished his work ___?",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em perguntas e negativas para indicar se algo aconteceu até agora. Usamos "yet".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "I haven't seen her ___.",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em negativas para indicar que algo não aconteceu até agora. Usamos "yet".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "They haven't arrived ___.",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em negativas para indicar que algo não aconteceu até agora. Usamos "yet".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "Has she called you ___?",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em perguntas para indicar se algo aconteceu até agora. Usamos "yet".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "We haven't decided ___.",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em negativas para indicar que algo não aconteceu até agora. Usamos "yet".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "I ___ received an email from him.",
+    options: ["just", "have just", "was just", "am just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "have just received".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "She ___ left for work.",
+    options: ["just", "has just", "was just", "is just"],
+    correct: 1,
+    explanation: '"Just" indica uma ação muito recente. Usamos "has just left".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "They ___ finished their project.",
+    options: ["already", "have already", "were already", "are already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "have already finished".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "He ___ eaten lunch.",
+    options: ["already", "has already", "was already", "is already"],
+    correct: 1,
+    explanation: '"Already" indica que a ação já foi concluída. Usamos "has already eaten".'
+  },
+  {
+    rule: "Usamos o Present Perfect para ações que aconteceram muito recentemente, geralmente com 'just' (acabei de), 'already' (já) ou 'yet' (ainda, em negativas e perguntas).",
+    question: "Have you packed your bags ___?",
+    options: ["already", "just", "yet", "ever"],
+    correct: 2,
+    explanation: '"Yet" é usado em perguntas para indicar se algo aconteceu até agora. Usamos "yet".'
+  },
+
+  // NEGATIVA DO PRESENT PERFECT — haven't / hasn't (91 a 110)
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "I ___ finished my work yet.",
+    options: ["didn't", "haven't", "wasn't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "I", usamos "haven\'t" + particípio passado ("finished").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "She ___ seen that movie before.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "She", usamos "hasn\'t" + particípio passado ("seen").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "They ___ arrived yet.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "They", usamos "haven\'t" + particípio passado ("arrived").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "He ___ visited his grandparents this month.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "He", usamos "hasn\'t" + particípio passado ("visited").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "We ___ eaten anything since morning.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "We", usamos "haven\'t" + particípio passado ("eaten").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "I ___ been to that country.",
+    options: ["didn't", "haven't", "wasn't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "I", usamos "haven\'t" + particípio passado ("been").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "She ___ called me back.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "She", usamos "hasn\'t" + particípio passado ("called").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "They ___ decided what to do.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "They", usamos "haven\'t" + particípio passado ("decided").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "He ___ found his keys yet.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "He", usamos "hasn\'t" + particípio passado ("found").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "We ___ seen each other for ages.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "We", usamos "haven\'t" + particípio passado ("seen").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "I ___ finished reading that book.",
+    options: ["didn't", "haven't", "wasn't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "I", usamos "haven\'t" + particípio passado ("finished").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "She ___ traveled abroad before.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "She", usamos "hasn\'t" + particípio passado ("traveled").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "They ___ bought a new car.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "They", usamos "haven\'t" + particípio passado ("bought").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "He ___ eaten his breakfast yet.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "He", usamos "hasn\'t" + particípio passado ("eaten").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "We ___ heard from them recently.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "We", usamos "haven\'t" + particípio passado ("heard").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "I ___ understood the instructions.",
+    options: ["didn't", "haven't", "wasn't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "I", usamos "haven\'t" + particípio passado ("understood").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "She ___ started her new job yet.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "She", usamos "hasn\'t" + particípio passado ("started").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "They ___ seen that movie.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "They", usamos "haven\'t" + particípio passado ("seen").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "He ___ called his mother today.",
+    options: ["didn't", "hasn't", "wasn't", "doesn't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "He", usamos "hasn\'t" + particípio passado ("called").'
+  },
+  {
+    rule: "Na negativa do Present Perfect usamos 'haven't' (I, you, we, they) ou 'hasn't' (he, she, it) + particípio passado.",
+    question: "We ___ finished our project.",
+    options: ["didn't", "haven't", "weren't", "don't"],
+    correct: 1,
+    explanation: 'Na negativa do Present Perfect com "We", usamos "haven\'t" + particípio passado ("finished").'
+  },
+
+  // INTERROGATIVA DO PRESENT PERFECT — Have / Has (111 a 130)
+  {
+    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
+    question: "___ you ever been to New York?",
+    options: ["Did you", "Have you", "Are you", "Do you"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "You", usamos "Have" + sujeito + particípio passado ("been").'
+  },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
     question: "___ she finished her homework yet?",
-    options: ["Did she finish", "Has she finished", "Have she finished", "Does she finish"],
+    options: ["Did she", "Has she", "Is she", "Does she"],
     correct: 1,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she finished". "Yet" confirma o uso do Present Perfect.'
+    explanation: 'Na interrogativa do Present Perfect com "She", usamos "Has" + sujeito + particípio passado ("finished").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they ever visited Japan?",
-    options: ["Did they visit", "Has they visited", "Have they visited", "Do they visit"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they visited". "Ever" confirma o Present Perfect.'
+    question: "___ they seen that movie?",
+    options: ["Did they", "Have they", "Are they", "Do they"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "They", usamos "Have" + sujeito + particípio passado ("seen").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he called you back yet?",
-    options: ["Did he call", "Have he called", "Has he called", "Does he call"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he called".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you ever tried sushi?",
-    options: ["Did you try", "Has you tried", "Have you tried", "Do you try"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you tried". "Ever" confirma o Present Perfect.'
+    question: "___ he ever eaten sushi?",
+    options: ["Did he", "Has he", "Is he", "Does he"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "He", usamos "Has" + sujeito + particípio passado ("eaten").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
     question: "___ we met before?",
-    options: ["Did we meet", "Has we met", "Have we met", "Do we meet"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we met".'
+    options: ["Did we", "Have we", "Are we", "Do we"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "We", usamos "Have" + sujeito + particípio passado ("met").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she ever lived abroad?",
-    options: ["Did she live", "Have she lived", "Has she lived", "Does she live"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she lived". "Ever" confirma o Present Perfect.'
+    question: "___ you finished your work?",
+    options: ["Did you", "Have you", "Are you", "Do you"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "You", usamos "Have" + sujeito + particípio passado ("finished").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they received the package yet?",
-    options: ["Did they receive", "Has they received", "Have they received", "Do they receive"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they received". "Yet" confirma o Present Perfect.'
+    question: "___ she called you?",
+    options: ["Did she", "Has she", "Is she", "Does she"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "She", usamos "Has" + sujeito + particípio passado ("called").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he ever won a competition?",
-    options: ["Did he win", "Have he won", "Has he won", "Does he win"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he won". "Ever" confirma o Present Perfect.'
+    question: "___ they arrived?",
+    options: ["Did they", "Have they", "Are they", "Do they"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "They", usamos "Have" + sujeito + particípio passado ("arrived").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you seen this movie before?",
-    options: ["Did you see", "Has you seen", "Have you seen", "Do you see"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you seen".'
+    question: "___ he found his keys?",
+    options: ["Did he", "Has he", "Is he", "Does he"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "He", usamos "Has" + sujeito + particípio passado ("found").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she spoken to her boss yet?",
-    options: ["Did she speak", "Have she spoken", "Has she spoken", "Does she speak"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she spoken". "Yet" confirma o Present Perfect.'
+    question: "___ we seen each other for ages?",
+    options: ["Did we", "Have we", "Are we", "Do we"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "We", usamos "Have" + sujeito + particípio passado ("seen").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ we finished all the tasks?",
-    options: ["Did we finish", "Has we finished", "Have we finished", "Do we finish"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we finished".'
+    question: "___ you ever tried skydiving?",
+    options: ["Did you", "Have you", "Are you", "Do you"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "You", usamos "Have" + sujeito + particípio passado ("tried").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they ever eaten at that restaurant?",
-    options: ["Did they eat", "Has they eaten", "Have they eaten", "Do they eat"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they eaten". "Ever" confirma o Present Perfect.'
+    question: "___ she read that book?",
+    options: ["Did she", "Has she", "Is she", "Does she"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "She", usamos "Has" + sujeito + particípio passado ("read").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he read the report yet?",
-    options: ["Did he read", "Have he read", "Has he read", "Does he read"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he read". "Yet" confirma o Present Perfect.'
+    question: "___ they bought a new house?",
+    options: ["Did they", "Have they", "Are they", "Do they"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "They", usamos "Have" + sujeito + particípio passado ("bought").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you ever met a famous person?",
-    options: ["Did you meet", "Has you met", "Have you met", "Do you meet"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you met". "Ever" confirma o Present Perfect.'
+    question: "___ he eaten his breakfast?",
+    options: ["Did he", "Has he", "Is he", "Does he"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "He", usamos "Has" + sujeito + particípio passado ("eaten").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she booked the hotel yet?",
-    options: ["Did she book", "Have she booked", "Has she booked", "Does she book"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she booked". "Yet" confirma o Present Perfect.'
+    question: "___ we heard from them?",
+    options: ["Did we", "Have we", "Are we", "Do we"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "We", usamos "Have" + sujeito + particípio passado ("heard").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they made a final decision yet?",
-    options: ["Did they make", "Has they made", "Have they made", "Do they make"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they made". "Yet" confirma o Present Perfect.'
+    question: "___ you understood the lesson?",
+    options: ["Did you", "Have you", "Are you", "Do you"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "You", usamos "Have" + sujeito + particípio passado ("understood").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he ever traveled to South America?",
-    options: ["Did he travel", "Have he traveled", "Has he traveled", "Does he travel"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he traveled". "Ever" confirma o Present Perfect.'
+    question: "___ she started her new job?",
+    options: ["Did she", "Has she", "Is she", "Does she"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "She", usamos "Has" + sujeito + particípio passado ("started").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you heard the latest news?",
-    options: ["Did you hear", "Has you heard", "Have you heard", "Do you hear"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you heard".'
+    question: "___ they finished their project?",
+    options: ["Did they", "Have they", "Are they", "Do they"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "They", usamos "Have" + sujeito + particípio passado ("finished").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she ever skydived?",
-    options: ["Did she skydive", "Have she skydived", "Has she skydived", "Does she skydive"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she skydived". "Ever" confirma o Present Perfect.'
+    question: "___ he called his family?",
+    options: ["Did he", "Has he", "Is he", "Does he"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "He", usamos "Has" + sujeito + particípio passado ("called").'
   },
   {
     rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ we submitted the application yet?",
-    options: ["Did we submit", "Has we submitted", "Have we submitted", "Do we submit"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we submitted". "Yet" confirma o Present Perfect.'
+    question: "___ we made a decision?",
+    options: ["Did we", "Have we", "Are we", "Do we"],
+    correct: 1,
+    explanation: 'Na interrogativa do Present Perfect com "We", usamos "Have" + sujeito + particípio passado ("made").'
+  },
+
+  // PRESENT PERFECT vs SIMPLE PAST (131 a 150)
+  {
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "I ___ to the cinema yesterday. (Simple Past)",
+    options: ["went", "have gone", "go", "am going"],
+    correct: 0,
+    explanation: '"Yesterday" é um tempo específico no passado, então usamos Simple Past: "went".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they signed the contract yet?",
-    options: ["Did they sign", "Has they signed", "Have they signed", "Do they sign"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they signed". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "I ___ to the cinema many times. (Present Perfect)",
+    options: ["went", "have been", "go", "am going"],
+    correct: 1,
+    explanation: 'É uma experiência de vida, sem tempo específico. Usamos Present Perfect: "have been".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he lost weight recently?",
-    options: ["Did he lose", "Have he lost", "Has he lost", "Does he lose"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he lost". "Recently" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "She ___ her keys last night. (Simple Past)",
+    options: ["lost", "has lost", "loses", "is losing"],
+    correct: 0,
+    explanation: '"Last night" é um tempo específico no passado. Usamos Simple Past: "lost".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you ever been to Australia?",
-    options: ["Did you go", "Has you been", "Have you been", "Do you go"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you been". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "She can't find her keys. She ___ them. (Present Perfect)",
+    options: ["lost", "has lost", "loses", "is losing"],
+    correct: 1,
+    explanation: 'O resultado (não encontrar as chaves agora) é relevante no presente. Usamos Present Perfect: "has lost".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she found a new job yet?",
-    options: ["Did she find", "Have she found", "Has she found", "Does she find"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she found". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "They ___ to London in 2020. (Simple Past)",
+    options: ["went", "have been", "go", "are going"],
+    correct: 0,
+    explanation: '"In 2020" é um tempo específico no passado. Usamos Simple Past: "went".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they ever seen the Northern Lights?",
-    options: ["Did they see", "Has they seen", "Have they seen", "Do they see"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they seen". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "They ___ to London twice. (Present Perfect)",
+    options: ["went", "have been", "go", "are going"],
+    correct: 1,
+    explanation: 'É uma experiência de vida, sem tempo específico. Usamos Present Perfect: "have been".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he spoken to the doctor yet?",
-    options: ["Did he speak", "Have he spoken", "Has he spoken", "Does he speak"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he spoken". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "He ___ his homework an hour ago. (Simple Past)",
+    options: ["finished", "has finished", "finishes", "is finishing"],
+    correct: 0,
+    explanation: '"An hour ago" é um tempo específico no passado. Usamos Simple Past: "finished".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you taken your medicine today?",
-    options: ["Did you take", "Has you taken", "Have you taken", "Do you take"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you taken".'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "He is free now. He ___ his homework. (Present Perfect)",
+    options: ["finished", "has finished", "finishes", "is finishing"],
+    correct: 1,
+    explanation: 'O resultado (estar livre agora) é relevante no presente. Usamos Present Perfect: "has finished".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she ever written a novel?",
-    options: ["Did she write", "Have she written", "Has she written", "Does she write"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she written". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "We ___ a new car last month. (Simple Past)",
+    options: ["bought", "have bought", "buy", "are buying"],
+    correct: 0,
+    explanation: '"Last month" é um tempo específico no passado. Usamos Simple Past: "bought".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ we discussed this issue before?",
-    options: ["Did we discuss", "Has we discussed", "Have we discussed", "Do we discuss"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we discussed".'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "We have a new car now. We ___ it. (Present Perfect)",
+    options: ["bought", "have bought", "buy", "are buying"],
+    correct: 1,
+    explanation: 'O resultado (ter um carro novo agora) é relevante no presente. Usamos Present Perfect: "have bought".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they hired a new manager yet?",
-    options: ["Did they hire", "Has they hired", "Have they hired", "Do they hire"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they hired". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "I ___ a great book last week. (Simple Past)",
+    options: ["read", "have read", "read", "am reading"],
+    correct: 0,
+    explanation: '"Last week" é um tempo específico no passado. Usamos Simple Past: "read" (pronunciado "red").'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he ever climbed a mountain?",
-    options: ["Did he climb", "Have he climbed", "Has he climbed", "Does he climb"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he climbed". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "I ___ this book for three days. (Present Perfect)",
+    options: ["read", "have read", "read", "am reading"],
+    correct: 1,
+    explanation: 'A ação começou no passado e continua ("for three days"). Usamos Present Perfect: "have read".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you finished reading that book?",
-    options: ["Did you finish", "Has you finished", "Have you finished", "Do you finish"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you finished".'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "She ___ to Paris in 2021. (Simple Past)",
+    options: ["went", "has been", "goes", "is going"],
+    correct: 0,
+    explanation: '"In 2021" é um tempo específico no passado. Usamos Simple Past: "went".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she packed her bags yet?",
-    options: ["Did she pack", "Have she packed", "Has she packed", "Does she pack"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she packed". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "She ___ to Paris twice. (Present Perfect)",
+    options: ["went", "has been", "goes", "is going"],
+    correct: 1,
+    explanation: 'É uma experiência de vida, sem tempo específico. Usamos Present Perfect: "has been".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they moved into their new house yet?",
-    options: ["Did they move", "Has they moved", "Have they moved", "Do they move"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they moved". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "They ___ a new movie last week. (Simple Past)",
+    options: ["released", "have released", "release", "are releasing"],
+    correct: 0,
+    explanation: '"Last week" é um tempo específico no passado. Usamos Simple Past: "released".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he ever run a marathon?",
-    options: ["Did he run", "Have he run", "Has he run", "Does he run"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he run". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "The new movie is in cinemas now. They ___ it. (Present Perfect)",
+    options: ["released", "have released", "release", "are releasing"],
+    correct: 1,
+    explanation: 'O resultado (estar nos cinemas agora) é relevante no presente. Usamos Present Perfect: "have released".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you ever learned a third language?",
-    options: ["Did you learn", "Has you learned", "Have you learned", "Do you learn"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you learned". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "He ___ his job in 2023. (Simple Past)",
+    options: ["lost", "has lost", "loses", "is losing"],
+    correct: 0,
+    explanation: '"In 2023" é um tempo específico no passado. Usamos Simple Past: "lost".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she received the documents yet?",
-    options: ["Did she receive", "Have she received", "Has she received", "Does she receive"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she received". "Yet" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "He is looking for a new job. He ___ his old one. (Present Perfect)",
+    options: ["lost", "has lost", "loses", "is losing"],
+    correct: 1,
+    explanation: 'O resultado (estar procurando um novo emprego) é relevante no presente. Usamos Present Perfect: "has lost".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ we ever worked on a project like this before?",
-    options: ["Did we work", "Has we worked", "Have we worked", "Do we work"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we worked". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "I ___ my hand yesterday. (Simple Past)",
+    options: ["cut", "have cut", "cut", "am cutting"],
+    correct: 0,
+    explanation: '"Yesterday" é um tempo específico no passado. Usamos Simple Past: "cut".'
   },
   {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they contacted the supplier yet?",
-    options: ["Did they contact", "Has they contacted", "Have they contacted", "Do they contact"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they contacted". "Yet" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he changed his mind about the decision?",
-    options: ["Did he change", "Have he changed", "Has he changed", "Does he change"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he changed".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you told anyone about this yet?",
-    options: ["Did you tell", "Has you told", "Have you told", "Do you tell"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you told". "Yet" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she admitted her mistake yet?",
-    options: ["Did she admit", "Have she admitted", "Has she admitted", "Does she admit"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she admitted". "Yet" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ they ever tried rock climbing?",
-    options: ["Did they try", "Has they tried", "Have they tried", "Do they try"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect. O correto é "Have they tried". "Ever" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ he fixed the problem yet?",
-    options: ["Did he fix", "Have he fixed", "Has he fixed", "Does he fix"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect. O correto é "Has he fixed". "Yet" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ you spoken to your parents about this?",
-    options: ["Did you speak", "Has you spoken", "Have you spoken", "Do you speak"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect. O correto é "Have you spoken".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ she updated her resume yet?",
-    options: ["Did she update", "Have she updated", "Has she updated", "Does she update"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect. O correto é "Has she updated". "Yet" confirma o Present Perfect.'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + particípio passado.",
-    question: "___ we ever had a meeting this productive?",
-    options: ["Did we have", "Has we had", "Have we had", "Do we have"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect. O correto é "Have we had". "Ever" confirma o Present Perfect.'
+    rule: "Present Perfect vs Simple Past: Usamos Simple Past para ações concluídas em um tempo específico no passado. Usamos Present Perfect para ações com resultado no presente, experiências de vida ou ações que continuam até agora, sem tempo específico ou com 'for'/'since'.",
+    question: "My hand hurts. I ___ it. (Present Perfect)",
+    options: ["cut", "have cut", "cut", "am cutting"],
+    correct: 1,
+    explanation: 'O resultado (a mão estar doendo) é relevante no presente. Usamos Present Perfect: "have cut".'
   },
 ];
 
@@ -2134,777 +2505,509 @@ const presentPerfectQuestions = [
 
 const presentPerfectContinuousQuestions = [
 
-  // REGRA PRIMÁRIA — ação que começou no passado e continua no presente (1 a 20)
+  // REGRA PRIMÁRIA — ação que começou no passado e continua até o presente, com ênfase na duração (1 a 30)
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "She ___ all morning. Her eyes are red.",
-    options: ["cried", "cries", "has been crying", "is crying"],
-    correct: 2,
-    explanation: 'O choro começou no passado e continua até agora, com resultado visível. Usamos "has been crying".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "They ___ for the exam since Monday.",
-    options: ["study", "studied", "are studying", "have been studying"],
-    correct: 3,
-    explanation: '"Since Monday" indica que o estudo começou na segunda e continua até agora. Usamos "have been studying".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "He ___ in that company for ten years.",
-    options: ["has been working", "worked", "works", "is working"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ for two hours.",
+    options: ["have been studying", "studied", "was studying", "study"],
     correct: 0,
-    explanation: '"For ten years" indica duração contínua desde o passado até agora. Usamos "has been working".'
+    explanation: 'A ação de estudar começou no passado e continua até agora, com ênfase na duração ("for two hours"). Usamos "have been studying".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "I ___ to reach you all day.",
-    options: ["tried", "try", "am trying", "have been trying"],
-    correct: 3,
-    explanation: '"All day" indica que a ação começou no passado e continua até agora. Usamos "have been trying".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "She ___ English since she was a child.",
-    options: ["has been studying", "studied", "studies", "is studying"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ since morning.",
+    options: ["has been waiting", "waited", "was waiting", "waits"],
     correct: 0,
-    explanation: '"Since she was a child" indica o ponto de início de uma ação que continua até hoje. Usamos "has been studying".'
+    explanation: 'A ação de esperar começou no passado e continua até agora, com ênfase na duração ("since morning"). Usamos "has been waiting".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "We ___ for the bus for half an hour.",
-    options: ["waited", "wait", "are waiting", "have been waiting"],
-    correct: 3,
-    explanation: '"For half an hour" indica duração contínua desde o passado. Usamos "have been waiting".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "He ___ in this city since 2018.",
-    options: ["has been living", "lived", "lives", "is living"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ for a long time.",
+    options: ["have been living", "lived", "were living", "live"],
     correct: 0,
-    explanation: '"Since 2018" indica o ponto de início de uma situação que continua até agora. Usamos "has been living".'
+    explanation: 'A ação de morar começou no passado e continua até agora, com ênfase na duração ("for a long time"). Usamos "have been living".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "They ___ on this project for months.",
-    options: ["worked", "work", "are working", "have been working"],
-    correct: 3,
-    explanation: '"For months" indica duração contínua desde o passado até agora. Usamos "have been working".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "I ___ this book for two weeks and I'm still not done.",
-    options: ["read", "have been reading", "reads", "am reading"],
-    correct: 1,
-    explanation: '"For two weeks" indica duração contínua. A leitura começou no passado e ainda continua. Usamos "have been reading".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "She ___ piano since she was six years old.",
-    options: ["has been playing", "played", "plays", "is playing"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ all day.",
+    options: ["has been working", "worked", "was working", "works"],
     correct: 0,
-    explanation: '"Since she was six" indica o ponto de início de uma atividade que continua até hoje. Usamos "has been playing".'
+    explanation: 'A ação de trabalhar começou no passado e continua até agora, com ênfase na duração ("all day"). Usamos "has been working".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "He ___ about changing careers for a while.",
-    options: ["thought", "thinks", "is thinking", "has been thinking"],
-    correct: 3,
-    explanation: '"For a while" indica que o pensamento começou no passado e continua até agora. Usamos "has been thinking".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "We ___ Spanish together since January.",
-    options: ["learned", "learn", "have been learning", "are learning"],
-    correct: 2,
-    explanation: '"Since January" indica o ponto de início de uma atividade que continua até agora. Usamos "have been learning".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "She ___ a lot lately. Is she okay?",
-    options: ["has been crying", "cried", "cries", "is crying"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ since 8 a.m.",
+    options: ["have been discussing", "discussed", "were discussing", "discuss"],
     correct: 0,
-    explanation: '"Lately" indica que a ação vem acontecendo continuamente até o presente. Usamos "has been crying".'
+    explanation: 'A ação de discutir começou no passado e continua até agora, com ênfase na duração ("since 8 a.m."). Usamos "have been discussing".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "They ___ in that apartment for three years.",
-    options: ["lived", "live", "are living", "have been living"],
-    correct: 3,
-    explanation: '"For three years" indica duração contínua desde o passado até agora. Usamos "have been living".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "I ___ for a new job since last month.",
-    options: ["has been looking", "look", "have been looking", "looked"],
-    correct: 2,
-    explanation: '"Since last month" indica o ponto de início de uma busca que continua até agora. Usamos "have been looking".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "He ___ that song all day. I can't take it anymore!",
-    options: ["sang", "sings", "is singing", "has been singing"],
-    correct: 3,
-    explanation: '"All day" indica que a ação começou no passado e ainda continua. Usamos "has been singing".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "She ___ her presentation since this morning.",
-    options: ["has been preparing", "prepared", "prepares", "is preparing"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ for an hour.",
+    options: ["have been reading", "read", "was reading", "read"],
     correct: 0,
-    explanation: '"Since this morning" indica o ponto de início de uma atividade que continua até agora. Usamos "has been preparing".'
+    explanation: 'A ação de ler começou no passado e continua até agora, com ênfase na duração ("for an hour"). Usamos "have been reading".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "We ___ hard to meet the deadline.",
-    options: ["worked", "work", "are working", "have been working"],
-    correct: 3,
-    explanation: 'A ação de trabalhar duro vem acontecendo continuamente até o presente. Usamos "have been working".'
-  },
-  {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "It ___ for hours. The streets are flooded.",
-    options: ["has been raining", "rained", "rains", "is raining"],
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ for a week.",
+    options: ["has been traveling", "traveled", "was traveling", "travels"],
     correct: 0,
-    explanation: 'A chuva começou no passado, continua até agora e o resultado é visível. Usamos "has been raining".'
+    explanation: 'A ação de viajar começou no passado e continua até agora, com ênfase na duração ("for a week"). Usamos "has been traveling".'
   },
   {
-    rule: "O Present Perfect Continuous é usado para algo que começou no passado e continua no presente.",
-    question: "They ___ about the same issue for weeks.",
-    options: ["argued", "argue", "have been arguing", "are arguing"],
-    correct: 2,
-    explanation: '"For weeks" indica duração contínua desde o passado até agora. Usamos "have been arguing".'
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ for three months.",
+    options: ["have been learning", "learned", "were learning", "learn"],
+    correct: 0,
+    explanation: 'A ação de aprender começou no passado e continua até agora, com ênfase na duração ("for three months"). Usamos "have been learning".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ since he was a child.",
+    options: ["has been playing", "played", "was playing", "plays"],
+    correct: 0,
+    explanation: 'A ação de tocar começou no passado e continua até agora, com ênfase na duração ("since he was a child"). Usamos "has been playing".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ for a long time.",
+    options: ["have been waiting", "waited", "were waiting", "wait"],
+    correct: 0,
+    explanation: 'A ação de esperar começou no passado e continua até agora, com ênfase na duração ("for a long time"). Usamos "have been waiting".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ all morning.",
+    options: ["have been cleaning", "cleaned", "was cleaning", "clean"],
+    correct: 0,
+    explanation: 'A ação de limpar começou no passado e continua até agora, com ênfase na duração ("all morning"). Usamos "have been cleaning".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ for five years.",
+    options: ["has been teaching", "taught", "was teaching", "teaches"],
+    correct: 0,
+    explanation: 'A ação de ensinar começou no passado e continua até agora, com ênfase na duração ("for five years"). Usamos "has been teaching".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ since last year.",
+    options: ["have been building", "built", "were building", "build"],
+    correct: 0,
+    explanation: 'A ação de construir começou no passado e continua até agora, com ênfase na duração ("since last year"). Usamos "have been building".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ for an hour.",
+    options: ["has been talking", "talked", "was talking", "talks"],
+    correct: 0,
+    explanation: 'A ação de conversar começou no passado e continua até agora, com ênfase na duração ("for an hour"). Usamos "has been talking".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ for a long time.",
+    options: ["have been planning", "planned", "were planning", "plan"],
+    correct: 0,
+    explanation: 'A ação de planejar começou no passado e continua até agora, com ênfase na duração ("for a long time"). Usamos "have been planning".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ for three hours.",
+    options: ["have been driving", "drove", "was driving", "drive"],
+    correct: 0,
+    explanation: 'A ação de dirigir começou no passado e continua até agora, com ênfase na duração ("for three hours"). Usamos "have been driving".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ since she was a teenager.",
+    options: ["has been writing", "wrote", "was writing", "writes"],
+    correct: 0,
+    explanation: 'A ação de escrever começou no passado e continua até agora, com ênfase na duração ("since she was a teenager"). Usamos "has been writing".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ all afternoon.",
+    options: ["have been playing", "played", "were playing", "play"],
+    correct: 0,
+    explanation: 'A ação de brincar/jogar começou no passado e continua até agora, com ênfase na duração ("all afternoon"). Usamos "have been playing".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ for two weeks.",
+    options: ["has been training", "trained", "was training", "trains"],
+    correct: 0,
+    explanation: 'A ação de treinar começou no passado e continua até agora, com ênfase na duração ("for two weeks"). Usamos "has been training".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ since the morning.",
+    options: ["have been cooking", "cooked", "were cooking", "cook"],
+    correct: 0,
+    explanation: 'A ação de cozinhar começou no passado e continua até agora, com ênfase na duração ("since the morning"). Usamos "have been cooking".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ for a long time.",
+    options: ["have been thinking", "thought", "was thinking", "think"],
+    correct: 0,
+    explanation: 'A ação de pensar começou no passado e continua até agora, com ênfase na duração ("for a long time"). Usamos "have been thinking".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ for three hours.",
+    options: ["has been watching", "watched", "was watching", "watches"],
+    correct: 0,
+    explanation: 'A ação de assistir começou no passado e continua até agora, com ênfase na duração ("for three hours"). Usamos "has been watching".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ all night.",
+    options: ["have been dancing", "danced", "were dancing", "dance"],
+    correct: 0,
+    explanation: 'A ação de dançar começou no passado e continua até agora, com ênfase na duração ("all night"). Usamos "have been dancing".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ for six months.",
+    options: ["has been learning", "learned", "was learning", "learns"],
+    correct: 0,
+    explanation: 'A ação de aprender começou no passado e continua até agora, com ênfase na duração ("for six months"). Usamos "has been learning".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ for a while.",
+    options: ["have been waiting", "waited", "were waiting", "wait"],
+    correct: 0,
+    explanation: 'A ação de esperar começou no passado e continua até agora, com ênfase na duração ("for a while"). Usamos "have been waiting".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "I ___ all day.",
+    options: ["have been working", "worked", "was working", "work"],
+    correct: 0,
+    explanation: 'A ação de trabalhar começou no passado e continua até agora, com ênfase na duração ("all day"). Usamos "have been working".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "She ___ for an hour.",
+    options: ["has been talking", "talked", "was talking", "talks"],
+    correct: 0,
+    explanation: 'A ação de conversar começou no passado e continua até agora, com ênfase na duração ("for an hour"). Usamos "has been talking".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "They ___ since 2020.",
+    options: ["have been living", "lived", "were living", "live"],
+    correct: 0,
+    explanation: 'A ação de morar começou no passado e continua até agora, com ênfase na duração ("since 2020"). Usamos "have been living".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "He ___ for a long time.",
+    options: ["has been studying", "studied", "was studying", "studies"],
+    correct: 0,
+    explanation: 'A ação de estudar começou no passado e continua até agora, com ênfase na duração ("for a long time"). Usamos "has been studying".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que começaram no passado e continuam até o presente, com ênfase na duração da ação. Geralmente usamos 'for' ou 'since'.",
+    question: "We ___ for a few minutes.",
+    options: ["have been discussing", "discussed", "were discussing", "discuss"],
+    correct: 0,
+    explanation: 'A ação de discutir começou no passado e continua até agora, com ênfase na duração ("for a few minutes"). Usamos "have been discussing".'
   },
 
-  // REGRA SECUNDÁRIA — for e since (21 a 35)
+  // REGRA SECUNDÁRIA — ação que acabou de terminar, mas seus efeitos são visíveis no presente (31 a 50)
   {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "She has been teaching ___ twenty years.",
-    options: ["since", "for", "ago", "during"],
-    correct: 1,
-    explanation: '"Twenty years" é uma duração, então usamos "for". "Since" seria usado com um ponto específico como "since 2004".'
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "Her eyes are red. She ___.",
+    options: ["has been crying", "cried", "was crying", "cries"],
+    correct: 0,
+    explanation: 'A ação de chorar acabou de terminar, e o efeito (olhos vermelhos) é visível agora. Usamos "has been crying".'
   },
   {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "He has been waiting ___ 8 o'clock.",
-    options: ["for", "ago", "since", "during"],
-    correct: 2,
-    explanation: '"8 o\'clock" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "They have been living here ___ a long time.",
-    options: ["since", "during", "ago", "for"],
-    correct: 3,
-    explanation: '"A long time" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "I have been feeling tired ___ last week.",
-    options: ["for", "since", "ago", "during"],
-    correct: 1,
-    explanation: '"Last week" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "She has been working on that report ___ three days.",
-    options: ["since", "during", "for", "ago"],
-    correct: 2,
-    explanation: '"Three days" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "He has been playing guitar ___ he was a teenager.",
-    options: ["for", "since", "ago", "during"],
-    correct: 1,
-    explanation: '"He was a teenager" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "We have been waiting ___ two hours.",
-    options: ["since", "during", "ago", "for"],
-    correct: 3,
-    explanation: '"Two hours" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "They have been arguing ___ this morning.",
-    options: ["for", "since", "ago", "during"],
-    correct: 1,
-    explanation: '"This morning" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "I have been learning French ___ six months.",
-    options: ["since", "during", "for", "ago"],
-    correct: 2,
-    explanation: '"Six months" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "She has been feeling unwell ___ yesterday.",
-    options: ["for", "since", "ago", "during"],
-    correct: 1,
-    explanation: '"Yesterday" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "He has been training for the championship ___ months.",
-    options: ["since", "for", "ago", "during"],
-    correct: 1,
-    explanation: '"Months" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "We have been friends ___ we were in school.",
-    options: ["for", "during", "since", "ago"],
-    correct: 2,
-    explanation: '"We were in school" é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "They have been renovating the house ___ a year.",
-    options: ["since", "during", "ago", "for"],
-    correct: 3,
-    explanation: '"A year" é uma duração, então usamos "for".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "She has been running ___ 6 a.m.",
-    options: ["for", "since", "ago", "during"],
-    correct: 1,
-    explanation: '"6 a.m." é um ponto específico no tempo, então usamos "since".'
-  },
-  {
-    rule: '"For" indica duração e "since" indica o ponto de início. Ambos são palavras-chave do Present Perfect Continuous.',
-    question: "I have been working here ___ five years.",
-    options: ["since", "during", "for", "ago"],
-    correct: 2,
-    explanation: '"Five years" é uma duração, então usamos "for".'
-  },
-
-  // REGRA TERCIÁRIA — resultado visível no presente (36 a 50)
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "His hands are dirty. He ___ the car.",
-    options: ["fixed", "fixes", "has been fixing", "is fixing"],
-    correct: 2,
-    explanation: 'As mãos sujas são o resultado visível de uma ação contínua. Usamos "has been fixing".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "She looks exhausted. She ___ all night.",
-    options: ["studied", "studies", "is studying", "has been studying"],
-    correct: 3,
-    explanation: 'O cansaço é o resultado visível de uma ação contínua durante a noite. Usamos "has been studying".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
     question: "The ground is wet. It ___.",
-    options: ["has been raining", "rained", "rains", "is raining"],
+    options: ["has been raining", "rained", "was raining", "rains"],
     correct: 0,
-    explanation: 'O chão molhado é o resultado visível de uma chuva contínua. Usamos "has been raining".'
+    explanation: 'A ação de chover acabou de terminar, e o efeito (chão molhado) é visível agora. Usamos "has been raining".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "He looks really fit. He ___ out regularly.",
-    options: ["worked", "works", "is working", "has been working"],
-    correct: 3,
-    explanation: 'A boa forma física é o resultado visível de exercícios contínuos. Usamos "has been working".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "Her English is getting better. She ___ hard.",
-    options: ["has been practicing", "practiced", "practices", "is practicing"],
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "I'm tired because I ___ all day.",
+    options: ["have been working", "worked", "was working", "work"],
     correct: 0,
-    explanation: 'A melhora no inglês é o resultado visível de uma prática contínua. Usamos "has been practicing".'
+    explanation: 'A ação de trabalhar acabou de terminar, e o efeito (estar cansado) é visível agora. Usamos "have been working".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "The kitchen smells amazing. She ___.",
-    options: ["cooked", "cooks", "is cooking", "has been cooking"],
-    correct: 3,
-    explanation: 'O cheiro na cozinha é o resultado visível de uma ação contínua. Usamos "has been cooking".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "His eyes are tired. He ___ at the screen all day.",
-    options: ["has been staring", "stared", "stares", "is staring"],
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "He's out of breath. He ___.",
+    options: ["has been running", "ran", "was running", "runs"],
     correct: 0,
-    explanation: 'O cansaço nos olhos é o resultado visível de uma ação contínua. Usamos "has been staring".'
+    explanation: 'A ação de correr acabou de terminar, e o efeito (estar ofegante) é visível agora. Usamos "has been running".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "The kids are covered in paint. They ___.",
-    options: ["painted", "paint", "are painting", "have been painting"],
-    correct: 3,
-    explanation: 'A tinta nas crianças é o resultado visível de uma atividade contínua. Usamos "have been painting".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "She's out of breath. She ___.",
-    options: ["has been running", "ran", "runs", "is running"],
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The kitchen is messy. We ___.",
+    options: ["have been cooking", "cooked", "were cooking", "cook"],
     correct: 0,
-    explanation: 'A falta de ar é o resultado visível de uma ação contínua. Usamos "has been running".'
+    explanation: 'A ação de cozinhar acabou de terminar, e o efeito (cozinha bagunçada) é visível agora. Usamos "have been cooking".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "The dog is muddy. It ___ in the garden.",
-    options: ["played", "plays", "is playing", "has been playing"],
-    correct: 3,
-    explanation: 'A lama no cachorro é o resultado visível de uma atividade contínua. Usamos "has been playing".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "His voice is hoarse. He ___ too much.",
-    options: ["has been talking", "talked", "talks", "is talking"],
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "My head hurts. I ___ on the computer for hours.",
+    options: ["have been staring", "stared", "was staring", "stare"],
     correct: 0,
-    explanation: 'A rouquidão é o resultado visível de uma ação contínua. Usamos "has been talking".'
+    explanation: 'A ação de olhar para o computador acabou de terminar, e o efeito (dor de cabeça) é visível agora. Usamos "have been staring".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "The floor is spotless. She ___.",
-    options: ["cleaned", "cleans", "is cleaning", "has been cleaning"],
-    correct: 3,
-    explanation: 'O piso limpo é o resultado visível de uma atividade contínua. Usamos "has been cleaning".'
-  },
-  {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "He smells like smoke. He ___.",
-    options: ["has been smoking", "smoked", "smokes", "is smoking"],
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "She looks upset. She ___.",
+    options: ["has been arguing", "argued", "was arguing", "argues"],
     correct: 0,
-    explanation: 'O cheiro de fumaça é o resultado visível de uma ação contínua. Usamos "has been smoking".'
+    explanation: 'A ação de discutir acabou de terminar, e o efeito (parecer chateada) é visível agora. Usamos "has been arguing".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "She's soaking wet. It ___.",
-    options: ["rained", "rains", "is raining", "has been raining"],
-    correct: 3,
-    explanation: 'O fato de estar encharcada é o resultado visível de uma chuva contínua. Usamos "has been raining".'
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The children are dirty. They ___ in the garden.",
+    options: ["have been playing", "played", "were playing", "play"],
+    correct: 0,
+    explanation: 'A ação de brincar acabou de terminar, e o efeito (crianças sujas) é visível agora. Usamos "have been playing".'
   },
   {
-    rule: "O Present Perfect Continuous frequentemente explica um resultado visível no presente.",
-    question: "The baby is finally asleep. She ___ him for an hour.",
-    options: ["rocked", "rocks", "is rocking", "has been rocking"],
-    correct: 3,
-    explanation: 'O bebê dormindo é o resultado visível de uma ação contínua. Usamos "has been rocking".'
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "My throat is sore. I ___ too much.",
+    options: ["have been talking", "talked", "was talking", "talk"],
+    correct: 0,
+    explanation: 'A ação de falar acabou de terminar, e o efeito (dor de garganta) é visível agora. Usamos "have been talking".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The car is hot. It ___ in the sun.",
+    options: ["has been sitting", "sat", "was sitting", "sits"],
+    correct: 0,
+    explanation: 'A ação de o carro estar no sol acabou de terminar, e o efeito (carro quente) é visível agora. Usamos "has been sitting".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "I'm hungry because I ___ all morning.",
+    options: ["have been exercising", "exercised", "was exercising", "exercise"],
+    correct: 0,
+    explanation: 'A ação de se exercitar acabou de terminar, e o efeito (estar com fome) é visível agora. Usamos "have been exercising".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "His clothes are wet. He ___ his car.",
+    options: ["has been washing", "washed", "was washing", "washes"],
+    correct: 0,
+    explanation: 'A ação de lavar o carro acabou de terminar, e o efeito (roupas molhadas) é visível agora. Usamos "has been washing".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The house smells of paint. They ___.",
+    options: ["have been painting", "painted", "were painting", "paint"],
+    correct: 0,
+    explanation: 'A ação de pintar acabou de terminar, e o efeito (cheiro de tinta) é visível agora. Usamos "have been painting".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "My back aches. I ___ heavy boxes.",
+    options: ["have been lifting", "lifted", "was lifting", "lift"],
+    correct: 0,
+    explanation: 'A ação de levantar caixas pesadas acabou de terminar, e o efeito (dor nas costas) é visível agora. Usamos "have been lifting".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "She's tired. She ___ for hours.",
+    options: ["has been studying", "studied", "was studying", "studies"],
+    correct: 0,
+    explanation: 'A ação de estudar acabou de terminar, e o efeito (estar cansada) é visível agora. Usamos "has been studying".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The dog is panting. It ___.",
+    options: ["has been running", "ran", "was running", "runs"],
+    correct: 0,
+    explanation: 'A ação de correr acabou de terminar, e o efeito (cachorro ofegante) é visível agora. Usamos "has been running".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "My hands are dirty. I ___ in the garden.",
+    options: ["have been digging", "dug", "was digging", "dig"],
+    correct: 0,
+    explanation: 'A ação de cavar acabou de terminar, e o efeito (mãos sujas) é visível agora. Usamos "have been digging".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "He's sleepy. He ___ all night.",
+    options: ["has been reading", "read", "was reading", "reads"],
+    correct: 0,
+    explanation: 'A ação de ler acabou de terminar, e o efeito (estar com sono) é visível agora. Usamos "has been reading".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "The room is warm. The heater ___.",
+    options: ["has been on", "was on", "is on", "had been on"],
+    correct: 0,
+    explanation: 'A ação de o aquecedor estar ligado acabou de terminar, e o efeito (quarto quente) é visível agora. Usamos "has been on".'
+  },
+  {
+    rule: "Usamos o Present Perfect Continuous para ações que acabaram de terminar, mas seus efeitos ou resultados são visíveis no presente.",
+    question: "I'm sweating. I ___.",
+    options: ["have been exercising", "exercised", "was exercising", "exercise"],
+    correct: 0,
+    explanation: 'A ação de se exercitar acabou de terminar, e o efeito (estar suando) é visível agora. Usamos "have been exercising".'
   },
 
-  // NEGATIVA DO PRESENT PERFECT CONTINUOUS — haven't been / hasn't been (51 a 80)
+  // NEGATIVA DO PRESENT PERFECT CONTINUOUS — haven't been / hasn't been (51 a 70)
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ well lately. She looks pale.",
-    options: ["hasn't been feeling", "haven't been feeling", "didn't been feeling", "hasn't feeling"],
+    question: "I ___ feeling well lately.",
+    options: ["haven't been", "didn't been", "wasn't been", "don't been"],
     correct: 0,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been feeling".'
+    explanation: 'Na negativa do Present Perfect Continuous com "I", usamos "haven\'t been" + verbo com -ing ("feeling").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ to the gym lately.",
-    options: ["hasn't been going", "haven't been going", "didn't been going", "haven't going"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been going".'
+    question: "She ___ working here for long.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "She", usamos "hasn\'t been" + verbo com -ing ("working").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ enough lately. He looks exhausted.",
-    options: ["haven't been sleeping", "hasn't been sleeping", "didn't been sleeping", "hasn't sleeping"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been sleeping".'
+    question: "They ___ living in this city for many years.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "They", usamos "haven\'t been" + verbo com -ing ("living").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ much attention to the news recently.",
-    options: ["hasn't been paying", "haven't been paying", "didn't been paying", "haven't paying"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been paying".'
+    question: "He ___ sleeping well recently.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "He", usamos "hasn\'t been" + verbo com -ing ("sleeping").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ enough water during the hike.",
-    options: ["hasn't been drinking", "haven't been drinking", "didn't been drinking", "haven't drinking"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been drinking".'
+    question: "We ___ making much progress on the project.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "We", usamos "haven\'t been" + verbo com -ing ("making").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ her medication regularly. That's why she feels worse.",
-    options: ["haven't been taking", "hasn't been taking", "didn't been taking", "hasn't taking"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been taking".'
+    question: "I ___ studying English for a long time.",
+    options: ["haven't been", "didn't been", "wasn't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "I", usamos "haven\'t been" + verbo com -ing ("studying").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ on the project as a team lately.",
-    options: ["hasn't been working", "haven't been working", "didn't been working", "haven't working"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been working".'
+    question: "She ___ waiting for you all day.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "She", usamos "hasn\'t been" + verbo com -ing ("waiting").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his English classes recently.",
-    options: ["haven't been attending", "hasn't been attending", "didn't been attending", "hasn't attending"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been attending".'
+    question: "They ___ playing outside because of the rain.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "They", usamos "haven\'t been" + verbo com -ing ("playing").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ well since I changed jobs.",
-    options: ["hasn't been sleeping", "haven't been sleeping", "didn't been sleeping", "haven't sleeping"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been sleeping". "Since" confirma o Present Perfect Continuous.'
+    question: "He ___ feeling well since last week.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "He", usamos "hasn\'t been" + verbo com -ing ("feeling").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ enough time together lately.",
-    options: ["hasn't been spending", "haven't been spending", "didn't been spending", "haven't spending"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been spending".'
+    question: "We ___ watching much TV lately.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "We", usamos "haven\'t been" + verbo com -ing ("watching").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ her diet properly this month.",
-    options: ["haven't been following", "hasn't been following", "didn't been following", "hasn't following"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been following".'
+    question: "I ___ eating much these days.",
+    options: ["haven't been", "didn't been", "wasn't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "I", usamos "haven\'t been" + verbo com -ing ("eating").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ their bills on time lately.",
-    options: ["hasn't been paying", "haven't been paying", "didn't been paying", "haven't paying"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been paying".'
+    question: "She ___ studying for her exams.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "She", usamos "hasn\'t been" + verbo com -ing ("studying").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his best at work recently. His performance has dropped.",
-    options: ["haven't been giving", "hasn't been giving", "didn't been giving", "hasn't giving"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been giving".'
+    question: "They ___ building the new house quickly.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "They", usamos "haven\'t been" + verbo com -ing ("building").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ enough exercise lately. I feel out of shape.",
-    options: ["hasn't been getting", "haven't been getting", "didn't been getting", "haven't getting"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been getting".'
+    question: "He ___ talking on the phone for a long time.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "He", usamos "hasn\'t been" + verbo com -ing ("talking").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ to each other much since the argument.",
-    options: ["hasn't been talking", "haven't been talking", "didn't been talking", "haven't talking"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been talking". "Since" confirma o Present Perfect Continuous.'
+    question: "We ___ planning our vacation yet.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "We", usamos "haven\'t been" + verbo com -ing ("planning").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ her full potential at school lately.",
-    options: ["haven't been reaching", "hasn't been reaching", "didn't been reaching", "hasn't reaching"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been reaching".'
+    question: "I ___ driving for many hours.",
+    options: ["haven't been", "didn't been", "wasn't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "I", usamos "haven\'t been" + verbo com -ing ("driving").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ their homework on time this semester.",
-    options: ["hasn't been submitting", "haven't been submitting", "didn't been submitting", "haven't submitting"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been submitting".'
+    question: "She ___ writing her book for long.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "She", usamos "hasn\'t been" + verbo com -ing ("writing").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his dog for walks recently. The dog is restless.",
-    options: ["haven't been taking", "hasn't been taking", "didn't been taking", "hasn't taking"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been taking".'
+    question: "They ___ playing that game all day.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "They", usamos "haven\'t been" + verbo com -ing ("playing").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ enough lately. My mind is exhausted.",
-    options: ["hasn't been resting", "haven't been resting", "didn't been resting", "haven't resting"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been resting".'
+    question: "He ___ training for the marathon for long.",
+    options: ["hasn't been", "didn't been", "wasn't been", "doesn't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "He", usamos "hasn\'t been" + verbo com -ing ("training").'
   },
   {
     rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ our goals seriously this year.",
-    options: ["hasn't been pursuing", "haven't been pursuing", "didn't been pursuing", "haven't pursuing"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been pursuing".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ to her therapist regularly since last year.",
-    options: ["haven't been going", "hasn't been going", "didn't been going", "hasn't going"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been going". "Since" confirma o Present Perfect Continuous.'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ the safety rules on the construction site.",
-    options: ["hasn't been following", "haven't been following", "didn't been following", "haven't following"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been following".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his responsibilities at home lately.",
-    options: ["haven't been fulfilling", "hasn't been fulfilling", "didn't been fulfilling", "hasn't fulfilling"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been fulfilling".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ enough fruits and vegetables lately.",
-    options: ["hasn't been eating", "haven't been eating", "didn't been eating", "haven't eating"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been eating".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ our budget properly this month.",
-    options: ["hasn't been managing", "haven't been managing", "didn't been managing", "haven't managing"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been managing".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ her true feelings lately.",
-    options: ["haven't been expressing", "hasn't been expressing", "didn't been expressing", "hasn't expressing"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been expressing".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ enough for their retirement.",
-    options: ["hasn't been saving", "haven't been saving", "didn't been saving", "haven't saving"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been saving".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his friends since he started the new job.",
-    options: ["haven't been seeing", "hasn't been seeing", "didn't been seeing", "hasn't seeing"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been seeing". "Since" confirma o Present Perfect Continuous.'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ to music as much as I used to.",
-    options: ["hasn't been listening", "haven't been listening", "didn't been listening", "haven't listening"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been listening".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ to the office regularly since the new policy.",
-    options: ["hasn't been coming", "haven't been coming", "didn't been coming", "haven't coming"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been coming". "Since" confirma o Present Perfect Continuous.'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ on her thesis as much as she should.",
-    options: ["haven't been working", "hasn't been working", "didn't been working", "hasn't working"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been working".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ their children enough attention lately.",
-    options: ["hasn't been giving", "haven't been giving", "didn't been giving", "haven't giving"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been giving".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his full potential at training.",
-    options: ["haven't been showing", "hasn't been showing", "didn't been showing", "hasn't showing"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been showing".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ my emails regularly this week.",
-    options: ["hasn't been checking", "haven't been checking", "didn't been checking", "haven't checking"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been checking".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ our meetings on schedule lately.",
-    options: ["hasn't been starting", "haven't been starting", "didn't been starting", "haven't starting"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been starting".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ care of herself since the breakup.",
-    options: ["haven't been taking", "hasn't been taking", "didn't been taking", "hasn't taking"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been taking". "Since" confirma o Present Perfect Continuous.'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ their promises lately.",
-    options: ["hasn't been keeping", "haven't been keeping", "didn't been keeping", "haven't keeping"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been keeping".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ his teammates enough credit lately.",
-    options: ["haven't been giving", "hasn't been giving", "didn't been giving", "hasn't giving"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been giving".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ enough time with my family recently.",
-    options: ["hasn't been spending", "haven't been spending", "didn't been spending", "haven't spending"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been spending".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ our goals clearly this quarter.",
-    options: ["hasn't been communicating", "haven't been communicating", "didn't been communicating", "haven't communicating"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been communicating".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ herself to the new routine.",
-    options: ["haven't been adapting", "hasn't been adapting", "didn't been adapting", "hasn't adapting"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been adapting".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ their sales targets this month.",
-    options: ["hasn't been hitting", "haven't been hitting", "didn't been hitting", "haven't hitting"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been hitting".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ much progress with his recovery.",
-    options: ["haven't been making", "hasn't been making", "didn't been making", "hasn't making"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been making".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ the situation the attention it deserves.",
-    options: ["hasn't been giving", "haven't been giving", "didn't been giving", "haven't giving"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been giving".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "We ___ the right approach to solve this problem.",
-    options: ["hasn't been using", "haven't been using", "didn't been using", "haven't using"],
-    correct: 1,
-    explanation: '"We" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been using".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "She ___ her social life since she moved abroad.",
-    options: ["haven't been maintaining", "hasn't been maintaining", "didn't been maintaining", "hasn't maintaining"],
-    correct: 1,
-    explanation: '"She" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been maintaining". "Since" confirma o Present Perfect Continuous.'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "They ___ realistic about their deadlines.",
-    options: ["hasn't been being", "haven't been being", "didn't been being", "haven't being"],
-    correct: 1,
-    explanation: '"They" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been being".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "He ___ enough water during his workouts.",
-    options: ["haven't been drinking", "hasn't been drinking", "didn't been drinking", "hasn't drinking"],
-    correct: 1,
-    explanation: '"He" usa "hasn\'t been" + verbo com -ing. O correto é "hasn\'t been drinking".'
-  },
-  {
-    rule: "Na negativa do Present Perfect Continuous usamos 'haven't been' (I, you, we, they) ou 'hasn't been' (he, she, it) + verbo com -ing.",
-    question: "I ___ my best to keep up with the workload lately.",
-    options: ["hasn't been doing", "haven't been doing", "didn't been doing", "haven't doing"],
-    correct: 1,
-    explanation: '"I" usa "haven\'t been" + verbo com -ing. O correto é "haven\'t been doing".'
+    question: "We ___ cooking much lately.",
+    options: ["haven't been", "didn't been", "weren't been", "don't been"],
+    correct: 0,
+    explanation: 'Na negativa do Present Perfect Continuous com "We", usamos "haven\'t been" + verbo com -ing ("cooking").'
   },
 
-  // INTERROGATIVA DO PRESENT PERFECT CONTINUOUS — Have / Has + been + verbo com -ing (101 a 150)
+  // INTERROGATIVA DO PRESENT PERFECT CONTINUOUS — Have / Has + been + -ing (71 a 90)
   {
     rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ she been feeling better lately?",
-    options: ["Did she been feeling", "Has she been feeling", "Have she been feeling", "Does she been feeling"],
-    correct: 1,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has she been feeling".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ they been waiting long?",
-    options: ["Did they been waiting", "Has they been waiting", "Have they been waiting", "Do they been waiting"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have they been waiting".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ he been working on the project all day?",
-    options: ["Did he been working", "Have he been working", "Has he been working", "Does he been working"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been working".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ you been sleeping well lately?",
-    options: ["Did you been sleeping", "Has you been sleeping", "Have you been sleeping", "Do you been sleeping"],
-    correct: 2,
-    explanation: '"You" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have you been sleeping".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ we been spending too much money lately?",
-    options: ["Did we been spending", "Has we been spending", "Have we been spending", "Do we been spending"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have we been spending".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ she been taking her medication regularly?",
-    options: ["Did she been taking", "Have she been taking", "Has she been taking", "Does she been taking"],
-    correct: 2,
-    explanation: '"She" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has she been taking".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ they been practicing for the competition?",
-    options: ["Did they been practicing", "Has they been practicing", "Have they been practicing", "Do they been practicing"],
-    correct: 2,
-    explanation: '"They" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have they been practicing".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ he been eating properly lately?",
-    options: ["Did he been eating", "Have he been eating", "Has he been eating", "Does he been eating"],
-    correct: 2,
-    explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been eating".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ you been studying for the exam?",
+    question: "___ you been studying for long?",
     options: ["Did you been studying", "Has you been studying", "Have you been studying", "Do you been studying"],
     correct: 2,
     explanation: '"You" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have you been studying".'
-  },
-  {
-    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
-    question: "___ we been following the right strategy?",
-    options: ["Did we been following", "Has we been following", "Have we been following", "Do we been following"],
-    correct: 2,
-    explanation: '"We" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have we been following".'
   },
   {
     rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
@@ -3101,6 +3204,76 @@ const presentPerfectContinuousQuestions = [
     options: ["Did he been running", "Have he been running", "Has he been running", "Does he been running"],
     correct: 2,
     explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been running".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ you been reading that book for a long time?",
+    options: ["Did you been reading", "Has you been reading", "Have you been reading", "Do you been reading"],
+    correct: 2,
+    explanation: '"You" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have you been reading".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ we been ignoring the warning signs?",
+    options: ["Did we been ignoring", "Has we been ignoring", "Have we been ignoring", "Do we been ignoring"],
+    correct: 2,
+    explanation: '"We" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have we been ignoring".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ she been volunteering at the shelter?",
+    options: ["Did she been volunteering", "Have she been volunteering", "Has she been volunteering", "Does she been volunteering"],
+    correct: 2,
+    explanation: '"She" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has she been volunteering".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ they been dealing with that issue for a while?",
+    options: ["Did they been dealing", "Has they been dealing", "Have they been dealing", "Do they been dealing"],
+    correct: 2,
+    explanation: '"They" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have they been dealing".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ he been keeping up with his studies?",
+    options: ["Did he been keeping", "Have he been keeping", "Has he been keeping", "Does he been keeping"],
+    correct: 2,
+    explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been keeping".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ you been managing your time well lately?",
+    options: ["Did you been managing", "Has you been managing", "Have you been managing", "Do you been managing"],
+    correct: 2,
+    explanation: '"You" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have you been managing".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ we been spending enough time on quality control?",
+    options: ["Did we been spending", "Has we been spending", "Have we been spending", "Do we been spending"],
+    correct: 2,
+    explanation: '"We" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have we been spending".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ she been cooking more at home lately?",
+    options: ["Did she been cooking", "Have she been cooking", "Has she been cooking", "Does she been cooking"],
+    correct: 2,
+    explanation: '"She" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has she been cooking".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ they been taking the situation seriously?",
+    options: ["Did they been taking", "Has they been taking", "Have they been taking", "Do they been taking"],
+    correct: 2,
+    explanation: '"They" usa "Have" na interrogativa do Present Perfect Continuous. O correto é "Have they been taking".'
+  },
+  {
+    rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
+    question: "___ he been giving his best at work lately?",
+    options: ["Did he been giving", "Have he been giving", "Has he been giving", "Does he been giving"],
+    correct: 2,
+    explanation: '"He" usa "Has" na interrogativa do Present Perfect Continuous. O correto é "Has he been giving".'
   },
   {
     rule: "Na interrogativa do Present Perfect Continuous usamos 'Have' (I, you, we, they) ou 'Has' (he, she, it) + sujeito + been + verbo com -ing.",
@@ -3982,241 +4155,5 @@ const simplePresentQuestions = [
     correct: 3,
     explanation: '"They" usa "Do" na interrogativa do Simple Present. O correto é "Do they take".'
   },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ you remember his phone number?",
-    options: ["Does you remember", "Is you remember", "Do you remembers", "Do you remember"],
-    correct: 3,
-    explanation: '"You" usa "Do" na interrogativa do Simple Present. O correto é "Do you remember".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ we allow pets in this building?",
-    options: ["Does we allow", "Is we allow", "Do we allows", "Do we allow"],
-    correct: 3,
-    explanation: '"We" usa "Do" na interrogativa do Simple Present. O correto é "Do we allow".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ she drive to work every day?",
-    options: ["Do she drive", "Is she drive", "Does she drives", "Does she drive"],
-    correct: 3,
-    explanation: '"She" usa "Does" na interrogativa do Simple Present. O correto é "Does she drive".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ he believe in second chances?",
-    options: ["Do he believe", "Is he believe", "Does he believes", "Does he believe"],
-    correct: 3,
-    explanation: '"He" usa "Does" na interrogativa do Simple Present. O correto é "Does he believe".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ they offer any discounts for students?",
-    options: ["Does they offer", "Is they offer", "Do they offers", "Do they offer"],
-    correct: 3,
-    explanation: '"They" usa "Do" na interrogativa do Simple Present. O correto é "Do they offer".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ you think that's a good idea?",
-    options: ["Does you think", "Is you think", "Do you thinks", "Do you think"],
-    correct: 3,
-    explanation: '"You" usa "Do" na interrogativa do Simple Present. O correto é "Do you think".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ we charge extra for delivery?",
-    options: ["Does we charge", "Is we charge", "Do we charges", "Do we charge"],
-    correct: 3,
-    explanation: '"We" usa "Do" na interrogativa do Simple Present. O correto é "Do we charge".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ she wake up early on weekdays?",
-    options: ["Do she wake up", "Is she wake up", "Does she wakes up", "Does she wake up"],
-    correct: 3,
-    explanation: '"She" usa "Does" na interrogativa do Simple Present. O correto é "Does she wake up".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ he read the news every morning?",
-    options: ["Do he read", "Is he read", "Does he reads", "Does he read"],
-    correct: 3,
-    explanation: '"He" usa "Does" na interrogativa do Simple Present. O correto é "Does he read".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ they sell organic products here?",
-    options: ["Does they sell", "Is they sell", "Do they sells", "Do they sell"],
-    correct: 3,
-    explanation: '"They" usa "Do" na interrogativa do Simple Present. O correto é "Do they sell".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ you feel comfortable speaking in public?",
-    options: ["Does you feel", "Is you feel", "Do you feels", "Do you feel"],
-    correct: 3,
-    explanation: '"You" usa "Do" na interrogativa do Simple Present. O correto é "Do you feel".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ we start the meeting at nine?",
-    options: ["Does we start", "Is we start", "Do we starts", "Do we start"],
-    correct: 3,
-    explanation: '"We" usa "Do" na interrogativa do Simple Present. O correto é "Do we start".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ she speak more than one language?",
-    options: ["Do she speak", "Is she speak", "Does she speaks", "Does she speak"],
-    correct: 3,
-    explanation: '"She" usa "Does" na interrogativa do Simple Present. O correto é "Does she speak".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ he know how to cook?",
-    options: ["Do he know", "Is he know", "Does he knows", "Does he know"],
-    correct: 3,
-    explanation: '"He" usa "Does" na interrogativa do Simple Present. O correto é "Does he know".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ they accept credit cards here?",
-    options: ["Does they accept", "Is they accept", "Do they accepts", "Do they accept"],
-    correct: 3,
-    explanation: '"They" usa "Do" na interrogativa do Simple Present. O correto é "Do they accept".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ you watch television every night?",
-    options: ["Does you watch", "Is you watch", "Do you watches", "Do you watch"],
-    correct: 3,
-    explanation: '"You" usa "Do" na interrogativa do Simple Present. O correto é "Do you watch".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present usamos 'Do' (I, you, we, they) ou 'Does' (he, she, it) + sujeito + verbo no infinitivo.",
-    question: "___ we have a meeting tomorrow?",
-    options: ["Does we have", "Is we have", "Do we has", "Do we have"],
-    correct: 3,
-    explanation: '"We" usa "Do" na interrogativa do Simple Present. O correto é "Do we have".'
-  },
 
-  // INTERROGATIVA DO SIMPLE PRESENT COM TO BE — Is / Are / Am (131 a 150)
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ she happy with the new arrangement?",
-    options: ["Does she be happy", "Are she happy", "Is she happy", "Do she be happy"],
-    correct: 2,
-    explanation: '"She" usa "Is" na interrogativa do Simple Present do To Be. Nunca usamos "Does" com o To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ they ready for the exam?",
-    options: ["Does they be ready", "Is they ready", "Are they ready", "Do they be ready"],
-    correct: 2,
-    explanation: '"They" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ he the right person for the job?",
-    options: ["Does he be", "Are he", "Is he", "Do he be"],
-    correct: 2,
-    explanation: '"He" usa "Is" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ you sure about that?",
-    options: ["Does you be sure", "Is you sure", "Are you sure", "Do you be sure"],
-    correct: 2,
-    explanation: '"You" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ the meeting scheduled for today?",
-    options: ["Does the meeting be scheduled", "Are the meeting scheduled", "Is the meeting scheduled", "Do the meeting be scheduled"],
-    correct: 2,
-    explanation: '"The meeting" equivale a "it", então usamos "Is".'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ we on the right track?",
-    options: ["Does we be", "Is we", "Are we", "Do we be"],
-    correct: 2,
-    explanation: '"We" usa "Are" na interrogativa do Simple Present do To Be.'
-  },
-  {
-    rule: "Na interrogativa do Simple Present do verbo To Be usamos 'Is' (he, she, it), 'Are' (you, we, they) ou 'Am' (I) + sujeito.",
-    question: "___ I late for the meeting?",
-    options: ["Does I be late", "Are I late", "Is I late", "Am I late"],
-    correct: 3,
-    explanation: '"I" usa "Am" na interrogativa do Simple Present do To Be.'
-  } // Esta é a última questão completa do array simplePresentQuestions
-]; // ESTA LINHA FECHA O ARRAY simplePresentQuestions
 
-// ============================================================
-// INICIALIZAÇÃO E LISTENERS DE EVENTOS
-// ============================================================
-
-document.addEventListener('DOMContentLoaded', () => {
-  // Tenta logar automaticamente se houver um usuário salvo
-  if (currentUser) {
-    if (currentUser.role === 'teacher') {
-      showTeacherPanel();
-    } else {
-      showStudentPanel();
-    }
-  } else {
-    showScreen('login-screen');
-  }
-
-  // Listener para o botão de login
-  const loginButton = document.getElementById('login-btn');
-  if (loginButton) {
-    loginButton.addEventListener('click', handleLogin);
-  }
-
-  // Listeners para os botões de logout
-  const logoutTeacherButton = document.getElementById('logout-teacher-btn');
-  if (logoutTeacherButton) {
-    logoutTeacherButton.addEventListener('click', logout);
-  }
-
-  const logoutStudentButton = document.getElementById('logout-student-btn');
-  if (logoutStudentButton) {
-    logoutStudentButton.addEventListener('click', logout);
-  }
-
-  // Listeners para os botões de adicionar aluno
-  const addStudentButton = document.getElementById('add-student-btn');
-  if (addStudentButton) {
-    addStudentButton.addEventListener('click', addStudent);
-  }
-
-    // Listeners para os botões dos módulos
-  const btnSimplePast = document.getElementById('btn-simplePast');
-  if (btnSimplePast) {
-    btnSimplePast.addEventListener('click', () => startQuiz('simplePast'));
-  }
-
-  const btnPresentPerfect = document.getElementById('btn-presentPerfect');
-  if (btnPresentPerfect) {
-    btnPresentPerfect.addEventListener('click', () => startQuiz('presentPerfect'));
-  }
-
-  const btnPresentPerfectContinuous = document.getElementById('btn-presentPerfectContinuous');
-  if (btnPresentPerfectContinuous) {
-    btnPresentPerfectContinuous.addEventListener('click', () => startQuiz('presentPerfectContinuous'));
-  }
-
-  const btnSimplePresent = document.getElementById('btn-simplePresent');
-  if (btnSimplePresent) {
-    btnSimplePresent.addEventListener('click', () => startQuiz('simplePresent'));
-  }
-  // Aqui você precisará adicionar os listeners para os botões dos módulos
-  // e para os botões de navegação do quiz (próxima questão, tentar novamente, voltar)
-  // quando essas funcionalidades forem implementadas ou ativadas.
-  // Por exemplo:
-  // document.getElementById('btn-simplePast').addEventListener('click', () => startQuiz('simplePast'));
-  // document.getElementById('next-btn').addEventListener('click', nextQuestion);
-});
