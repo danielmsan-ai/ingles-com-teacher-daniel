@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - English Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos específicos para o dashboard do aluno */
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .dashboard-container h2 {
+            color: #4CAF50;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+        }
+        .practice-topics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Layout responsivo de botões */
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .topic-button {
+            background-color: #2196F3; /* Azul para os botões de tópico */
+            color: white;
+            padding: 25px 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none; /* Para remover sublinhado se for um link */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-height: 100px; /* Altura mínima para os botões */
+        }
+        .topic-button:hover {
+            background-color: #1976D2; /* Azul mais escuro ao passar o mouse */
+            transform: translateY(-3px); /* Efeito de "levantar" */
+        }
+        /* Cor diferente para o memorizador de verbos */
+        .topic-button.irregular-verbs {
+            background-color: #FFC107; /* Amarelo/Laranja */
+            color: #333;
+        }
+        .topic-button.irregular-verbs:hover {
+            background-color: #FFA000;
+            color: #333;
+        }
+        .logout-button {
+            display: block;
+            width: fit-content;
+            margin: 40px auto 0;
+            background-color: #f39c12; /* Laranja para logout */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .logout-button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Área do Aluno</h1>
+    </header>
+    <main>
+        <div class="dashboard-container">
+            <h2>Olá, Aluno! Escolha um tópico para praticar:</h2>
+
+            <div class="practice-topics">
+                <a href="#" class="topic-button">Simple Present</a>
+                <a href="#" class="topic-button">Present Continuous</a>
+                <a href="#" class="topic-button">Past Continuous</a>
+                <a href="#" class="topic-button">Simple Past (to be, regulares, irregulares)</a>
+                <a href="#" class="topic-button">Present Perfect</a>
+                <a href="#" class="topic-button">Present Perfect Continuous</a>
+                <a href="#" class="topic-button">Many e Much</a>
+                <a href="#" class="topic-button">Few e Little</a>
+                <a href="#" class="topic-button">Another e Other</a>
+                <a href="#" class="topic-button">Preposição + ING</a>
+                <a href="#" class="topic-button irregular-verbs">Memorizador de Verbos Irregulares</a>
+            </div>
+
+            <button class="logout-button" onclick="location.href='index.html'">Sair</button>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 English Practice. Todos os direitos reservados.</p>
+    </footer>
+    <script src="student-dashboard.js"></script> <!-- Criaremos este script depois -->
+</body>
+</html>
