@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS (50 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
     exercises = [
+        // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         { id: 1, type: 'mc', question: "I ___ (write) a letter right now.", options: ["write", "am writing", "is writing"], correctAnswer: "am writing", hint: "Use o verbo 'to be' (am) + verbo com '-ing'." },
         { id: 2, type: 'mc', question: "She ___ (read) a book at the moment.", options: ["reads", "is reading", "are reading"], correctAnswer: "is reading", hint: "'She' usa 'is' + verbo com '-ing'." },
         { id: 3, type: 'mc', question: "They ___ (play) football now.", options: ["play", "is playing", "are playing"], correctAnswer: "are playing", hint: "'They' usa 'are' + verbo com '-ing'." },
@@ -67,7 +68,59 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 47, type: 'rewrite', question: "Rewrite the sentence using the Present Continuous: I (learn) French this semester.", correctAnswer: "I am learning French this semester.", hint: "Com 'I', use 'am' + verbo com '-ing'." },
         { id: 48, type: 'rewrite', question: "Rewrite the sentence using the Present Continuous: She (wear) a blue jacket today.", correctAnswer: "She is wearing a blue jacket today.", hint: "Não esqueça o 'to be' (is)." },
         { id: 49, type: 'rewrite', question: "Rewrite using Present Continuous: He usually studies in the morning, but today he (study) in the afternoon.", correctAnswer: "He usually studies in the morning, but today he is studying in the afternoon.", hint: "'Today' indica uma exceção temporária à rotina, use Present Continuous." },
-        { id: 50, type: 'rewrite', question: "Rewrite using Present Continuous: I usually drink coffee, but right now I (drink) tea.", correctAnswer: "I usually drink coffee, but right now I am drinking tea.", hint: "'Right now' indica uma ação acontecendo neste momento, use Present Continuous." }
+        { id: 50, type: 'rewrite', question: "Rewrite using Present Continuous: I usually drink coffee, but right now I (drink) tea.", correctAnswer: "I usually drink coffee, but right now I am drinking tea.", hint: "'Right now' indica uma ação acontecendo neste momento, use Present Continuous." },
+
+        // --- EXERCÍCIOS NEGATIVOS (50) ---
+        { id: 51, type: 'mc', question: "I ___ (not/watch) TV right now.", options: ["am not watching", "not am watching", "don't watching"], correctAnswer: "am not watching", hint: "A ordem correta é: 'am' + 'not' + verbo com '-ing'." },
+        { id: 52, type: 'mc', question: "She ___ (not/sleep) at the moment.", options: ["not is sleeping", "is not sleeping", "doesn't sleeping"], correctAnswer: "is not sleeping", hint: "A ordem correta é: 'is' + 'not' + verbo com '-ing'." },
+        { id: 53, type: 'mc', question: "They ___ (not/study) right now.", options: ["not are studying", "are not studying", "don't studying"], correctAnswer: "are not studying", hint: "A ordem correta é: 'are' + 'not' + verbo com '-ing'." },
+        { id: 54, type: 'mc', question: "We ___ (not/play) football today.", options: ["are not playing", "not are playing", "aren't play"], correctAnswer: "are not playing", hint: "Não esqueça o verbo com '-ing' após 'not'." },
+        { id: 55, type: 'mc', question: "He ___ (not/run) in the park now.", options: ["is not running", "not is running", "doesn't running"], correctAnswer: "is not running", hint: "'He' usa 'is not' + verbo com '-ing'." },
+        { id: 56, type: 'mc', question: "I ___ (not/swim) at the moment.", options: ["am not swimming", "not am swimming", "isn't swimming"], correctAnswer: "am not swimming", hint: "Com 'I', use 'am not' + verbo com '-ing'." },
+        { id: 57, type: 'mc', question: "You ___ (not/listen) to me right now.", options: ["are not listening", "not are listening", "isn't listening"], correctAnswer: "are not listening", hint: "'You' usa 'are not' + verbo com '-ing'." },
+        { id: 58, type: 'mc', question: "She ___ (not/cook) dinner tonight.", options: ["is not cooking", "not is cooking", "don't cooking"], correctAnswer: "is not cooking", hint: "'She' usa 'is not' + verbo com '-ing'." },
+        { id: 59, type: 'mc', question: "They ___ (not/come) to the party tonight.", options: ["are not coming", "not are coming", "doesn't coming"], correctAnswer: "are not coming", hint: "'They' usa 'are not' + verbo com '-ing'." },
+        { id: 60, type: 'mc', question: "It ___ (not/rain) right now.", options: ["is not raining", "not is raining", "don't raining"], correctAnswer: "is not raining", hint: "'It' usa 'is not' + verbo com '-ing'." },
+        { id: 61, type: 'mc', question: "We ___ (not/eat) at the moment.", options: ["are not eating", "not are eating", "isn't eating"], correctAnswer: "are not eating", hint: "'We' usa 'are not' + verbo com '-ing'." },
+        { id: 62, type: 'mc', question: "The children ___ (not/play) outside now.", options: ["are not playing", "is not playing", "not are playing"], correctAnswer: "are not playing", hint: "'The children' é plural, use 'are not'." },
+        { id: 63, type: 'mc', question: "My brother ___ (not/work) today.", options: ["is not working", "not is working", "doesn't working"], correctAnswer: "is not working", hint: "'My brother' é 3ª pessoa do singular, use 'is not'." },
+        { id: 64, type: 'mc', question: "I ___ (not/drive) right now.", options: ["am not driving", "not am driving", "isn't driving"], correctAnswer: "am not driving", hint: "Com 'I', use 'am not' + verbo com '-ing'." },
+        { id: 65, type: 'mc', question: "He ___ (not/write) an email at the moment.", options: ["is not writing", "not is writing", "don't writing"], correctAnswer: "is not writing", hint: "'He' usa 'is not' + verbo com '-ing'." },
+        { id: 66, type: 'mc', question: "They ___ (not/build) anything this year.", options: ["are not building", "not are building", "isn't building"], correctAnswer: "are not building", hint: "'They' usa 'are not' + verbo com '-ing'." },
+        { id: 67, type: 'mc', question: "She ___ (not/wear) a jacket today.", options: ["is not wearing", "not is wearing", "don't wearing"], correctAnswer: "is not wearing", hint: "'She' usa 'is not' + verbo com '-ing'." },
+        { id: 68, type: 'mc', question: "We ___ (not/watch) TV right now.", options: ["are not watching", "not are watching", "isn't watching"], correctAnswer: "are not watching", hint: "'We' usa 'are not' + verbo com '-ing'." },
+        { id: 69, type: 'mc', question: "You ___ (not/make) sense right now.", options: ["are not making", "not are making", "isn't making"], correctAnswer: "are not making", hint: "'You' usa 'are not' + verbo com '-ing'." },
+        { id: 70, type: 'mc', question: "He usually plays soccer, but today he ___ (not/play).", options: ["is not playing", "not is playing", "doesn't playing"], correctAnswer: "is not playing", hint: "'Today' indica exceção temporária, use 'is not' + '-ing'." },
+        { id: 71, type: 'mc', question: "I ___ (not/study) at the moment.", options: ["am not studying", "not am studying", "isn't studying"], correctAnswer: "am not studying", hint: "Com 'I', use 'am not' + verbo com '-ing'." },
+        { id: 72, type: 'mc', question: "The dog ___ (not/run) in the yard now.", options: ["is not running", "not is running", "don't running"], correctAnswer: "is not running", hint: "'The dog' é 3ª pessoa do singular, use 'is not'." },
+        { id: 73, type: 'mc', question: "We ___ (not/shop) right now.", options: ["are not shopping", "not are shopping", "isn't shopping"], correctAnswer: "are not shopping", hint: "'We' usa 'are not' + verbo com '-ing'." },
+        { id: 74, type: 'mc', question: "She ___ (not/sit) on the sofa now.", options: ["is not sitting", "not is sitting", "don't sitting"], correctAnswer: "is not sitting", hint: "'She' usa 'is not' + verbo com '-ing'." },
+        { id: 75, type: 'mc', question: "They ___ (not/lie) on the beach today.", options: ["are not lying", "not are lying", "isn't lying"], correctAnswer: "are not lying", hint: "'They' usa 'are not' + verbo com '-ing'." },
+        { id: 76, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am reading a book now.", correctAnswer: "I am not reading a book now.", hint: "Adicione 'not' logo após 'am'." },
+        { id: 77, type: 'rewrite', question: "Rewrite the sentence in the negative form: She is cooking dinner at the moment.", correctAnswer: "She is not cooking dinner at the moment.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 78, type: 'rewrite', question: "Rewrite the sentence in the negative form: They are walking to school right now.", correctAnswer: "They are not walking to school right now.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 79, type: 'rewrite', question: "Rewrite the sentence in the negative form: He is writing a letter today.", correctAnswer: "He is not writing a letter today.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 80, type: 'rewrite', question: "Rewrite the sentence in the negative form: We are studying for the exam this week.", correctAnswer: "We are not studying for the exam this week.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 81, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am sitting in the classroom now.", correctAnswer: "I am not sitting in the classroom now.", hint: "Adicione 'not' logo após 'am'." },
+        { id: 82, type: 'rewrite', question: "Rewrite the sentence in the negative form: You are making a mistake right now.", correctAnswer: "You are not making a mistake right now.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 83, type: 'rewrite', question: "Rewrite the sentence in the negative form: The dog is running in the yard at the moment.", correctAnswer: "The dog is not running in the yard at the moment.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 84, type: 'rewrite', question: "Rewrite the sentence in the negative form: She is swimming in the lake today.", correctAnswer: "She is not swimming in the lake today.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 85, type: 'rewrite', question: "Rewrite the sentence in the negative form: They are coming to visit us this week.", correctAnswer: "They are not coming to visit us this week.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 86, type: 'rewrite', question: "Rewrite the sentence in the negative form: He is lying on the grass right now.", correctAnswer: "He is not lying on the grass right now.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 87, type: 'rewrite', question: "Rewrite the sentence in the negative form: We are shopping for groceries at the moment.", correctAnswer: "We are not shopping for groceries at the moment.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 88, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am beginning a new job this month.", correctAnswer: "I am not beginning a new job this month.", hint: "Adicione 'not' logo após 'am'." },
+        { id: 89, type: 'rewrite', question: "Rewrite the sentence in the negative form: She is studying for her test tonight.", correctAnswer: "She is not studying for her test tonight.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 90, type: 'rewrite', question: "Rewrite the sentence in the negative form: It is raining outside right now.", correctAnswer: "It is not raining outside right now.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 91, type: 'rewrite', question: "Rewrite the sentence in the negative form: The children are playing in the park now.", correctAnswer: "The children are not playing in the park now.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 92, type: 'rewrite', question: "Rewrite the sentence in the negative form: My sister is working on a project this week.", correctAnswer: "My sister is not working on a project this week.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 93, type: 'rewrite', question: "Rewrite the sentence in the negative form: We are eating breakfast at the moment.", correctAnswer: "We are not eating breakfast at the moment.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 94, type: 'rewrite', question: "Rewrite the sentence in the negative form: You are driving very fast right now.", correctAnswer: "You are not driving very fast right now.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 95, type: 'rewrite', question: "Rewrite the sentence in the negative form: He is writing a report today.", correctAnswer: "He is not writing a report today.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 96, type: 'rewrite', question: "Rewrite the sentence in the negative form: They are building a new bridge this year.", correctAnswer: "They are not building a new bridge this year.", hint: "Adicione 'not' logo após 'are'." },
+        { id: 97, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am learning French this semester.", correctAnswer: "I am not learning French this semester.", hint: "Adicione 'not' logo após 'am'." },
+        { id: 98, type: 'rewrite', question: "Rewrite the sentence in the negative form: She is wearing a blue jacket today.", correctAnswer: "She is not wearing a blue jacket today.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 99, type: 'rewrite', question: "Rewrite the sentence in the negative form: He is studying in the afternoon today.", correctAnswer: "He is not studying in the afternoon today.", hint: "Adicione 'not' logo após 'is'." },
+        { id: 100, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am drinking tea right now.", correctAnswer: "I am not drinking tea right now.", hint: "Adicione 'not' logo após 'am'." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
