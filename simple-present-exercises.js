@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (150 exemplos) ---
     exercises = [
         // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         {
@@ -769,6 +769,386 @@ document.addEventListener('DOMContentLoaded', () => {
             question: "Rewrite the sentence in the negative form: The store opens early.",
             correctAnswer: "The store doesn't open early.",
             hint: "Use 'doesn't' para 'the store' e o verbo na forma base."
+        },
+
+        // --- EXERCÍCIOS INTERROGATIVOS (50) ---
+        // Múltipla Escolha (25 exercícios)
+        {
+            id: 101,
+            type: 'mc',
+            question: "___ she like coffee?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Use 'Does' para a 3ª pessoa do singular nas perguntas."
+        },
+        {
+            id: 102,
+            type: 'mc',
+            question: "___ they play soccer on weekdays?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'they' nas perguntas."
+        },
+        {
+            id: 103,
+            type: 'mc',
+            question: "___ he work on Sundays?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 104,
+            type: 'mc',
+            question: "___ we speak French?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'we' nas perguntas."
+        },
+        {
+            id: 105,
+            type: 'mc',
+            question: "___ the cat eat vegetables?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'The cat' é 3ª pessoa do singular."
+        },
+        {
+            id: 106,
+            type: 'mc',
+            question: "___ you understand this lesson?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'you' nas perguntas."
+        },
+        {
+            id: 107,
+            type: 'mc',
+            question: "___ your brother live here?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'Your brother' é 3ª pessoa do singular."
+        },
+        {
+            id: 108,
+            type: 'mc',
+            question: "___ birds fly at night?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "'Birds' é plural."
+        },
+        {
+            id: 109,
+            type: 'mc',
+            question: "___ she like spicy food?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 110,
+            type: 'mc',
+            question: "___ it rain much in the desert?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'It' é 3ª pessoa do singular."
+        },
+        {
+            id: 111,
+            type: 'mc',
+            question: "___ your parents watch TV very often?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "'Your parents' é plural."
+        },
+        {
+            id: 112,
+            type: 'mc',
+            question: "___ the students finish their homework?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "'The students' é plural."
+        },
+        {
+            id: 113,
+            type: 'mc',
+            question: "___ she go to parties?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 114,
+            type: 'mc',
+            question: "___ we have much time?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'we' nas perguntas."
+        },
+        {
+            id: 115,
+            type: 'mc',
+            question: "___ he read newspapers?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 116,
+            type: 'mc',
+            question: "___ they want to leave?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'they' nas perguntas."
+        },
+        {
+            id: 117,
+            type: 'mc',
+            question: "___ the baby cry a lot?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'The baby' é 3ª pessoa do singular."
+        },
+        {
+            id: 118,
+            type: 'mc',
+            question: "___ you believe in ghosts?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'you' nas perguntas."
+        },
+        {
+            id: 119,
+            type: 'mc',
+            question: "___ she teach history?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 120,
+            type: 'mc',
+            question: "___ we travel during winter?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'we' nas perguntas."
+        },
+        {
+            id: 121,
+            type: 'mc',
+            question: "___ he like to wake up early?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "Lembre-se do 'Does' para a 3ª pessoa do singular."
+        },
+        {
+            id: 122,
+            type: 'mc',
+            question: "___ they know the answer?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'they' nas perguntas."
+        },
+        {
+            id: 123,
+            type: 'mc',
+            question: "___ the car start in the cold?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'The car' é 3ª pessoa do singular."
+        },
+        {
+            id: 124,
+            type: 'mc',
+            question: "___ you smoke?",
+            options: ["Does", "Do", "Is"],
+            correctAnswer: "Do",
+            hint: "Use 'Do' para 'you' nas perguntas."
+        },
+        {
+            id: 125,
+            type: 'mc',
+            question: "___ your friend speak German?",
+            options: ["Do", "Does", "Is"],
+            correctAnswer: "Does",
+            hint: "'Your friend' é 3ª pessoa do singular."
+        },
+
+        // Reescrever Frases (25 exercícios)
+        {
+            id: 126,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: I like pizza.",
+            correctAnswer: "Do I like pizza?",
+            hint: "Use 'Do' para 'I'."
+        },
+        {
+            id: 127,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: She works on Saturdays.",
+            correctAnswer: "Does she work on Saturdays?",
+            hint: "Use 'Does' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 128,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: They live in a big house.",
+            correctAnswer: "Do they live in a big house?",
+            hint: "Use 'Do' para 'they'."
+        },
+        {
+            id: 129,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: He watches TV every night.",
+            correctAnswer: "Does he watch TV every night?",
+            hint: "Use 'Does' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 130,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: We study English.",
+            correctAnswer: "Do we study English?",
+            hint: "Use 'Do' para 'we'."
+        },
+        {
+            id: 131,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: The dog barks a lot.",
+            correctAnswer: "Does the dog bark a lot?",
+            hint: "Use 'Does' para 'the dog' e o verbo na forma base."
+        },
+        {
+            id: 132,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: You listen to rock music.",
+            correctAnswer: "Do you listen to rock music?",
+            hint: "Use 'Do' para 'you'."
+        },
+        {
+            id: 133,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: My brother plays video games.",
+            correctAnswer: "Does my brother play video games?",
+            hint: "Use 'Does' para 'my brother' e o verbo na forma base."
+        },
+        {
+            id: 134,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: They have a car.",
+            correctAnswer: "Do they have a car?",
+            hint: "Use 'Do' para 'they'."
+        },
+        {
+            id: 135,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: She studies French.",
+            correctAnswer: "Does she study French?",
+            hint: "Use 'Does' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 136,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: He teaches math.",
+            correctAnswer: "Does he teach math?",
+            hint: "Use 'Does' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 137,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: I believe in magic.",
+            correctAnswer: "Do I believe in magic?",
+            hint: "Use 'Do' para 'I'."
+        },
+        {
+            id: 138,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: The children play outside.",
+            correctAnswer: "Do the children play outside?",
+            hint: "Use 'Do' para 'the children'."
+        },
+        {
+            id: 139,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: My father drives fast.",
+            correctAnswer: "Does my father drive fast?",
+            hint: "Use 'Does' para 'my father' e o verbo na forma base."
+        },
+        {
+            id: 140,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: We live near the beach.",
+            correctAnswer: "Do we live near the beach?",
+            hint: "Use 'Do' para 'we'."
+        },
+        {
+            id: 141,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: She reads many books.",
+            correctAnswer: "Does she read many books?",
+            hint: "Use 'Does' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 142,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: He fixes computers.",
+            correctAnswer: "Does he fix computers?",
+            hint: "Use 'Does' para 'he' e o verbo na forma base."
+        },
+        {
+            id: 143,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: They visit us often.",
+            correctAnswer: "Do they visit us often?",
+            hint: "Use 'Do' para 'they'."
+        },
+        {
+            id: 144,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: The cat sleeps on the bed.",
+            correctAnswer: "Does the cat sleep on the bed?",
+            hint: "Use 'Does' para 'the cat' e o verbo na forma base."
+        },
+        {
+            id: 145,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: I drink soda.",
+            correctAnswer: "Do I drink soda?",
+            hint: "Use 'Do' para 'I'."
+        },
+        {
+            id: 146,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: She washes her car.",
+            correctAnswer: "Does she wash her car?",
+            hint: "Use 'Does' para 'she' e o verbo na forma base."
+        },
+        {
+            id: 147,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: We love chocolate.",
+            correctAnswer: "Do we love chocolate?",
+            hint: "Use 'Do' para 'we'."
+        },
+        {
+            id: 148,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: He does his homework.",
+            correctAnswer: "Does he do his homework?",
+            hint: "Use 'Does' para 'he' e o verbo 'do' na forma base."
+        },
+        {
+            id: 149,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: They study every night.",
+            correctAnswer: "Do they study every night?",
+            hint: "Use 'Do' para 'they'."
+        },
+        {
+            id: 150,
+            type: 'rewrite',
+            question: "Rewrite the sentence in the interrogative form: The store opens early.",
+            correctAnswer: "Does the store open early?",
+            hint: "Use 'Does' para 'the store' e o verbo na forma base."
         }
     ];
 
