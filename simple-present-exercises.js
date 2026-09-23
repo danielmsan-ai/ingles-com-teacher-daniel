@@ -13,34 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const nextButton = document.getElementById('next-exercise');
 
     let currentExerciseIndex = 0;
-    let exercises = []; // Será preenchido com os exercícios afirmativos
-
-    // --- EXERCÍCIOS AFIRMATIVOS (50 exemplos) ---
-    // Tipo 'mc' para Múltipla Escolha, 'rewrite' para Reescrever
-    // Para 'mc', 'correctAnswer' é o texto da opção correta.
-    // Para 'rewrite', 'correctAnswer' é a frase completa esperada.
-    exercises = [
-       document.addEventListener('DOMContentLoaded', () => {
-    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-
-    // Redireciona se não houver usuário logado ou se não for um aluno
-    if (!loggedInUser || loggedInUser.type !== 'student') {
-        alert('Acesso não autorizado. Por favor, faça login como aluno.');
-        window.location.href = 'index.html';
-        return;
-    }
-
-    const exerciseArea = document.getElementById('exercise-area');
-    const prevButton = document.getElementById('prev-exercise');
-    const nextButton = document.getElementById('next-exercise');
-
-    let currentExerciseIndex = 0;
-    let exercises = []; // Será preenchido com os exercícios afirmativos e negativos
+    let exercises = [];
 
     // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
-    // Tipo 'mc' para Múltipla Escolha, 'rewrite' para Reescrever
-    // Para 'mc', 'correctAnswer' é o texto da opção correta.
-    // Para 'rewrite', 'correctAnswer' é a frase completa esperada.
     exercises = [
         // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         {
@@ -243,8 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
             correctAnswer: "learn",
             hint: "'Students' é plural."
         },
-
-        // Reescrever Frases (25 exercícios)
         {
             id: 26,
             type: 'rewrite',
@@ -422,7 +395,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         // --- EXERCÍCIOS NEGATIVOS (50) ---
-        // Múltipla Escolha (25 exercícios)
         {
             id: 51,
             type: 'mc',
@@ -623,8 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
             correctAnswer: "doesn't speak",
             hint: "'My friend' é 3ª pessoa do singular."
         },
-
-        // Reescrever Frases (25 exercícios)
         {
             id: 76,
             type: 'rewrite',
@@ -806,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderExercise() {
         const exercise = exercises[currentExerciseIndex];
-        exerciseArea.innerHTML = ''; // Limpa a área do exercício
+        exerciseArea.innerHTML = '';
 
         const questionElement = document.createElement('p');
         questionElement.classList.add('exercise-question');
@@ -817,7 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const optionsContainer = document.createElement('div');
             optionsContainer.classList.add('options-container');
 
-            // Embaralha as opções para variar a posição da resposta correta
             const shuffledOptions = [...exercise.options].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach(option => {
@@ -849,7 +818,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const feedbackMessage = document.createElement('p');
         feedbackMessage.classList.add('feedback-message');
 
-        // Normaliza as respostas para comparação (remove espaços extras, ignora maiúsculas/minúsculas)
         const normalizedUserAnswer = userAnswer.trim().toLowerCase();
         const normalizedCorrectAnswer = correctAnswer.trim().toLowerCase();
 
@@ -864,7 +832,6 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackMessage.classList.add('incorrect');
             if (element.classList.contains('option-button')) {
                 element.classList.add('incorrect');
-                // Opcional: destacar a resposta correta
                 const options = exerciseArea.querySelectorAll('.option-button');
                 options.forEach(opt => {
                     if (opt.textContent.trim().toLowerCase() === normalizedCorrectAnswer) {
@@ -875,7 +842,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         exerciseArea.appendChild(feedbackMessage);
 
-        // Desabilita os botões/input após a resposta para evitar múltiplas tentativas
         const currentExercise = exercises[currentExerciseIndex];
         if (currentExercise.type === 'mc') {
             exerciseArea.querySelectorAll('.option-button').forEach(btn => btn.disabled = true);
@@ -904,6 +870,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Carrega o primeiro exercício ao iniciar
     renderExercise();
 });
