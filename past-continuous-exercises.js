@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (150 exemplos) ---
     exercises = [
         // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         { id: 1, type: 'mc', question: "I ___ (watch) TV when the phone rang.", options: ["watched", "was watching", "were watching"], correctAnswer: "was watching", hint: "Use 'was' + verbo com '-ing' com 'I'." },
@@ -120,7 +120,59 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 97, type: 'rewrite', question: "Rewrite the sentence in the negative form: While she was cooking dinner, he was setting the table.", correctAnswer: "While she wasn't cooking dinner, he wasn't setting the table.", hint: "Use 'wasn't' nas duas partes da frase." },
         { id: 98, type: 'rewrite', question: "Rewrite the sentence in the negative form: While they were studying, it started to rain.", correctAnswer: "While they weren't studying, it started to rain.", hint: "Use 'weren't' no lugar de 'were'." },
         { id: 99, type: 'rewrite', question: "Rewrite the sentence in the negative form: While we were walking home, we saw an accident.", correctAnswer: "While we weren't walking home, we saw an accident.", hint: "Use 'weren't' no lugar de 'were'." },
-        { id: 100, type: 'rewrite', question: "Rewrite the sentence in the negative form: I was working at 8 PM yesterday.", correctAnswer: "I wasn't working at 8 PM yesterday.", hint: "Use 'wasn't' no lugar de 'was'." }
+        { id: 100, type: 'rewrite', question: "Rewrite the sentence in the negative form: I was working at 8 PM yesterday.", correctAnswer: "I wasn't working at 8 PM yesterday.", hint: "Use 'wasn't' no lugar de 'was'." },
+
+        // --- EXERCÍCIOS INTERROGATIVOS (50) ---
+        { id: 101, type: 'mc', question: "___ you watching TV when he arrived?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'you' nas perguntas." },
+        { id: 102, type: 'mc', question: "___ she sleeping when you called?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'she' nas perguntas." },
+        { id: 103, type: 'mc', question: "___ they studying at that time?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'they' nas perguntas." },
+        { id: 104, type: 'mc', question: "___ we playing football when it started to rain?", options: ["Were", "Did", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'we' nas perguntas." },
+        { id: 105, type: 'mc', question: "___ he running in the park when you saw him?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'he' nas perguntas." },
+        { id: 106, type: 'mc', question: "___ I sleeping when you arrived?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "Com 'I', use 'Was' nas perguntas." },
+        { id: 107, type: 'mc', question: "___ you listening when I was talking?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'you' nas perguntas." },
+        { id: 108, type: 'mc', question: "___ she cooking dinner when the phone rang?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'she' nas perguntas." },
+        { id: 109, type: 'mc', question: "___ they coming to the party at 9 PM?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'they' nas perguntas." },
+        { id: 110, type: 'mc', question: "___ it raining when you left?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'it' nas perguntas." },
+        { id: 111, type: 'mc', question: "___ we eating when you arrived?", options: ["Were", "Did", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'we' nas perguntas." },
+        { id: 112, type: 'mc', question: "___ the children playing outside when it got dark?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'The children' é plural, use 'Were'." },
+        { id: 113, type: 'mc', question: "___ your brother working at midnight?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "'Your brother' é 3ª pessoa do singular, use 'Was'." },
+        { id: 114, type: 'mc', question: "___ I driving too fast?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "Com 'I', use 'Was' nas perguntas." },
+        { id: 115, type: 'mc', question: "___ he writing an email when his computer crashed?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'he' nas perguntas." },
+        { id: 116, type: 'mc', question: "___ they building anything last year at this time?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'they' nas perguntas." },
+        { id: 117, type: 'mc', question: "___ she wearing a jacket when you saw her?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'she' nas perguntas." },
+        { id: 118, type: 'mc', question: "___ we watching TV when the power went out?", options: ["Were", "Did", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'we' nas perguntas." },
+        { id: 119, type: 'mc', question: "___ you making a mistake when I checked your work?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'you' nas perguntas." },
+        { id: 120, type: 'mc', question: "He usually studies at night. ___ he studying last night?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'he' nas perguntas." },
+        { id: 121, type: 'mc', question: "___ I sitting near you during the meeting?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "Com 'I', use 'Was' nas perguntas." },
+        { id: 122, type: 'mc', question: "___ the dog running in the yard when it started to rain?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "'The dog' é 3ª pessoa do singular, use 'Was'." },
+        { id: 123, type: 'mc', question: "___ we shopping when we met Sarah?", options: ["Were", "Did", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'we' nas perguntas." },
+        { id: 124, type: 'mc', question: "___ she sitting on the sofa when you called her?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "Use 'Was' para 'she' nas perguntas." },
+        { id: 125, type: 'mc', question: "___ they lying on the beach when it began to rain?", options: ["Did", "Were", "Was"], correctAnswer: "Were", hint: "Use 'Were' para 'they' nas perguntas." },
+        { id: 126, type: 'mc', question: "What ___ you doing at 10 PM last night?", options: ["did", "was", "were"], correctAnswer: "were", hint: "Perguntas com 'What' seguem a mesma regra: 'were' para 'you'." },
+        { id: 127, type: 'mc', question: "Where ___ she going when you saw her?", options: ["did", "was", "were"], correctAnswer: "was", hint: "'She' usa 'was' nas perguntas." },
+        { id: 128, type: 'mc', question: "Why ___ they running when the police arrived?", options: ["did", "was", "were"], correctAnswer: "were", hint: "'They' usa 'were' nas perguntas." },
+        { id: 129, type: 'mc', question: "What ___ happening when you walked in?", options: ["did", "was", "were"], correctAnswer: "was", hint: "'What' (singular, referindo-se a uma situação) usa 'was'." },
+        { id: 130, type: 'mc', question: "___ it snowing when you left home this morning?", options: ["Did", "Was", "Were"], correctAnswer: "Was", hint: "'It' usa 'Was' nas perguntas." },
+        { id: 131, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: I was watching TV when the phone rang.", correctAnswer: "Was I watching TV when the phone rang?", hint: "Coloque 'Was' antes de 'I'." },
+        { id: 132, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: She was cooking dinner when the fire alarm went off.", correctAnswer: "Was she cooking dinner when the fire alarm went off?", hint: "Coloque 'Was' antes de 'she'." },
+        { id: 133, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They were walking to school when it started to rain.", correctAnswer: "Were they walking to school when it started to rain?", hint: "Coloque 'Were' antes de 'they'." },
+        { id: 134, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He was writing a letter when the lights went out.", correctAnswer: "Was he writing a letter when the lights went out?", hint: "Coloque 'Was' antes de 'he'." },
+        { id: 135, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: We were studying for the exam when the teacher arrived.", correctAnswer: "Were we studying for the exam when the teacher arrived?", hint: "Coloque 'Were' antes de 'we'." },
+        { id: 136, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: You were making a mistake when I saw you.", correctAnswer: "Were you making a mistake when I saw you?", hint: "Coloque 'Were' antes de 'you'." },
+        { id: 137, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: The dog was running in the yard when it saw a cat.", correctAnswer: "Was the dog running in the yard when it saw a cat?", hint: "Coloque 'Was' antes de 'the dog'." },
+        { id: 138, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: She was swimming in the lake when it began to storm.", correctAnswer: "Was she swimming in the lake when it began to storm?", hint: "Coloque 'Was' antes de 'she'." },
+        { id: 139, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They were coming to visit us when the accident happened.", correctAnswer: "Were they coming to visit us when the accident happened?", hint: "Coloque 'Were' antes de 'they'." },
+        { id: 140, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He was lying on the grass when it started to rain.", correctAnswer: "Was he lying on the grass when it started to rain?", hint: "Coloque 'Was' antes de 'he'." },
+        { id: 141, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: We were shopping for groceries when we met an old friend.", correctAnswer: "Were we shopping for groceries when we met an old friend?", hint: "Coloque 'Were' antes de 'we'." },
+        { id: 142, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: It was raining outside when we left the house.", correctAnswer: "Was it raining outside when we left the house?", hint: "Coloque 'Was' antes de 'it'." },
+        { id: 143, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: The children were playing in the park when it got dark.", correctAnswer: "Were the children playing in the park when it got dark?", hint: "Coloque 'Were' antes de 'the children'." },
+        { id: 144, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: My sister was working on a project when the computer crashed.", correctAnswer: "Was my sister working on a project when the computer crashed?", hint: "Coloque 'Was' antes de 'my sister'." },
+        { id: 145, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: You were driving very fast when the police stopped you.", correctAnswer: "Were you driving very fast when the police stopped you?", hint: "Coloque 'Were' antes de 'you'." },
+        { id: 146, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He was writing a report when his boss called.", correctAnswer: "Was he writing a report when his boss called?", hint: "Coloque 'Was' antes de 'he'." },
+        { id: 147, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They were building a new bridge when the funding ran out.", correctAnswer: "Were they building a new bridge when the funding ran out?", hint: "Coloque 'Were' antes de 'they'." },
+        { id: 148, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: While she was cooking dinner, he was setting the table.", correctAnswer: "While she was cooking dinner, was he setting the table?", hint: "Apenas a segunda parte da frase vira pergunta." },
+        { id: 149, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: While they were studying, it started to rain.", correctAnswer: "While they were studying, did it start to rain?", hint: "A ação curta ('started') está no Simple Past, então a pergunta usa 'did'." },
+        { id: 150, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: While we were walking home, we saw an accident.", correctAnswer: "While we were walking home, did we see an accident?", hint: "A ação curta ('saw') está no Simple Past, então a pergunta usa 'did'." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
