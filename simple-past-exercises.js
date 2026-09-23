@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (120 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (180 exemplos) ---
     exercises = [
         // --- AFIRMATIVOS: TO BE (10 mc) ---
         { id: 1, type: 'mc', question: "I ___ (be) tired yesterday.", options: ["am", "was", "were"], correctAnswer: "was", hint: "'I' usa 'was' no passado do verbo 'to be'." },
@@ -160,7 +160,79 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 117, type: 'rewrite', question: "Rewrite in the negative form: She wrote a letter.", correctAnswer: "She didn't write a letter.", hint: "Use 'didn't' + a forma base 'write', não 'wrote'." },
         { id: 118, type: 'rewrite', question: "Rewrite in the negative form: They came to the party.", correctAnswer: "They didn't come to the party.", hint: "Use 'didn't' + a forma base 'come', não 'came'." },
         { id: 119, type: 'rewrite', question: "Rewrite in the negative form: We took the bus.", correctAnswer: "We didn't take the bus.", hint: "Use 'didn't' + a forma base 'take', não 'took'." },
-        { id: 120, type: 'rewrite', question: "Rewrite in the negative form: He gave me a gift.", correctAnswer: "He didn't give me a gift.", hint: "Use 'didn't' + a forma base 'give', não 'gave'." }
+        { id: 120, type: 'rewrite', question: "Rewrite in the negative form: He gave me a gift.", correctAnswer: "He didn't give me a gift.", hint: "Use 'didn't' + a forma base 'give', não 'gave'." },
+
+        // --- INTERROGATIVOS: TO BE (10 mc) ---
+        { id: 121, type: 'mc', question: "___ you tired yesterday?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'You' usa 'Were' nas perguntas com 'to be'." },
+        { id: 122, type: 'mc', question: "___ she at home last night?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "'She' usa 'Was' nas perguntas com 'to be'." },
+        { id: 123, type: 'mc', question: "___ they at the party?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'They' usa 'Were' nas perguntas com 'to be'." },
+        { id: 124, type: 'mc', question: "___ we students in 2015?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'We' usa 'Were' nas perguntas com 'to be'." },
+        { id: 125, type: 'mc', question: "___ he sick last week?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "'He' usa 'Was' nas perguntas com 'to be'." },
+        { id: 126, type: 'mc', question: "___ I late for the meeting?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "Com 'I', use 'Was' nas perguntas com 'to be'." },
+        { id: 127, type: 'mc', question: "___ it cold yesterday?", options: ["Was", "Were", "Did"], correctAnswer: "Was", hint: "'It' usa 'Was' nas perguntas com 'to be'." },
+        { id: 128, type: 'mc', question: "___ the children happy at the park?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'The children' é plural, use 'Were'." },
+        { id: 129, type: 'mc', question: "___ your parents on vacation?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'Your parents' é plural, use 'Were'." },
+        { id: 130, type: 'mc', question: "___ you in London two years ago?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'You' usa 'Were' nas perguntas com 'to be'." },
+
+        // --- INTERROGATIVOS: VERBOS REGULARES (10 mc, com distratores DID+passado e WAS/WERE) ---
+        { id: 131, type: 'mc', question: "___ you walk to school yesterday?", options: ["Did", "Did you walked", "Were"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base ('walk'), sem '-ed'." },
+        { id: 132, type: 'mc', question: "___ she study for the test?", options: ["Did", "Was", "Did she studied"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 133, type: 'mc', question: "___ they stop the car?", options: ["Did", "Were", "Did they stopped"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 134, type: 'mc', question: "___ we play soccer last weekend?", options: ["Did", "Were", "Did we played"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 135, type: 'mc', question: "___ he want to travel?", options: ["Did", "Was", "Did he wanted"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 136, type: 'mc', question: "___ you watch a movie last night?", options: ["Did", "Were", "Did you watched"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 137, type: 'mc', question: "___ you live in Brazil?", options: ["Did", "Were", "Did you lived"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 138, type: 'mc', question: "___ she dance at the party?", options: ["Did", "Was", "Did she danced"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 139, type: 'mc', question: "___ they arrive late?", options: ["Did", "Were", "Did they arrived"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 140, type: 'mc', question: "___ we clean the house?", options: ["Did", "Were", "Did we cleaned"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+
+        // --- INTERROGATIVOS: VERBOS IRREGULARES (10 mc, com distratores DID+passado e WAS/WERE) ---
+        { id: 141, type: 'mc', question: "___ you go to the beach?", options: ["Did", "Did you went", "Were"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'go', não 'went'." },
+        { id: 142, type: 'mc', question: "___ she see a movie?", options: ["Did", "Was", "Did she saw"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'see', não 'saw'." },
+        { id: 143, type: 'mc', question: "___ they have a party?", options: ["Did", "Were", "Did they had"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'have', não 'had'." },
+        { id: 144, type: 'mc', question: "___ we do our homework?", options: ["Did", "Were", "Did we did"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'do', não 'did'." },
+        { id: 145, type: 'mc', question: "___ he make a cake?", options: ["Did", "Was", "Did he made"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'make', não 'made'." },
+        { id: 146, type: 'mc', question: "___ you eat pizza?", options: ["Did", "Were", "Did you ate"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'eat', não 'ate'." },
+        { id: 147, type: 'mc', question: "___ she write a letter?", options: ["Did", "Was", "Did she wrote"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'write', não 'wrote'." },
+        { id: 148, type: 'mc', question: "___ they come to the party?", options: ["Did", "Were", "Did they came"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'come', não 'came'." },
+        { id: 149, type: 'mc', question: "___ we take the bus?", options: ["Did", "Were", "Did we took"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'take', não 'took'." },
+        { id: 150, type: 'mc', question: "___ he give you a gift?", options: ["Did", "Was", "Did he gave"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'give', não 'gave'." },
+
+        // --- INTERROGATIVOS: TO BE (10 rewrite) ---
+        { id: 151, type: 'rewrite', question: "Rewrite in the interrogative form: You were tired yesterday.", correctAnswer: "Were you tired yesterday?", hint: "Coloque 'Were' antes de 'you'." },
+        { id: 152, type: 'rewrite', question: "Rewrite in the interrogative form: She was at home last night.", correctAnswer: "Was she at home last night?", hint: "Coloque 'Was' antes de 'she'." },
+        { id: 153, type: 'rewrite', question: "Rewrite in the interrogative form: They were at the party.", correctAnswer: "Were they at the party?", hint: "Coloque 'Were' antes de 'they'." },
+        { id: 154, type: 'rewrite', question: "Rewrite in the interrogative form: We were students in 2015.", correctAnswer: "Were we students in 2015?", hint: "Coloque 'Were' antes de 'we'." },
+        { id: 155, type: 'rewrite', question: "Rewrite in the interrogative form: He was sick last week.", correctAnswer: "Was he sick last week?", hint: "Coloque 'Was' antes de 'he'." },
+        { id: 156, type: 'rewrite', question: "Rewrite in the interrogative form: It was cold yesterday.", correctAnswer: "Was it cold yesterday?", hint: "Coloque 'Was' antes de 'it'." },
+        { id: 157, type: 'rewrite', question: "Rewrite in the interrogative form: The children were happy at the park.", correctAnswer: "Were the children happy at the park?", hint: "Coloque 'Were' antes de 'the children'." },
+        { id: 158, type: 'rewrite', question: "Rewrite in the interrogative form: My parents were on vacation.", correctAnswer: "Were my parents on vacation?", hint: "Coloque 'Were' antes de 'my parents'." },
+        { id: 159, type: 'rewrite', question: "Rewrite in the interrogative form: You were in London two years ago.", correctAnswer: "Were you in London two years ago?", hint: "Coloque 'Were' antes de 'you'." },
+        { id: 160, type: 'rewrite', question: "Rewrite in the interrogative form: I was right about the answer.", correctAnswer: "Was I right about the answer?", hint: "Coloque 'Was' antes de 'I'." },
+
+        // --- INTERROGATIVOS: VERBOS REGULARES (10 rewrite) ---
+        { id: 161, type: 'rewrite', question: "Rewrite in the interrogative form: You walked to school yesterday.", correctAnswer: "Did you walk to school yesterday?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 162, type: 'rewrite', question: "Rewrite in the interrogative form: She studied for the test.", correctAnswer: "Did she study for the test?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 163, type: 'rewrite', question: "Rewrite in the interrogative form: They stopped the car.", correctAnswer: "Did they stop the car?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 164, type: 'rewrite', question: "Rewrite in the interrogative form: We played soccer last weekend.", correctAnswer: "Did we play soccer last weekend?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 165, type: 'rewrite', question: "Rewrite in the interrogative form: He wanted to travel.", correctAnswer: "Did he want to travel?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 166, type: 'rewrite', question: "Rewrite in the interrogative form: You watched a movie last night.", correctAnswer: "Did you watch a movie last night?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 167, type: 'rewrite', question: "Rewrite in the interrogative form: You lived in Brazil.", correctAnswer: "Did you live in Brazil?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 168, type: 'rewrite', question: "Rewrite in the interrogative form: She danced at the party.", correctAnswer: "Did she dance at the party?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 169, type: 'rewrite', question: "Rewrite in the interrogative form: They arrived late.", correctAnswer: "Did they arrive late?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+        { id: 170, type: 'rewrite', question: "Rewrite in the interrogative form: We cleaned the house.", correctAnswer: "Did we clean the house?", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
+
+        // --- INTERROGATIVOS: VERBOS IRREGULARES (10 rewrite) ---
+        { id: 171, type: 'rewrite', question: "Rewrite in the interrogative form: You went to the beach.", correctAnswer: "Did you go to the beach?", hint: "Use 'Did' + a forma base 'go', não 'went'." },
+        { id: 172, type: 'rewrite', question: "Rewrite in the interrogative form: She saw a movie.", correctAnswer: "Did she see a movie?", hint: "Use 'Did' + a forma base 'see', não 'saw'." },
+        { id: 173, type: 'rewrite', question: "Rewrite in the interrogative form: They had a party.", correctAnswer: "Did they have a party?", hint: "Use 'Did' + a forma base 'have', não 'had'." },
+        { id: 174, type: 'rewrite', question: "Rewrite in the interrogative form: We did our homework.", correctAnswer: "Did we do our homework?", hint: "Use 'Did' + a forma base 'do', não 'did'." },
+        { id: 175, type: 'rewrite', question: "Rewrite in the interrogative form: He made a cake.", correctAnswer: "Did he make a cake?", hint: "Use 'Did' + a forma base 'make', não 'made'." },
+        { id: 176, type: 'rewrite', question: "Rewrite in the interrogative form: You ate pizza.", correctAnswer: "Did you eat pizza?", hint: "Use 'Did' + a forma base 'eat', não 'ate'." },
+        { id: 177, type: 'rewrite', question: "Rewrite in the interrogative form: She wrote a letter.", correctAnswer: "Did she write a letter?", hint: "Use 'Did' + a forma base 'write', não 'wrote'." },
+        { id: 178, type: 'rewrite', question: "Rewrite in the interrogative form: They came to the party.", correctAnswer: "Did they come to the party?", hint: "Use 'Did' + a forma base 'come', não 'came'." },
+        { id: 179, type: 'rewrite', question: "Rewrite in the interrogative form: We took the bus.", correctAnswer: "Did we take the bus?", hint: "Use 'Did' + a forma base 'take', não 'took'." },
+        { id: 180, type: 'rewrite', question: "Rewrite in the interrogative form: He gave you a gift.", correctAnswer: "Did he give you a gift?", hint: "Use 'Did' + a forma base 'give', não 'gave'." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
