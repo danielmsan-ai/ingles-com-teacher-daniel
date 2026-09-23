@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (100 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (150 exemplos) ---
     exercises = [
         // --- EXERCÍCIOS AFIRMATIVOS (50) ---
         { id: 1, type: 'mc', question: "I ___ (write) a letter right now.", options: ["write", "am writing", "is writing"], correctAnswer: "am writing", hint: "Use o verbo 'to be' (am) + verbo com '-ing'." },
@@ -120,7 +120,59 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 97, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am learning French this semester.", correctAnswer: "I am not learning French this semester.", hint: "Adicione 'not' logo após 'am'." },
         { id: 98, type: 'rewrite', question: "Rewrite the sentence in the negative form: She is wearing a blue jacket today.", correctAnswer: "She is not wearing a blue jacket today.", hint: "Adicione 'not' logo após 'is'." },
         { id: 99, type: 'rewrite', question: "Rewrite the sentence in the negative form: He is studying in the afternoon today.", correctAnswer: "He is not studying in the afternoon today.", hint: "Adicione 'not' logo após 'is'." },
-        { id: 100, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am drinking tea right now.", correctAnswer: "I am not drinking tea right now.", hint: "Adicione 'not' logo após 'am'." }
+        { id: 100, type: 'rewrite', question: "Rewrite the sentence in the negative form: I am drinking tea right now.", correctAnswer: "I am not drinking tea right now.", hint: "Adicione 'not' logo após 'am'." },
+
+        // --- EXERCÍCIOS INTERROGATIVOS (50) ---
+        { id: 101, type: 'mc', question: "___ you watching TV right now?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'you' nas perguntas." },
+        { id: 102, type: 'mc', question: "___ she sleeping at the moment?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'she' nas perguntas." },
+        { id: 103, type: 'mc', question: "___ they studying right now?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'they' nas perguntas." },
+        { id: 104, type: 'mc', question: "___ we playing football today?", options: ["Are", "Do", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'we' nas perguntas." },
+        { id: 105, type: 'mc', question: "___ he running in the park now?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'he' nas perguntas." },
+        { id: 106, type: 'mc', question: "___ I swimming well?", options: ["Am", "Is", "Are"], correctAnswer: "Am", hint: "Com 'I', use 'Am' nas perguntas." },
+        { id: 107, type: 'mc', question: "___ you listening to me right now?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'you' nas perguntas." },
+        { id: 108, type: 'mc', question: "___ she cooking dinner tonight?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'she' nas perguntas." },
+        { id: 109, type: 'mc', question: "___ they coming to the party tonight?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'they' nas perguntas." },
+        { id: 110, type: 'mc', question: "___ it raining right now?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'it' nas perguntas." },
+        { id: 111, type: 'mc', question: "___ we eating at the moment?", options: ["Are", "Do", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'we' nas perguntas." },
+        { id: 112, type: 'mc', question: "___ the children playing outside now?", options: ["Is", "Are", "Do"], correctAnswer: "Are", hint: "'The children' é plural, use 'Are'." },
+        { id: 113, type: 'mc', question: "___ your brother working today?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "'Your brother' é 3ª pessoa do singular, use 'Is'." },
+        { id: 114, type: 'mc', question: "___ I driving too fast?", options: ["Am", "Is", "Are"], correctAnswer: "Am", hint: "Com 'I', use 'Am' nas perguntas." },
+        { id: 115, type: 'mc', question: "___ he writing an email at the moment?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'he' nas perguntas." },
+        { id: 116, type: 'mc', question: "___ they building anything this year?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'they' nas perguntas." },
+        { id: 117, type: 'mc', question: "___ she wearing a jacket today?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'she' nas perguntas." },
+        { id: 118, type: 'mc', question: "___ we watching TV right now?", options: ["Are", "Do", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'we' nas perguntas." },
+        { id: 119, type: 'mc', question: "___ you making sense right now?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'you' nas perguntas." },
+        { id: 120, type: 'mc', question: "He usually plays soccer, but ___ he playing basketball today?", options: ["does", "is", "are"], correctAnswer: "is", hint: "'Today' indica exceção temporária, use 'is' + '-ing'." },
+        { id: 121, type: 'mc', question: "___ I studying at the right pace?", options: ["Am", "Is", "Are"], correctAnswer: "Am", hint: "Com 'I', use 'Am' nas perguntas." },
+        { id: 122, type: 'mc', question: "___ the dog running in the yard now?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "'The dog' é 3ª pessoa do singular, use 'Is'." },
+        { id: 123, type: 'mc', question: "___ we shopping right now?", options: ["Are", "Do", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'we' nas perguntas." },
+        { id: 124, type: 'mc', question: "___ she sitting on the sofa now?", options: ["Does", "Is", "Are"], correctAnswer: "Is", hint: "Use 'Is' para 'she' nas perguntas." },
+        { id: 125, type: 'mc', question: "___ they lying on the beach today?", options: ["Do", "Are", "Is"], correctAnswer: "Are", hint: "Use 'Are' para 'they' nas perguntas." },
+        { id: 126, type: 'mc', question: "Look! It ___ (rain) outside.", options: ["rains", "is raining", "rain"], correctAnswer: "is raining", hint: "'Look!' indica algo acontecendo agora, use Present Continuous." },
+        { id: 127, type: 'mc', question: "It usually ___ (rain) a lot in April, but this year it ___ (not/rain) much.", options: ["rains / isn't raining", "is raining / doesn't rain", "rain / not rains"], correctAnswer: "rains / isn't raining", hint: "'Usually' pede Simple Present; 'this year' pede Present Continuous." },
+        { id: 128, type: 'mc', question: "She ___ (work) at a bank, but this month she ___ (work) from home.", options: ["works / is working", "is working / works", "work / working"], correctAnswer: "works / is working", hint: "Fato permanente usa Simple Present; situação temporária ('this month') usa Present Continuous." },
+        { id: 129, type: 'mc', question: "I ___ (not/usually/eat) meat, but right now I ___ (eat) a burger.", options: ["don't usually eat / am eating", "am not eating / eat", "doesn't eat / am eating"], correctAnswer: "don't usually eat / am eating", hint: "Hábito usa Simple Present negativo; ação no momento usa Present Continuous." },
+        { id: 130, type: 'mc', question: "He always ___ (arrive) late, but today he ___ (arrive) early.", options: ["arrives / is arriving", "is arriving / arrives", "arrive / arriving"], correctAnswer: "arrives / is arriving", hint: "'Always' indica hábito (Simple Present); 'today' indica exceção (Present Continuous)." },
+        { id: 131, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: I am reading a book now.", correctAnswer: "Am I reading a book now?", hint: "Coloque 'Am' antes de 'I'." },
+        { id: 132, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: She is cooking dinner at the moment.", correctAnswer: "Is she cooking dinner at the moment?", hint: "Coloque 'Is' antes de 'she'." },
+        { id: 133, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They are walking to school right now.", correctAnswer: "Are they walking to school right now?", hint: "Coloque 'Are' antes de 'they'." },
+        { id: 134, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He is writing a letter today.", correctAnswer: "Is he writing a letter today?", hint: "Coloque 'Is' antes de 'he'." },
+        { id: 135, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: We are studying for the exam this week.", correctAnswer: "Are we studying for the exam this week?", hint: "Coloque 'Are' antes de 'we'." },
+        { id: 136, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: You are making a mistake right now.", correctAnswer: "Are you making a mistake right now?", hint: "Coloque 'Are' antes de 'you'." },
+        { id: 137, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: The dog is running in the yard at the moment.", correctAnswer: "Is the dog running in the yard at the moment?", hint: "Coloque 'Is' antes de 'the dog'." },
+        { id: 138, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: She is swimming in the lake today.", correctAnswer: "Is she swimming in the lake today?", hint: "Coloque 'Is' antes de 'she'." },
+        { id: 139, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They are coming to visit us this week.", correctAnswer: "Are they coming to visit us this week?", hint: "Coloque 'Are' antes de 'they'." },
+        { id: 140, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He is lying on the grass right now.", correctAnswer: "Is he lying on the grass right now?", hint: "Coloque 'Is' antes de 'he'." },
+        { id: 141, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: We are shopping for groceries at the moment.", correctAnswer: "Are we shopping for groceries at the moment?", hint: "Coloque 'Are' antes de 'we'." },
+        { id: 142, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: It is raining outside right now.", correctAnswer: "Is it raining outside right now?", hint: "Coloque 'Is' antes de 'it'." },
+        { id: 143, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: The children are playing in the park now.", correctAnswer: "Are the children playing in the park now?", hint: "Coloque 'Are' antes de 'the children'." },
+        { id: 144, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: My sister is working on a project this week.", correctAnswer: "Is my sister working on a project this week?", hint: "Coloque 'Is' antes de 'my sister'." },
+        { id: 145, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: You are driving very fast right now.", correctAnswer: "Are you driving very fast right now?", hint: "Coloque 'Are' antes de 'you'." },
+        { id: 146, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: He is writing a report today.", correctAnswer: "Is he writing a report today?", hint: "Coloque 'Is' antes de 'he'." },
+        { id: 147, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: They are building a new bridge this year.", correctAnswer: "Are they building a new bridge this year?", hint: "Coloque 'Are' antes de 'they'." },
+        { id: 148, type: 'rewrite', question: "Rewrite the sentence in the interrogative form: She is wearing a blue jacket today.", correctAnswer: "Is she wearing a blue jacket today?", hint: "Coloque 'Is' antes de 'she'." },
+        { id: 149, type: 'rewrite', question: "Decide: Water usually (boil) at 100 degrees, but right now this water (boil) faster because of the altitude. Complete with the correct forms.", correctAnswer: "Water usually boils at 100 degrees, but right now this water is boiling faster because of the altitude.", hint: "Fato científico usa Simple Present; 'right now' usa Present Continuous." },
+        { id: 150, type: 'rewrite', question: "Decide: I (not/usually/wear) glasses, but I (wear) contact lenses today. Complete with the correct forms.", correctAnswer: "I don't usually wear glasses, but I am wearing contact lenses today.", hint: "'Usually' pede Simple Present negativo; 'today' pede Present Continuous." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
