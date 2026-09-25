@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (120 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (180 exemplos) ---
     exercises = [
         // --- AFIRMATIVOS: ESTRUTURA BÁSICA (HAVE/HAS + BEEN + VERBO-ING) (20 mc) ---
         { id: 1, type: 'mc', question: "I ___ (study) English for three hours.", options: ["have studied", "have been studying", "has been studying"], correctAnswer: "have been studying", hint: "'I' usa 'have been' + verbo com '-ing'." },
@@ -148,7 +148,73 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 117, type: 'mc', question: "I ___ (not/run) five kilometers yet.", options: ["haven't run", "haven't been running", "hasn't run"], correctAnswer: "haven't run", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
         { id: 118, type: 'mc', question: "I ___ (not/run) for long.", options: ["haven't run", "haven't been running", "hasn't run"], correctAnswer: "haven't been running", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
         { id: 119, type: 'mc', question: "She ___ (not/wait) for the bus for twenty minutes.", options: ["hasn't waited", "hasn't been waiting", "haven't waited"], correctAnswer: "hasn't been waiting", hint: "Ação que começou no passado e continua, com ênfase na duração, use Present Perfect Continuous." },
-        { id: 120, type: 'mc', question: "She ___ (not/wait) for the bus yet.", options: ["hasn't waited", "hasn't been waiting", "haven't waited"], correctAnswer: "hasn't waited", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." }
+        { id: 120, type: 'mc', question: "She ___ (not/wait) for the bus yet.", options: ["hasn't waited", "hasn't been waiting", "haven't waited"], correctAnswer: "hasn't waited", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+
+        // --- INTERROGATIVOS: ESTRUTURA BÁSICA (HAVE/HAS + SUJEITO + BEEN + VERBO-ING) (20 mc) ---
+        { id: 121, type: 'mc', question: "___ you been studying English for three hours?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' no início da pergunta." },
+        { id: 122, type: 'mc', question: "___ she been working here since 2020?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' no início da pergunta." },
+        { id: 123, type: 'mc', question: "___ they been playing soccer all afternoon?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' no início da pergunta." },
+        { id: 124, type: 'mc', question: "___ we been waiting for you for an hour?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' no início da pergunta." },
+        { id: 125, type: 'mc', question: "___ he been reading that book all morning?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'He' usa 'Has' no início da pergunta." },
+        { id: 126, type: 'mc', question: "___ you been talking on the phone for a long time?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' no início da pergunta." },
+        { id: 127, type: 'mc', question: "___ it been raining since morning?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'It' usa 'Has' no início da pergunta." },
+        { id: 128, type: 'mc', question: "___ the children been sleeping for ten hours?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'The children' (plural) usa 'Have' no início da pergunta." },
+        { id: 129, type: 'mc', question: "___ your brother been traveling for six months?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'Your brother' usa 'Has' no início da pergunta." },
+        { id: 130, type: 'mc', question: "___ I been living in this city for long?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'I' usa 'Have' no início da pergunta." },
+        { id: 131, type: 'mc', question: "___ she been cooking dinner for two hours?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' no início da pergunta." },
+        { id: 132, type: 'mc', question: "___ they been building a new house for a year?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' no início da pergunta." },
+        { id: 133, type: 'mc', question: "___ we been learning French for a year now?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' no início da pergunta." },
+        { id: 134, type: 'mc', question: "___ he been driving since 5 AM?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'He' usa 'Has' no início da pergunta." },
+        { id: 135, type: 'mc', question: "___ you been writing that report all day?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' no início da pergunta." },
+        { id: 136, type: 'mc', question: "___ the dog been barking for twenty minutes?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'The dog' (singular) usa 'Has' no início da pergunta." },
+        { id: 137, type: 'mc', question: "___ your parents been gardening since early morning?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'Your parents' (plural) usa 'Have' no início da pergunta." },
+        { id: 138, type: 'mc', question: "___ I been trying to call you all day?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'I' usa 'Have' no início da pergunta." },
+        { id: 139, type: 'mc', question: "___ she been teaching English for ten years?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' no início da pergunta." },
+        { id: 140, type: 'mc', question: "___ they been arguing about it for an hour?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' no início da pergunta." },
+
+        // --- INTERROGATIVOS: PALAVRAS-CHAVE E CONTRASTE COM PRESENT PERFECT SIMPLES (20 mc) ---
+        { id: 141, type: 'mc', question: "___ long have you been studying?", options: ["How", "What", "When"], correctAnswer: "How", hint: "'How long' pergunta sobre duração." },
+        { id: 142, type: 'mc', question: "___ she finished her homework?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 143, type: 'mc', question: "___ she been doing her homework all afternoon?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 144, type: 'mc', question: "___ you read any good books lately?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre experiência/resultado, use Present Perfect Simples." },
+        { id: 145, type: 'mc', question: "___ you been reading that book for a week?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 146, type: 'mc', question: "___ they cleaned the house yet?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 147, type: 'mc', question: "___ they been cleaning the house for hours?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 148, type: 'mc', question: "___ he fixed his car?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 149, type: 'mc', question: "___ he been fixing his car since morning?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 150, type: 'mc', question: "___ you lived here for ten years?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da ação que continua, use Present Perfect Continuous." },
+        { id: 151, type: 'mc', question: "___ you finished your report?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 152, type: 'mc', question: "___ you been working on your report all day?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 153, type: 'mc', question: "___ she learned to play the guitar?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 154, type: 'mc', question: "___ she been learning to play the guitar for six months?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 155, type: 'mc', question: "___ they traveled to many countries?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre experiência/resultado, use Present Perfect Simples." },
+        { id: 156, type: 'mc', question: "___ they been traveling around the world for a year?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 157, type: 'mc', question: "___ it rained a lot this week?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre a quantidade/resultado, use Present Perfect Simples." },
+        { id: 158, type: 'mc', question: "___ it been raining for hours?", options: ["Has", "Have", "Did"], correctAnswer: "Has", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+        { id: 159, type: 'mc', question: "___ you run five kilometers?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre o resultado, use Present Perfect Simples." },
+        { id: 160, type: 'mc', question: "___ you been running for a long time?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Pergunta sobre a duração da atividade, use Present Perfect Continuous." },
+
+        // --- INTERROGATIVOS: REESCRITA (20 rewrite) ---
+        { id: 161, type: 'rewrite', question: "Rewrite in the interrogative form: You have been studying English for three hours.", correctAnswer: "Have you been studying English for three hours?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 162, type: 'rewrite', question: "Rewrite in the interrogative form: She has been working here since 2020.", correctAnswer: "Has she been working here since 2020?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 163, type: 'rewrite', question: "Rewrite in the interrogative form: They have been playing soccer all afternoon.", correctAnswer: "Have they been playing soccer all afternoon?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 164, type: 'rewrite', question: "Rewrite in the interrogative form: We have been waiting for you for an hour.", correctAnswer: "Have we been waiting for you for an hour?", hint: "Coloque 'Have' antes de 'we'." },
+        { id: 165, type: 'rewrite', question: "Rewrite in the interrogative form: He has been reading that book all morning.", correctAnswer: "Has he been reading that book all morning?", hint: "Coloque 'Has' antes de 'he'." },
+        { id: 166, type: 'rewrite', question: "Rewrite in the interrogative form: You have been talking on the phone for a long time.", correctAnswer: "Have you been talking on the phone for a long time?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 167, type: 'rewrite', question: "Rewrite in the interrogative form: It has been raining since morning.", correctAnswer: "Has it been raining since morning?", hint: "Coloque 'Has' antes de 'it'." },
+        { id: 168, type: 'rewrite', question: "Rewrite in the interrogative form: The children have been sleeping for ten hours.", correctAnswer: "Have the children been sleeping for ten hours?", hint: "Coloque 'Have' antes de 'the children'." },
+        { id: 169, type: 'rewrite', question: "Rewrite in the interrogative form: My brother has been traveling for six months.", correctAnswer: "Has your brother been traveling for six months?", hint: "Coloque 'Has' antes de 'your brother'." },
+        { id: 170, type: 'rewrite', question: "Rewrite in the interrogative form: I have been living in this city for long.", correctAnswer: "Have I been living in this city for long?", hint: "Coloque 'Have' antes de 'I'." },
+        { id: 171, type: 'rewrite', question: "Rewrite in the interrogative form: She has been cooking dinner for two hours.", correctAnswer: "Has she been cooking dinner for two hours?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 172, type: 'rewrite', question: "Rewrite in the interrogative form: They have been building a new house for a year.", correctAnswer: "Have they been building a new house for a year?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 173, type: 'rewrite', question: "Rewrite in the interrogative form: We have been learning French for a year now.", correctAnswer: "Have we been learning French for a year now?", hint: "Coloque 'Have' antes de 'we'." },
+        { id: 174, type: 'rewrite', question: "Rewrite in the interrogative form: He has been driving since 5 AM.", correctAnswer: "Has he been driving since 5 AM?", hint: "Coloque 'Has' antes de 'he'." },
+        { id: 175, type: 'rewrite', question: "Rewrite in the interrogative form: You have been writing that report all day.", correctAnswer: "Have you been writing that report all day?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 176, type: 'rewrite', question: "Rewrite in the interrogative form: The dog has been barking for twenty minutes.", correctAnswer: "Has the dog been barking for twenty minutes?", hint: "Coloque 'Has' antes de 'the dog'." },
+        { id: 177, type: 'rewrite', question: "Rewrite in the interrogative form: My parents have been gardening since early morning.", correctAnswer: "Have your parents been gardening since early morning?", hint: "Coloque 'Have' antes de 'your parents'." },
+        { id: 178, type: 'rewrite', question: "Rewrite in the interrogative form: I have been trying to call you all day.", correctAnswer: "Have I been trying to call you all day?", hint: "Coloque 'Have' antes de 'I'." },
+        { id: 179, type: 'rewrite', question: "Rewrite in the interrogative form: She has been teaching English for ten years.", correctAnswer: "Has she been teaching English for ten years?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 180, type: 'rewrite', question: "Rewrite in the interrogative form: They have been arguing about it for an hour.", correctAnswer: "Have they been arguing about it for an hour?", hint: "Coloque 'Have' antes de 'they'." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
