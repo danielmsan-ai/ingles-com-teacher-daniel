@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS (60 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (120 exemplos) ---
     exercises = [
-        // --- ESTRUTURA BÁSICA (HAVE/HAS + BEEN + VERBO-ING) (20 mc) ---
+        // --- AFIRMATIVOS: ESTRUTURA BÁSICA (HAVE/HAS + BEEN + VERBO-ING) (20 mc) ---
         { id: 1, type: 'mc', question: "I ___ (study) English for three hours.", options: ["have studied", "have been studying", "has been studying"], correctAnswer: "have been studying", hint: "'I' usa 'have been' + verbo com '-ing'." },
         { id: 2, type: 'mc', question: "She ___ (work) here since 2020.", options: ["has worked", "has been working", "have been working"], correctAnswer: "has been working", hint: "'She' usa 'has been' + verbo com '-ing'." },
         { id: 3, type: 'mc', question: "They ___ (play) soccer all afternoon.", options: ["have played", "have been playing", "has been playing"], correctAnswer: "have been playing", hint: "'They' usa 'have been' + verbo com '-ing'." },
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 19, type: 'mc', question: "She ___ (teach) English for ten years.", options: ["has taught", "has been teaching", "have been teaching"], correctAnswer: "has been teaching", hint: "'She' usa 'has been' + verbo com '-ing'." },
         { id: 20, type: 'mc', question: "They ___ (argue) about it for an hour.", options: ["have argued", "have been arguing", "has been arguing"], correctAnswer: "have been arguing", hint: "'They' usa 'have been' + verbo com '-ing'." },
 
-        // --- PALAVRAS-CHAVE (FOR/SINCE/HOW LONG) (20 mc) ---
+        // --- AFIRMATIVOS: PALAVRAS-CHAVE (FOR/SINCE/HOW LONG) (20 mc) ---
         { id: 21, type: 'mc', question: "I have been studying English ___ three hours.", options: ["for", "since", "ago"], correctAnswer: "for", hint: "'For' indica duração." },
         { id: 22, type: 'mc', question: "She has been working here ___ 2020.", options: ["for", "since", "ago"], correctAnswer: "since", hint: "'Since' indica o ponto de início." },
         { id: 23, type: 'mc', question: "___ have you been waiting?", options: ["How long", "When", "What time"], correctAnswer: "How long", hint: "'How long' pergunta sobre duração." },
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 39, type: 'mc', question: "They have been arguing ___ an hour.", options: ["for", "since", "ago"], correctAnswer: "for", hint: "'For' indica duração." },
         { id: 40, type: 'mc', question: "___ have you been studying?", options: ["How long", "When", "What"], correctAnswer: "How long", hint: "'How long' pergunta sobre duração." },
 
-        // --- CONTRASTE COM PRESENT PERFECT SIMPLES (20 mc) ---
+        // --- AFIRMATIVOS: CONTRASTE COM PRESENT PERFECT SIMPLES (20 mc) ---
         { id: 41, type: 'mc', question: "I ___ (read) three books this month.", options: ["have read", "have been reading", "has read"], correctAnswer: "have read", hint: "Ênfase no resultado (três livros lidos), use Present Perfect Simples." },
         { id: 42, type: 'mc', question: "I ___ (read) for three hours.", options: ["have read", "have been reading", "has been reading"], correctAnswer: "have been reading", hint: "Ênfase na duração da atividade, use Present Perfect Continuous." },
         { id: 43, type: 'mc', question: "She ___ (write) five emails today.", options: ["has written", "has been writing", "have written"], correctAnswer: "has written", hint: "Ênfase no resultado (cinco emails escritos), use Present Perfect Simples." },
@@ -82,7 +82,73 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 57, type: 'mc', question: "It ___ (rain) a lot this week.", options: ["has rained", "has been raining", "have rained"], correctAnswer: "has rained", hint: "Ênfase na quantidade (muita chuva), use Present Perfect Simples." },
         { id: 58, type: 'mc', question: "I'm tired because I ___ (run).", options: ["have run", "have been running", "has run"], correctAnswer: "have been running", hint: "Ação que causou o estado atual (cansaço), com ênfase na atividade, use Present Perfect Continuous." },
         { id: 59, type: 'mc', question: "I ___ (run) five kilometers.", options: ["have run", "have been running", "has run"], correctAnswer: "have run", hint: "Ênfase no resultado (distância percorrida), use Present Perfect Simples." },
-        { id: 60, type: 'mc', question: "She ___ (wait) for the bus for twenty minutes.", options: ["has waited", "has been waiting", "have waited"], correctAnswer: "has been waiting", hint: "Ação que começou no passado e continua, com ênfase na duração, use Present Perfect Continuous." }
+        { id: 60, type: 'mc', question: "She ___ (wait) for the bus for twenty minutes.", options: ["has waited", "has been waiting", "have waited"], correctAnswer: "has been waiting", hint: "Ação que começou no passado e continua, com ênfase na duração, use Present Perfect Continuous." },
+
+        // --- NEGATIVOS: ESTRUTURA BÁSICA (HAVEN'T/HASN'T + BEEN + VERBO-ING) (20 mc) ---
+        { id: 61, type: 'mc', question: "I ___ (not/study) English for long.", options: ["haven't studied", "haven't been studying", "hasn't been studying"], correctAnswer: "haven't been studying", hint: "'I' usa 'haven't been' + verbo com '-ing'." },
+        { id: 62, type: 'mc', question: "She ___ (not/work) here for a year.", options: ["hasn't worked", "hasn't been working", "haven't been working"], correctAnswer: "hasn't been working", hint: "'She' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 63, type: 'mc', question: "They ___ (not/play) soccer for a while.", options: ["haven't played", "haven't been playing", "hasn't been playing"], correctAnswer: "haven't been playing", hint: "'They' usa 'haven't been' + verbo com '-ing'." },
+        { id: 64, type: 'mc', question: "We ___ (not/wait) for you.", options: ["haven't waited", "haven't been waiting", "hasn't been waiting"], correctAnswer: "haven't been waiting", hint: "'We' usa 'haven't been' + verbo com '-ing'." },
+        { id: 65, type: 'mc', question: "He ___ (not/read) that book.", options: ["hasn't read", "hasn't been reading", "haven't been reading"], correctAnswer: "hasn't been reading", hint: "'He' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 66, type: 'mc', question: "You ___ (not/talk) on the phone.", options: ["haven't talked", "haven't been talking", "hasn't been talking"], correctAnswer: "haven't been talking", hint: "'You' usa 'haven't been' + verbo com '-ing'." },
+        { id: 67, type: 'mc', question: "It ___ (not/rain) much lately.", options: ["hasn't rained", "hasn't been raining", "haven't been raining"], correctAnswer: "hasn't been raining", hint: "'It' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 68, type: 'mc', question: "The children ___ (not/sleep) well.", options: ["haven't slept", "haven't been sleeping", "hasn't been sleeping"], correctAnswer: "haven't been sleeping", hint: "'The children' (plural) usa 'haven't been' + verbo com '-ing'." },
+        { id: 69, type: 'mc', question: "My brother ___ (not/travel) recently.", options: ["hasn't traveled", "hasn't been traveling", "haven't been traveling"], correctAnswer: "hasn't been traveling", hint: "'My brother' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 70, type: 'mc', question: "I ___ (not/live) in this city for long.", options: ["haven't lived", "haven't been living", "hasn't been living"], correctAnswer: "haven't been living", hint: "'I' usa 'haven't been' + verbo com '-ing'." },
+        { id: 71, type: 'mc', question: "She ___ (not/cook) dinner.", options: ["hasn't cooked", "hasn't been cooking", "haven't been cooking"], correctAnswer: "hasn't been cooking", hint: "'She' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 72, type: 'mc', question: "They ___ (not/build) a new house.", options: ["haven't built", "haven't been building", "hasn't been building"], correctAnswer: "haven't been building", hint: "'They' usa 'haven't been' + verbo com '-ing'." },
+        { id: 73, type: 'mc', question: "We ___ (not/learn) French.", options: ["haven't learned", "haven't been learning", "hasn't been learning"], correctAnswer: "haven't been learning", hint: "'We' usa 'haven't been' + verbo com '-ing'." },
+        { id: 74, type: 'mc', question: "He ___ (not/drive) for hours.", options: ["hasn't driven", "hasn't been driving", "haven't been driving"], correctAnswer: "hasn't been driving", hint: "'He' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 75, type: 'mc', question: "You ___ (not/write) that report.", options: ["haven't written", "haven't been writing", "hasn't been writing"], correctAnswer: "haven't been writing", hint: "'You' usa 'haven't been' + verbo com '-ing'." },
+        { id: 76, type: 'mc', question: "The dog ___ (not/bark) all night.", options: ["hasn't barked", "hasn't been barking", "haven't been barking"], correctAnswer: "hasn't been barking", hint: "'The dog' (singular) usa 'hasn't been' + verbo com '-ing'." },
+        { id: 77, type: 'mc', question: "My parents ___ (not/garden) today.", options: ["haven't gardened", "haven't been gardening", "hasn't been gardening"], correctAnswer: "haven't been gardening", hint: "'My parents' (plural) usa 'haven't been' + verbo com '-ing'." },
+        { id: 78, type: 'mc', question: "I ___ (not/try) to call you.", options: ["haven't tried", "haven't been trying", "hasn't been trying"], correctAnswer: "haven't been trying", hint: "'I' usa 'haven't been' + verbo com '-ing'." },
+        { id: 79, type: 'mc', question: "She ___ (not/teach) English.", options: ["hasn't taught", "hasn't been teaching", "haven't been teaching"], correctAnswer: "hasn't been teaching", hint: "'She' usa 'hasn't been' + verbo com '-ing'." },
+        { id: 80, type: 'mc', question: "They ___ (not/argue) about it.", options: ["haven't argued", "haven't been arguing", "hasn't been arguing"], correctAnswer: "haven't been arguing", hint: "'They' usa 'haven't been' + verbo com '-ing'." },
+
+        // --- NEGATIVOS: REESCRITA (20 rewrite) ---
+        { id: 81, type: 'rewrite', question: "Rewrite in the negative form: I have been studying English for three hours.", correctAnswer: "I haven't been studying English for three hours.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 82, type: 'rewrite', question: "Rewrite in the negative form: She has been working here since 2020.", correctAnswer: "She hasn't been working here since 2020.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 83, type: 'rewrite', question: "Rewrite in the negative form: They have been playing soccer all afternoon.", correctAnswer: "They haven't been playing soccer all afternoon.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 84, type: 'rewrite', question: "Rewrite in the negative form: We have been waiting for you for an hour.", correctAnswer: "We haven't been waiting for you for an hour.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 85, type: 'rewrite', question: "Rewrite in the negative form: He has been reading that book all morning.", correctAnswer: "He hasn't been reading that book all morning.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 86, type: 'rewrite', question: "Rewrite in the negative form: You have been talking on the phone for a long time.", correctAnswer: "You haven't been talking on the phone for a long time.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 87, type: 'rewrite', question: "Rewrite in the negative form: It has been raining since morning.", correctAnswer: "It hasn't been raining since morning.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 88, type: 'rewrite', question: "Rewrite in the negative form: The children have been sleeping for ten hours.", correctAnswer: "The children haven't been sleeping for ten hours.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 89, type: 'rewrite', question: "Rewrite in the negative form: My brother has been traveling for six months.", correctAnswer: "My brother hasn't been traveling for six months.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 90, type: 'rewrite', question: "Rewrite in the negative form: I have been living in this city since my birth.", correctAnswer: "I haven't been living in this city since my birth.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 91, type: 'rewrite', question: "Rewrite in the negative form: She has been cooking dinner for two hours.", correctAnswer: "She hasn't been cooking dinner for two hours.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 92, type: 'rewrite', question: "Rewrite in the negative form: They have been building a new house for a year.", correctAnswer: "They haven't been building a new house for a year.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 93, type: 'rewrite', question: "Rewrite in the negative form: We have been learning French for a year now.", correctAnswer: "We haven't been learning French for a year now.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 94, type: 'rewrite', question: "Rewrite in the negative form: He has been driving since 5 AM.", correctAnswer: "He hasn't been driving since 5 AM.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 95, type: 'rewrite', question: "Rewrite in the negative form: You have been writing that report all day.", correctAnswer: "You haven't been writing that report all day.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 96, type: 'rewrite', question: "Rewrite in the negative form: The dog has been barking for twenty minutes.", correctAnswer: "The dog hasn't been barking for twenty minutes.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 97, type: 'rewrite', question: "Rewrite in the negative form: My parents have been gardening since early morning.", correctAnswer: "My parents haven't been gardening since early morning.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 98, type: 'rewrite', question: "Rewrite in the negative form: I have been trying to call you all day.", correctAnswer: "I haven't been trying to call you all day.", hint: "Use 'haven't been' + verbo com '-ing'." },
+        { id: 99, type: 'rewrite', question: "Rewrite in the negative form: She has been teaching English for ten years.", correctAnswer: "She hasn't been teaching English for ten years.", hint: "Use 'hasn't been' + verbo com '-ing'." },
+        { id: 100, type: 'rewrite', question: "Rewrite in the negative form: They have been arguing about it for an hour.", correctAnswer: "They haven't been arguing about it for an hour.", hint: "Use 'haven't been' + verbo com '-ing'." },
+
+        // --- NEGATIVOS: CONTRASTE COM PRESENT PERFECT SIMPLES (20 mc) ---
+        { id: 101, type: 'mc', question: "I ___ (not/read) any books this month.", options: ["haven't read", "haven't been reading", "hasn't read"], correctAnswer: "haven't read", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 102, type: 'mc', question: "I ___ (not/read) for long.", options: ["haven't read", "haven't been reading", "hasn't been reading"], correctAnswer: "haven't been reading", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 103, type: 'mc', question: "She ___ (not/write) any emails today.", options: ["hasn't written", "hasn't been writing", "haven't written"], correctAnswer: "hasn't written", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 104, type: 'mc', question: "She ___ (not/write) emails all morning.", options: ["hasn't written", "hasn't been writing", "haven't been writing"], correctAnswer: "hasn't been writing", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 105, type: 'mc', question: "They ___ (not/clean) the house yet.", options: ["haven't cleaned", "haven't been cleaning", "hasn't cleaned"], correctAnswer: "haven't cleaned", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 106, type: 'mc', question: "They ___ (not/clean) the house for long.", options: ["haven't cleaned", "haven't been cleaning", "hasn't been cleaning"], correctAnswer: "haven't been cleaning", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 107, type: 'mc', question: "He ___ (not/fix) his car yet.", options: ["hasn't fixed", "hasn't been fixing", "haven't fixed"], correctAnswer: "hasn't fixed", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 108, type: 'mc', question: "He ___ (not/fix) his car for a while.", options: ["hasn't fixed", "hasn't been fixing", "haven't been fixing"], correctAnswer: "hasn't been fixing", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 109, type: 'mc', question: "We ___ (not/live) here for ten years.", options: ["haven't lived", "haven't been living", "hasn't lived"], correctAnswer: "haven't been living", hint: "Ação que começou no passado e continua, com ênfase na duração, use Present Perfect Continuous." },
+        { id: 110, type: 'mc', question: "I ___ (not/finish) my report yet.", options: ["haven't finished", "haven't been finishing", "hasn't finished"], correctAnswer: "haven't finished", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 111, type: 'mc', question: "I ___ (not/work) on my report for long.", options: ["haven't worked", "haven't been working", "hasn't been working"], correctAnswer: "haven't been working", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 112, type: 'mc', question: "She ___ (not/learn) to play the guitar yet.", options: ["hasn't learned", "hasn't been learning", "haven't learned"], correctAnswer: "hasn't learned", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 113, type: 'mc', question: "She ___ (not/learn) to play the guitar for long.", options: ["hasn't learned", "hasn't been learning", "haven't been learning"], correctAnswer: "hasn't been learning", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 114, type: 'mc', question: "They ___ (not/travel) to many countries yet.", options: ["haven't traveled", "haven't been traveling", "hasn't traveled"], correctAnswer: "haven't traveled", hint: "Ênfase na ausência de experiência, use Present Perfect Simples." },
+        { id: 115, type: 'mc', question: "They ___ (not/travel) around the world for a year.", options: ["haven't traveled", "haven't been traveling", "hasn't been traveling"], correctAnswer: "haven't been traveling", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 116, type: 'mc', question: "It ___ (not/rain) much this week.", options: ["hasn't rained", "hasn't been raining", "haven't rained"], correctAnswer: "hasn't rained", hint: "Ênfase na ausência de quantidade, use Present Perfect Simples." },
+        { id: 117, type: 'mc', question: "I ___ (not/run) five kilometers yet.", options: ["haven't run", "haven't been running", "hasn't run"], correctAnswer: "haven't run", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." },
+        { id: 118, type: 'mc', question: "I ___ (not/run) for long.", options: ["haven't run", "haven't been running", "hasn't run"], correctAnswer: "haven't been running", hint: "Ênfase na ausência de duração da atividade, use Present Perfect Continuous." },
+        { id: 119, type: 'mc', question: "She ___ (not/wait) for the bus for twenty minutes.", options: ["hasn't waited", "hasn't been waiting", "haven't waited"], correctAnswer: "hasn't been waiting", hint: "Ação que começou no passado e continua, com ênfase na duração, use Present Perfect Continuous." },
+        { id: 120, type: 'mc', question: "She ___ (not/wait) for the bus yet.", options: ["hasn't waited", "hasn't been waiting", "haven't waited"], correctAnswer: "hasn't waited", hint: "Ênfase na ausência de resultado, use Present Perfect Simples." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
