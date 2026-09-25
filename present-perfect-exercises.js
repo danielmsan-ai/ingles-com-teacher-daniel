@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS AFIRMATIVOS E NEGATIVOS (120 exemplos) ---
+    // --- EXERCÍCIOS AFIRMATIVOS, NEGATIVOS E INTERROGATIVOS (180 exemplos) ---
     exercises = [
         // --- AFIRMATIVOS: HAS/HAVE + PARTICÍPIO (20 mc) ---
         { id: 1, type: 'mc', question: "I ___ (see) that movie already.", options: ["have seen", "has seen", "have see"], correctAnswer: "have seen", hint: "'I' usa 'have' + particípio ('seen')." },
@@ -148,7 +148,73 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 117, type: 'rewrite', question: "Rewrite in the negative form: She has studied for the test.", correctAnswer: "She hasn't studied for the test.", hint: "Use 'hasn't' + particípio." },
         { id: 118, type: 'rewrite', question: "Rewrite in the negative form: They have known each other for years.", correctAnswer: "They haven't known each other for years.", hint: "Use 'haven't' + particípio." },
         { id: 119, type: 'rewrite', question: "Rewrite in the negative form: We have visited that museum.", correctAnswer: "We haven't visited that museum.", hint: "Use 'haven't' + particípio." },
-        { id: 120, type: 'rewrite', question: "Rewrite in the negative form: I have finished my report.", correctAnswer: "I haven't finished my report.", hint: "Use 'haven't' + particípio." }
+        { id: 120, type: 'rewrite', question: "Rewrite in the negative form: I have finished my report.", correctAnswer: "I haven't finished my report.", hint: "Use 'haven't' + particípio." },
+
+        // --- INTERROGATIVOS: HAVE/HAS + SUJEITO + PARTICÍPIO (20 mc) ---
+        { id: 121, type: 'mc', question: "___ you seen that movie?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' + particípio nas perguntas." },
+        { id: 122, type: 'mc', question: "___ she gone to Paris?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' + particípio nas perguntas." },
+        { id: 123, type: 'mc', question: "___ they finished their homework?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' + particípio nas perguntas." },
+        { id: 124, type: 'mc', question: "___ we lived here long enough?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' + particípio nas perguntas." },
+        { id: 125, type: 'mc', question: "___ he eaten sushi before?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'He' usa 'Has' + particípio nas perguntas." },
+        { id: 126, type: 'mc', question: "___ you done your homework?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' + particípio nas perguntas." },
+        { id: 127, type: 'mc', question: "___ I made a mistake?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "Com 'I', use 'Have' + particípio nas perguntas." },
+        { id: 128, type: 'mc', question: "___ she written her essay?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' + particípio nas perguntas." },
+        { id: 129, type: 'mc', question: "___ they come to visit you?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' + particípio nas perguntas." },
+        { id: 130, type: 'mc', question: "___ we taken that trip before?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' + particípio nas perguntas." },
+        { id: 131, type: 'mc', question: "___ he given you an answer?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'He' usa 'Has' + particípio nas perguntas." },
+        { id: 132, type: 'mc', question: "___ you had time to call me?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' + particípio nas perguntas." },
+        { id: 133, type: 'mc', question: "___ she been to Japan?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' + particípio nas perguntas." },
+        { id: 134, type: 'mc', question: "___ they tried Thai food?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' + particípio nas perguntas." },
+        { id: 135, type: 'mc', question: "___ we cleaned the house?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' + particípio nas perguntas." },
+        { id: 136, type: 'mc', question: "___ he arrived home?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'He' usa 'Has' + particípio nas perguntas." },
+        { id: 137, type: 'mc', question: "___ you finished the report?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'You' usa 'Have' + particípio nas perguntas." },
+        { id: 138, type: 'mc', question: "___ she studied for the test?", options: ["Have", "Has", "Did"], correctAnswer: "Has", hint: "'She' usa 'Has' + particípio nas perguntas." },
+        { id: 139, type: 'mc', question: "___ they known each other for long?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'They' usa 'Have' + particípio nas perguntas." },
+        { id: 140, type: 'mc', question: "___ we visited that museum?", options: ["Have", "Has", "Did"], correctAnswer: "Have", hint: "'We' usa 'Have' + particípio nas perguntas." },
+
+        // --- INTERROGATIVOS: PALAVRAS-CHAVE E CONTRASTE COM SIMPLE PAST (20 mc) ---
+        { id: 141, type: 'mc', question: "Have you ___ been to London?", options: ["ever", "yesterday", "ago"], correctAnswer: "ever", hint: "'Ever' pergunta sobre experiência de vida." },
+        { id: 142, type: 'mc', question: "Has she finished the book ___?", options: ["yet", "yesterday", "ago"], correctAnswer: "yet", hint: "'Yet' é típico de perguntas no Present Perfect." },
+        { id: 143, type: 'mc', question: "Have they ___ arrived?", options: ["already", "yesterday", "last week"], correctAnswer: "already", hint: "'Already' pode aparecer em perguntas, com sentido de surpresa." },
+        { id: 144, type: 'mc', question: "How long have you lived here? — ___ 2015.", options: ["Since", "For", "Ago"], correctAnswer: "Since", hint: "'Since' indica o ponto de partida no tempo." },
+        { id: 145, type: 'mc', question: "How long have you known her? — ___ ten years.", options: ["For", "Since", "Ago"], correctAnswer: "For", hint: "'For' indica um período de tempo." },
+        { id: 146, type: 'mc', question: "___ you see that movie yesterday?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Yesterday' é tempo específico, use 'Did' (Simple Past)." },
+        { id: 147, type: 'mc', question: "___ you seen that movie already?", options: ["Did", "Have", "Has"], correctAnswer: "Have", hint: "'Already' sem tempo específico indica Present Perfect." },
+        { id: 148, type: 'mc', question: "___ she go to Paris last year?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Last year' é tempo específico, use 'Did'." },
+        { id: 149, type: 'mc', question: "___ she gone to Paris before?", options: ["Did", "Have", "Has"], correctAnswer: "Has", hint: "'Before' indica experiência, use 'Has' (Present Perfect)." },
+        { id: 150, type: 'mc', question: "___ they finish the project last week?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Last week' é tempo específico, use 'Did'." },
+        { id: 151, type: 'mc', question: "___ they finished the project yet?", options: ["Did", "Have", "Has"], correctAnswer: "Have", hint: "'Yet' indica Present Perfect." },
+        { id: 152, type: 'mc', question: "___ he eat sushi two days ago?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Two days ago' é tempo específico, use 'Did'." },
+        { id: 153, type: 'mc', question: "___ he eaten sushi before?", options: ["Did", "Have", "Has"], correctAnswer: "Has", hint: "'Before' indica experiência, use 'Has'." },
+        { id: 154, type: 'mc', question: "___ you visit London in 2019?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'In 2019' é tempo específico, use 'Did'." },
+        { id: 155, type: 'mc', question: "___ you visited London several times?", options: ["Did", "Have", "Has"], correctAnswer: "Have", hint: "'Several times' sem tempo específico indica Present Perfect." },
+        { id: 156, type: 'mc', question: "___ she lose her keys yesterday?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Yesterday' é tempo específico, use 'Did'." },
+        { id: 157, type: 'mc', question: "___ she lost her keys? That's why she can't get in.", options: ["Did", "Have", "Has"], correctAnswer: "Has", hint: "Resultado no presente sem tempo específico, use 'Has'." },
+        { id: 158, type: 'mc', question: "___ he break his arm last month?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Last month' é tempo específico, use 'Did'." },
+        { id: 159, type: 'mc', question: "___ he broken his arm? That's why he can't play.", options: ["Did", "Have", "Has"], correctAnswer: "Has", hint: "Resultado no presente sem tempo específico, use 'Has'." },
+        { id: 160, type: 'mc', question: "___ you finish your homework last night?", options: ["Did", "Have", "Has"], correctAnswer: "Did", hint: "'Last night' é tempo específico, use 'Did'." },
+
+        // --- INTERROGATIVOS: REESCRITA (20 rewrite) ---
+        { id: 161, type: 'rewrite', question: "Rewrite in the interrogative form: You have seen that movie.", correctAnswer: "Have you seen that movie?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 162, type: 'rewrite', question: "Rewrite in the interrogative form: She has gone to Paris.", correctAnswer: "Has she gone to Paris?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 163, type: 'rewrite', question: "Rewrite in the interrogative form: They have finished their homework.", correctAnswer: "Have they finished their homework?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 164, type: 'rewrite', question: "Rewrite in the interrogative form: We have lived here since 2010.", correctAnswer: "Have we lived here since 2010?", hint: "Coloque 'Have' antes de 'we'." },
+        { id: 165, type: 'rewrite', question: "Rewrite in the interrogative form: He has eaten sushi before.", correctAnswer: "Has he eaten sushi before?", hint: "Coloque 'Has' antes de 'he'." },
+        { id: 166, type: 'rewrite', question: "Rewrite in the interrogative form: You have done a great job.", correctAnswer: "Have you done a great job?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 167, type: 'rewrite', question: "Rewrite in the interrogative form: I have made a mistake.", correctAnswer: "Have I made a mistake?", hint: "Coloque 'Have' antes de 'I'." },
+        { id: 168, type: 'rewrite', question: "Rewrite in the interrogative form: She has written her essay.", correctAnswer: "Has she written her essay?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 169, type: 'rewrite', question: "Rewrite in the interrogative form: They have come to visit you.", correctAnswer: "Have they come to visit you?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 170, type: 'rewrite', question: "Rewrite in the interrogative form: We have taken that trip before.", correctAnswer: "Have we taken that trip before?", hint: "Coloque 'Have' antes de 'we'." },
+        { id: 171, type: 'rewrite', question: "Rewrite in the interrogative form: He has given you an answer.", correctAnswer: "Has he given you an answer?", hint: "Coloque 'Has' antes de 'he'." },
+        { id: 172, type: 'rewrite', question: "Rewrite in the interrogative form: You have had time to call me.", correctAnswer: "Have you had time to call me?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 173, type: 'rewrite', question: "Rewrite in the interrogative form: She has been to Japan.", correctAnswer: "Has she been to Japan?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 174, type: 'rewrite', question: "Rewrite in the interrogative form: They have tried Thai food.", correctAnswer: "Have they tried Thai food?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 175, type: 'rewrite', question: "Rewrite in the interrogative form: We have cleaned the house.", correctAnswer: "Have we cleaned the house?", hint: "Coloque 'Have' antes de 'we'." },
+        { id: 176, type: 'rewrite', question: "Rewrite in the interrogative form: He has arrived home.", correctAnswer: "Has he arrived home?", hint: "Coloque 'Has' antes de 'he'." },
+        { id: 177, type: 'rewrite', question: "Rewrite in the interrogative form: You have finished the report.", correctAnswer: "Have you finished the report?", hint: "Coloque 'Have' antes de 'you'." },
+        { id: 178, type: 'rewrite', question: "Rewrite in the interrogative form: She has studied for the test.", correctAnswer: "Has she studied for the test?", hint: "Coloque 'Has' antes de 'she'." },
+        { id: 179, type: 'rewrite', question: "Rewrite in the interrogative form: They have known each other for years.", correctAnswer: "Have they known each other for years?", hint: "Coloque 'Have' antes de 'they'." },
+        { id: 180, type: 'rewrite', question: "Rewrite in the interrogative form: We have visited that museum.", correctAnswer: "Have we visited that museum?", hint: "Coloque 'Have' antes de 'we'." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
