@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
     let exercises = [];
 
-    // --- EXERCÍCIOS MANY E MUCH (30 exemplos - Bloco 1) ---
+    // --- EXERCÍCIOS MANY E MUCH (60 exemplos - Bloco 1 e 2) ---
     exercises = [
-        // --- FOCO EM MANY/MUCH EM NEGATIVAS E INTERROGATIVAS (30 mc) ---
+        // --- Bloco 1: FOCO EM MANY/MUCH EM NEGATIVAS E INTERROGATIVAS (30 mc) ---
         { id: 1, type: 'mc', question: "Do you have ___ friends?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Friends' é contável. Use 'many' em perguntas." },
         { id: 2, type: 'mc', question: "I don't have ___ money.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Money' é incontável. Use 'much' em negativas." },
         { id: 3, type: 'mc', question: "There isn't ___ water in the bottle.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Water' é incontável. Use 'much' em negativas." },
@@ -48,7 +48,42 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 27, type: 'mc', question: "We didn't get ___ rain last month.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Rain' é incontável. Use 'much' em negativas." },
         { id: 28, type: 'mc', question: "How ___ people were at the party?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'People' é contável. Use 'many' com 'how'." },
         { id: 29, type: 'mc', question: "I don't have ___ free time.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Free time' é incontável. Use 'much' em negativas." },
-        { id: 30, type: 'mc', question: "Did you bring ___ bags?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Bags' é contável. Use 'many' em perguntas." }
+        { id: 30, type: 'mc', question: "Did you bring ___ bags?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Bags' é contável. Use 'many' em perguntas." },
+
+        // --- Bloco 2: MAIS EXERCÍCIOS E REESCRITA (30 exercícios) ---
+        // --- Múltipla Escolha (15 mc) ---
+        { id: 31, type: 'mc', question: "There are ___ beautiful flowers in the garden.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
+        { id: 32, type: 'mc', question: "She doesn't have ___ patience with noisy children.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Patience' é incontável. Use 'much' em negativas." },
+        { id: 33, type: 'mc', question: "How ___ experience do you have in this field?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Experience' (geral) é incontável. Use 'much' com 'how'." },
+        { id: 34, type: 'mc', question: "I bought ___ new clothes for my trip.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
+        { id: 35, type: 'mc', question: "He didn't give me ___ advice.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Advice' é incontável. Use 'much' em negativas." },
+        { id: 36, type: 'mc', question: "Are there ___ good restaurants in this area?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Restaurants' é contável. Use 'many' em perguntas." },
+        { id: 37, type: 'mc', question: "We don't have ___ furniture in our new apartment.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Furniture' é incontável. Use 'much' em negativas." },
+        { id: 38, type: 'mc', question: "How ___ hours do you work per week?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Hours' é contável. Use 'many' com 'how'." },
+        { id: 39, type: 'mc', question: "She spends ___ time on social media.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para incontáveis." },
+        { id: 40, type: 'mc', question: "Did you find ___ useful information online?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Information' é incontável. Use 'much' em perguntas." },
+        { id: 41, type: 'mc', question: "There were ___ people at the concert.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
+        { id: 42, type: 'mc', question: "I don't have ___ patience for this kind of game.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Patience' é incontável. Use 'much' em negativas." },
+        { id: 43, type: 'mc', question: "How ___ apples did you buy?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Apples' é contável. Use 'many' com 'how'." },
+        { id: 44, type: 'mc', question: "He has ___ friends in different countries.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
+        { id: 45, type: 'mc', question: "Is there ___ milk left?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Milk' é incontável. Use 'much' em perguntas." },
+
+        // --- Reescrita (15 rewrite) ---
+        { id: 46, type: 'rewrite', question: "Rewrite using 'many' or 'much': I don't have (a lot of) books.", correctAnswer: "I don't have many books.", hint: "'Books' é contável. Use 'many' em negativas." },
+        { id: 47, type: 'rewrite', question: "Rewrite using 'many' or 'much': She didn't bring (a lot of) luggage.", correctAnswer: "She didn't bring much luggage.", hint: "'Luggage' é incontável. Use 'much' em negativas." },
+        { id: 48, type: 'rewrite', question: "Rewrite using 'many' or 'much': Did you see (a lot of) birds in the park?", correctAnswer: "Did you see many birds in the park?", hint: "'Birds' é contável. Use 'many' em perguntas." },
+        { id: 49, type: 'rewrite', question: "Rewrite using 'many' or 'much': There isn't (a lot of) noise in this library.", correctAnswer: "There isn't much noise in this library.", hint: "'Noise' é incontável. Use 'much' em negativas." },
+        { id: 50, type: 'rewrite', question: "Rewrite using 'many' or 'much': How (a lot of) students are in your class?", correctAnswer: "How many students are in your class?", hint: "'Students' é contável. Use 'many' com 'how'." },
+        { id: 51, type: 'rewrite', question: "Rewrite using 'many' or 'much': How (a lot of) patience do you have?", correctAnswer: "How much patience do you have?", hint: "'Patience' é incontável. Use 'much' com 'how'." },
+        { id: 52, type: 'rewrite', question: "Rewrite using 'many' or 'much': I don't have (a lot of) problems with my car.", correctAnswer: "I don't have many problems with my car.", hint: "'Problems' é contável. Use 'many' em negativas." },
+        { id: 53, type: 'rewrite', question: "Rewrite using 'many' or 'much': Did you get (a lot of) sleep last night?", correctAnswer: "Did you get much sleep last night?", hint: "'Sleep' é incontável. Use 'much' em perguntas." },
+        { id: 54, type: 'rewrite', question: "Rewrite using 'many' or 'much': There weren't (a lot of) options available.", correctAnswer: "There weren't many options available.", hint: "'Options' é contável. Use 'many' em negativas." },
+        { id: 55, type: 'rewrite', question: "Rewrite using 'many' or 'much': She doesn't need (a lot of) help with her project.", correctAnswer: "She doesn't need much help with her project.", hint: "'Help' é incontável. Use 'much' em negativas." },
+        { id: 56, type: 'rewrite', question: "Rewrite using 'many' or 'much': How (a lot of) pieces of advice did he give you?", correctAnswer: "How many pieces of advice did he give you?", hint: "'Pieces of advice' é contável. Use 'many' com 'how'." },
+        { id: 57, type: 'rewrite', question: "Rewrite using 'many' or 'much': How (a lot of) fun did you have?", correctAnswer: "How much fun did you have?", hint: "'Fun' é incontável. Use 'much' com 'how'." },
+        { id: 58, type: 'rewrite', question: "Rewrite using 'many' or 'much': I don't have (a lot of) time to waste.", correctAnswer: "I don't have much time to waste.", hint: "'Time' (duração) é incontável. Use 'much' em negativas." },
+        { id: 59, type: 'rewrite', question: "Rewrite using 'many' or 'much': Did you buy (a lot of) food for the party?", correctAnswer: "Did you buy much food for the party?", hint: "'Food' é incontável. Use 'much' em perguntas." },
+        { id: 60, type: 'rewrite', question: "Rewrite using 'many' or 'much': There isn't (a lot of) space in this room.", correctAnswer: "There isn't much space in this room.", hint: "'Space' é incontável. Use 'much' em negativas." }
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
