@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Many and Much Exercises - English Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .exercise-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .exercise-container h2 {
+            color: #4CAF50;
+            margin-bottom: 25px;
+            font-size: 2.2em;
+        }
+        .exercise-area {
+            margin-top: 30px;
+            text-align: left;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .exercise-question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .option-button {
+            background-color: #f0f2f5;
+            border: 1px solid #ddd;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+        .option-button:hover {
+            background-color: #e0e2e5;
+            border-color: #ccc;
+        }
+        .option-button.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .option-button.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .feedback-message {
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .feedback-message.correct {
+            color: #28a745;
+        }
+        .feedback-message.incorrect {
+            color: #dc3545;
+        }
+        .navigation-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .navigation-buttons button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .navigation-buttons button:hover {
+            background-color: #0056b3;
+        }
+        .navigation-buttons button#back-to-dashboard {
+            background-color: #6c757d;
+        }
+        .navigation-buttons button#back-to-dashboard:hover {
+            background-color: #5a6268;
+        }
+        .rewrite-input {
+            width: 80%;
+            padding: 10px;
+            margin-top: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1.1em;
+        }
+        .check-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-top: 15px;
+        }
+        .check-button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Prática de Many e Much</h1>
+    </header>
+    <main>
+        <div class="exercise-container">
+            <h2>Exercícios de Many e Much</h2>
+
+            <div class="exercise-area" id="exercise-area">
+                <p>Carregando exercícios...</p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button id="prev-exercise" style="display: none;">Anterior</button>
+                <button id="next-exercise" style="display: none;">Próximo</button>
+                <button id="back-to-dashboard" onclick="location.href='student-dashboard.html'">Voltar ao Painel</button>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 English Practice. Todos os direitos reservados.</p>
+    </footer>
+    <script src="many-much-exercises.js"></script>
+</body>
+</html>
