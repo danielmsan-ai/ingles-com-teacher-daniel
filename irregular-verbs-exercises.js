@@ -261,16 +261,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return verb[formType];
     }
 
-    function getDistractors(correctAnswers) {
-        const correctSet = new Set(correctAnswers.map(answer => answer.toLowerCase()));
+       function getDistractors(correctAnswers) {
+        const correctSet = new Set(
+            correctAnswers.map(answer => answer.toLowerCase())
+        );
         const possibleAnswers = [];
 
         verbs.forEach(verb => {
             ['base', 'past', 'participle'].forEach(formType => {
-                verb[formType].forEach(answer => {
+                const answers = Array.isArray(verb[formType])
+                    ? verb[formType]
+                    : [verb[formType]];
+
+                answers.forEach(answer => {
                     const normalizedAnswer = answer.toLowerCase();
 
-                    if (!correctSet.has(normalizedAnswer) && !possibleAnswers.includes(answer)) {
+                    if (
+                        !correctSet.has(normalizedAnswer) &&
+                        !possibleAnswers.some(
+                            existingAnswer =>
+                                existingAnswer.toLowerCase() === normalizedAnswer
+                        )
+                    ) {
                         possibleAnswers.push(answer);
                     }
                 });
@@ -279,7 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return shuffleArray(possibleAnswers).slice(0, 2);
     }
-
     function createOptions(correctAnswers) {
         const distractors = getDistractors(correctAnswers);
         const options = [...correctAnswers, ...distractors];
