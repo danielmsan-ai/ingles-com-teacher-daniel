@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentExerciseIndex = 0;
 
     const exercises = [
+        // Bloco 1: usos básicos
         { id: 1, question: "Would you like ___ cup of tea?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'mais um/uma' e acompanha um substantivo contável singular." },
         { id: 2, question: "I have two sisters. One lives in Brazil, and ___ lives in Canada.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "Para falar da segunda pessoa de um grupo de duas, usamos 'the other'." },
         { id: 3, question: "Some students like working alone; ___ prefer working in groups.", options: ["another", "other", "others"], correctAnswer: "others", hint: "'Others' significa 'outros' e é usado sem um substantivo logo depois." },
@@ -25,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 8, question: "I don't like this shirt. Show me ___ one.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'uma outra' e acompanha o singular 'one'." },
         { id: 9, question: "Some of the books are new; ___ are quite old.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' indica os demais elementos de um grupo específico." },
         { id: 10, question: "There are many ___ ways to solve this problem.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes de um substantivo plural: 'ways'." },
-
         { id: 11, question: "Could I have ___ minute to finish this?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'mais um' e acompanha o singular 'minute'." },
         { id: 12, question: "Some children were playing outside; ___ were reading indoors.", options: ["another", "other", "others"], correctAnswer: "others", hint: "'Others' substitui um substantivo plural já mencionado." },
         { id: 13, question: "We visited three cities. One was Paris, and ___ was Rome.", options: ["another", "the other", "others"], correctAnswer: "another", hint: "Quando falamos de uma cidade diferente entre várias, podemos usar 'another'." },
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 18, question: "We need ___ chairs for the guests.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes de um substantivo plural: 'chairs'." },
         { id: 19, question: "This exercise is too hard. Let's try ___ one.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' acompanha o substantivo singular 'one'." },
         { id: 20, question: "Some of my friends like soccer; ___ prefer basketball.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' pode indicar os outros membros de um grupo conhecido." },
-
         { id: 21, question: "Would you like ___ piece of cake?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'mais um/uma' antes de um substantivo singular." },
         { id: 22, question: "Do you have any ___ plans for the weekend?", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'plans'." },
         { id: 23, question: "Some guests left early, while ___ stayed until midnight.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' significa 'outros' e não vem diretamente antes de um substantivo." },
@@ -46,7 +45,39 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 27, question: "She has visited many ___ countries.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'countries'." },
         { id: 28, question: "One of these bags is mine; ___ belongs to my brother.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "Para o segundo item de um grupo de dois, usamos 'the other'." },
         { id: 29, question: "Some students chose the blue pen; ___ chose the black one.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' substitui 'other students' e aparece sem substantivo depois." },
-        { id: 30, question: "We stayed for ___ two days.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' também pode ser usado antes de número + substantivo plural: 'another two days'." }
+        { id: 30, question: "We stayed for ___ two days.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' também pode ser usado antes de número + substantivo plural: 'another two days'." },
+
+        // Bloco 2: contraste entre another, other, others e the other(s)
+        { id: 31, question: "I don't want this notebook. Do you have ___?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' pode aparecer sozinho quando o substantivo singular já está claro pelo contexto." },
+        { id: 32, question: "Some of the guests are from Brazil; ___ are from Argentina.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' se refere ao restante de um grupo específico de convidados." },
+        { id: 33, question: "We need ___ chairs because more people are coming.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'chairs'." },
+        { id: 34, question: "Would you like ___ cookie, or are you full?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'mais um' e acompanha o substantivo singular 'cookie'." },
+        { id: 35, question: "Some people prefer tea; ___ prefer coffee.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' significa 'outras pessoas' e não é seguido por substantivo." },
+        { id: 36, question: "One of my shoes is under the bed; ___ is by the door.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "Para o segundo item de um par, usamos 'the other'." },
+        { id: 37, question: "Do you have ___ suggestions for improving the project?", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'suggestions'." },
+        { id: 38, question: "The first restaurant was closed, so we went to ___ nearby.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' acompanha um substantivo contável singular, aqui implícito: restaurant." },
+        { id: 39, question: "Some of these boxes are empty; ___ contain books.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' aponta para as caixas restantes de um grupo específico." },
+        { id: 40, question: "We have ___ work to do before the presentation.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' pode vir antes do substantivo incontável 'work'." },
+        { id: 41, question: "This chair is uncomfortable. Could I sit on ___?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' pode ser usado sozinho para indicar outra cadeira." },
+        { id: 42, question: "Some students finished the test early; ___ needed more time.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' substitui 'other students'." },
+        { id: 43, question: "I have two jackets. One is black, and ___ is brown.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "'The other' indica o segundo elemento de um conjunto de dois." },
+        { id: 44, question: "He has lived in many ___ cities.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'cities'." },
+        { id: 45, question: "Could we meet on ___ day? I am busy tomorrow.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' acompanha o substantivo singular 'day'." },
+        { id: 46, question: "Some birds migrate in winter; ___ stay here all year.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' é usado sem um substantivo depois." },
+        { id: 47, question: "Are there any ___ sizes available?", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'sizes'." },
+        { id: 48, question: "There are two keys on the table. One is mine; ___ is yours.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "'The other' identifica o segundo item de um grupo de dois." },
+        { id: 49, question: "She ordered ___ glass of water.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' significa 'mais um' antes do substantivo singular 'glass'." },
+        { id: 50, question: "Some of the paintings are original; ___ are copies.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' se refere ao restante de um grupo definido de pinturas." },
+        { id: 51, question: "We should consider ___ options before deciding.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'options'." },
+        { id: 52, question: "This answer is incorrect. Please try ___ time.", options: ["another", "other", "others"], correctAnswer: "another", hint: "A expressão 'another time' significa 'mais uma vez' neste contexto." },
+        { id: 53, question: "Some of my neighbors have dogs; ___ have cats.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' substitui 'other neighbors'." },
+        { id: 54, question: "One of the twins is very quiet, but ___ is quite talkative.", options: ["another", "the other", "others"], correctAnswer: "the other", hint: "Há dois gêmeos; 'the other' indica o segundo." },
+        { id: 55, question: "There is no more coffee. Would you like ___ drink?", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' acompanha o substantivo contável singular 'drink'." },
+        { id: 56, question: "Some employees work on Mondays; ___ work on Tuesdays.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' aparece sem substantivo depois e significa 'outros funcionários'." },
+        { id: 57, question: "Please bring ___ documents you have about the application.", options: ["another", "other", "others"], correctAnswer: "other", hint: "'Other' vem antes do substantivo plural 'documents'." },
+        { id: 58, question: "I have one more idea. Let me suggest ___ possibility.", options: ["another", "other", "others"], correctAnswer: "another", hint: "'Another' acompanha o substantivo singular 'possibility'." },
+        { id: 59, question: "Of the five applicants, one was hired and ___ were rejected.", options: ["another", "the others", "other"], correctAnswer: "the others", hint: "'The others' indica os candidatos restantes de um grupo específico." },
+        { id: 60, question: "Some children wanted to play outside; ___ wanted to stay indoors.", options: ["another", "others", "other"], correctAnswer: "others", hint: "'Others' substitui 'other children' e não vem antes de um substantivo." }
     ];
 
     function updateStudentProgress(isCorrect) {
@@ -93,9 +124,11 @@ document.addEventListener('DOMContentLoaded', () => {
             button.type = 'button';
             button.classList.add('option-button');
             button.textContent = option;
+
             button.addEventListener('click', () => {
-                checkAnswer(option, exercise.correctAnswer, button);
+                checkAnswer(option, exercise, button);
             });
+
             optionsContainer.appendChild(button);
         });
 
@@ -103,12 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
         updateNavigationButtons();
     }
 
-    function checkAnswer(userAnswer, correctAnswer, selectedButton) {
+    function checkAnswer(userAnswer, exercise, selectedButton) {
         if (exerciseArea.querySelector('.feedback-message')) {
             return;
         }
 
-        const isCorrect = userAnswer.trim().toLowerCase() === correctAnswer.trim().toLowerCase();
+        const isCorrect = userAnswer.trim().toLowerCase() === exercise.correctAnswer.trim().toLowerCase();
         const feedbackMessage = document.createElement('p');
         feedbackMessage.classList.add('feedback-message');
 
@@ -117,24 +150,22 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackMessage.classList.add('correct');
             selectedButton.classList.add('correct');
         } else {
-            feedbackMessage.textContent = `Incorrect. The correct answer is: "${correctAnswer}".`;
+            feedbackMessage.textContent = `Incorrect. The correct answer is: "${exercise.correctAnswer}".`;
             feedbackMessage.classList.add('incorrect');
             selectedButton.classList.add('incorrect');
 
             exerciseArea.querySelectorAll('.option-button').forEach(button => {
-                if (button.textContent === correctAnswer) {
+                if (button.textContent === exercise.correctAnswer) {
                     button.classList.add('correct');
                 }
             });
         }
 
-       const currentExercise = exercises[currentExerciseIndex];
-
-if (currentExercise.hint) {
-    const hintElement = document.createElement('p');
-    hintElement.textContent = currentExercise.hint;
-    feedbackMessage.appendChild(hintElement);
-}
+        if (exercise.hint) {
+            const hintElement = document.createElement('p');
+            hintElement.textContent = exercise.hint;
+            feedbackMessage.appendChild(hintElement);
+        }
 
         exerciseArea.appendChild(feedbackMessage);
         updateStudentProgress(isCorrect);
