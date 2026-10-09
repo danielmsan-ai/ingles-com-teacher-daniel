@@ -1,0 +1,169 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+    if (!loggedInUser || loggedInUser.type !== 'student') {
+        alert('Acesso não autorizado. Por favor, faça login como aluno.');
+        window.location.href = 'index.html';
+        return;
+    }
+
+    const TOPIC_NAME = 'Prepositions + Verb-ing';
+    const exerciseArea = document.getElementById('exercise-area');
+    const prevButton = document.getElementById('prev-exercise');
+    const nextButton = document.getElementById('next-exercise');
+
+    let currentExerciseIndex = 0;
+
+    const exercises = [
+        { id: 1, question: "She is interested in ___ English.", options: ["learn", "learning", "to learn"], correctAnswer: "learning", hint: "Depois da preposição 'in', use o verbo com -ing." },
+        { id: 2, question: "Thank you for ___ me.", options: ["help", "helping", "to help"], correctAnswer: "helping", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 3, question: "He left without ___ goodbye.", options: ["say", "saying", "to say"], correctAnswer: "saying", hint: "Depois da preposição 'without', use o verbo com -ing." },
+        { id: 4, question: "They talked about ___ a new business.", options: ["start", "starting", "to start"], correctAnswer: "starting", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 5, question: "She is good at ___ difficult problems.", options: ["solve", "solving", "to solve"], correctAnswer: "solving", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 6, question: "I am tired of ___ the same thing every day.", options: ["do", "doing", "to do"], correctAnswer: "doing", hint: "Depois de 'of', use o verbo com -ing." },
+        { id: 7, question: "He apologized for ___ late.", options: ["arrive", "arriving", "to arrive"], correctAnswer: "arriving", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 8, question: "We are looking forward to ___ you.", options: ["see", "seeing", "to see"], correctAnswer: "seeing", hint: "Na expressão 'look forward to', 'to' é uma preposição; use o verbo com -ing." },
+        { id: 9, question: "She left the room before ___ the answer.", options: ["hear", "hearing", "to hear"], correctAnswer: "hearing", hint: "Depois da preposição 'before', use o verbo com -ing." },
+        { id: 10, question: "He succeeded in ___ the exam.", options: ["pass", "passing", "to pass"], correctAnswer: "passing", hint: "Depois de 'in', use o verbo com -ing." },
+
+        { id: 11, question: "They went home after ___ dinner.", options: ["eat", "eating", "to eat"], correctAnswer: "eating", hint: "Depois da preposição 'after', use o verbo com -ing." },
+        { id: 12, question: "She is afraid of ___ alone at night.", options: ["walk", "walking", "to walk"], correctAnswer: "walking", hint: "Depois da preposição 'of', use o verbo com -ing." },
+        { id: 13, question: "He is interested in ___ old cars.", options: ["collect", "collecting", "to collect"], correctAnswer: "collecting", hint: "Depois de 'in', use o verbo com -ing." },
+        { id: 14, question: "I thanked her for ___ me with my homework.", options: ["help", "helping", "to help"], correctAnswer: "helping", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 15, question: "They left without ___ their friends.", options: ["tell", "telling", "to tell"], correctAnswer: "telling", hint: "Depois de 'without', use o verbo com -ing." },
+        { id: 16, question: "He is thinking about ___ a new job.", options: ["find", "finding", "to find"], correctAnswer: "finding", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 17, question: "She is excellent at ___ stories.", options: ["write", "writing", "to write"], correctAnswer: "writing", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 18, question: "I am looking forward to ___ my cousins.", options: ["visit", "visiting", "to visit"], correctAnswer: "visiting", hint: "Na expressão 'look forward to', use o verbo com -ing." },
+        { id: 19, question: "He apologized for ___ the meeting.", options: ["miss", "missing", "to miss"], correctAnswer: "missing", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 20, question: "She went to bed after ___ a book.", options: ["read", "reading", "to read"], correctAnswer: "reading", hint: "Depois da preposição 'after', use o verbo com -ing." },
+
+        { id: 21, question: "They are worried about ___ the train.", options: ["miss", "missing", "to miss"], correctAnswer: "missing", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 22, question: "He is responsible for ___ the office.", options: ["clean", "cleaning", "to clean"], correctAnswer: "cleaning", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 23, question: "She is tired of ___ for the bus.", options: ["wait", "waiting", "to wait"], correctAnswer: "waiting", hint: "Depois de 'of', use o verbo com -ing." },
+        { id: 24, question: "We talked about ___ a trip together.", options: ["take", "taking", "to take"], correctAnswer: "taking", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 25, question: "He is bad at ___ names.", options: ["remember", "remembering", "to remember"], correctAnswer: "remembering", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 26, question: "She got better at ___ after practicing every day.", options: ["dance", "dancing", "to dance"], correctAnswer: "dancing", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 27, question: "Before ___ the house, please turn off the lights.", options: ["leave", "leaving", "to leave"], correctAnswer: "leaving", hint: "Depois de 'before', use o verbo com -ing." },
+        { id: 28, question: "He is afraid of ___ mistakes in the test.", options: ["make", "making", "to make"], correctAnswer: "making", hint: "Depois da preposição 'of', use o verbo com -ing." },
+        { id: 29, question: "They succeeded in ___ the problem.", options: ["solve", "solving", "to solve"], correctAnswer: "solving", hint: "Depois de 'in', use o verbo com -ing." },
+        { id: 30, question: "She left the party without ___ goodbye.", options: ["say", "saying", "to say"], correctAnswer: "saying", hint: "Depois de 'without', use o verbo com -ing." }
+    ];
+
+    function updateStudentProgress(isCorrect) {
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        const userIndex = users.findIndex(user => user.id === loggedInUser.id);
+
+        if (userIndex === -1) {
+            return;
+        }
+
+        if (!users[userIndex].progress) {
+            users[userIndex].progress = {};
+        }
+
+        if (!users[userIndex].progress[TOPIC_NAME]) {
+            users[userIndex].progress[TOPIC_NAME] = { correct: 0, incorrect: 0 };
+        }
+
+        if (isCorrect) {
+            users[userIndex].progress[TOPIC_NAME].correct++;
+        } else {
+            users[userIndex].progress[TOPIC_NAME].incorrect++;
+        }
+
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    function renderExercise() {
+        const exercise = exercises[currentExerciseIndex];
+        exerciseArea.innerHTML = '';
+
+        const questionElement = document.createElement('p');
+        questionElement.classList.add('exercise-question');
+        questionElement.textContent = exercise.question;
+        exerciseArea.appendChild(questionElement);
+
+        const optionsContainer = document.createElement('div');
+        optionsContainer.classList.add('options-container');
+
+        const shuffledOptions = [...exercise.options].sort(() => Math.random() - 0.5);
+
+        shuffledOptions.forEach(option => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.classList.add('option-button');
+            button.textContent = option;
+
+            button.addEventListener('click', () => {
+                checkAnswer(option, exercise, button);
+            });
+
+            optionsContainer.appendChild(button);
+        });
+
+        exerciseArea.appendChild(optionsContainer);
+        updateNavigationButtons();
+    }
+
+    function checkAnswer(userAnswer, exercise, selectedButton) {
+        if (exerciseArea.querySelector('.feedback-message')) {
+            return;
+        }
+
+        const isCorrect =
+            userAnswer.trim().toLowerCase() === exercise.correctAnswer.trim().toLowerCase();
+
+        const feedbackMessage = document.createElement('p');
+        feedbackMessage.classList.add('feedback-message');
+
+        if (isCorrect) {
+            feedbackMessage.textContent = 'Correct!';
+            feedbackMessage.classList.add('correct');
+            selectedButton.classList.add('correct');
+        } else {
+            feedbackMessage.textContent = `Incorrect. The correct answer is: "${exercise.correctAnswer}".`;
+            feedbackMessage.classList.add('incorrect');
+            selectedButton.classList.add('incorrect');
+
+            exerciseArea.querySelectorAll('.option-button').forEach(button => {
+                if (button.textContent === exercise.correctAnswer) {
+                    button.classList.add('correct');
+                }
+            });
+        }
+
+        if (exercise.hint) {
+            const hintElement = document.createElement('p');
+            hintElement.textContent = exercise.hint;
+            feedbackMessage.appendChild(hintElement);
+        }
+
+        exerciseArea.appendChild(feedbackMessage);
+        updateStudentProgress(isCorrect);
+
+        exerciseArea.querySelectorAll('.option-button').forEach(button => {
+            button.disabled = true;
+        });
+    }
+
+    function updateNavigationButtons() {
+        prevButton.style.display = currentExerciseIndex > 0 ? 'inline-block' : 'none';
+        nextButton.style.display = currentExerciseIndex < exercises.length - 1 ? 'inline-block' : 'none';
+    }
+
+    prevButton.addEventListener('click', () => {
+        if (currentExerciseIndex > 0) {
+            currentExerciseIndex--;
+            renderExercise();
+        }
+    });
+
+    nextButton.addEventListener('click', () => {
+        if (currentExerciseIndex < exercises.length - 1) {
+            currentExerciseIndex++;
+            renderExercise();
+        }
+    });
+
+    renderExercise();
+});
