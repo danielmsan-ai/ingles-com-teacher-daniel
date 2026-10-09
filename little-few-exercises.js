@@ -63,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 43, type: 'mc', question: "We invited ___ neighbors, and they all came to dinner.", options: ["a few", "few", "a little"], correctAnswer: "a few", hint: "'A few' significa alguns vizinhos." },
         { id: 44, type: 'mc', question: "Few ___ can finish this puzzle in under a minute.", options: ["child", "children", "furniture"], correctAnswer: "children", hint: "'Few' acompanha substantivos contáveis no plural; 'children' é plural." },
         { id: 45, type: 'mc', question: "I know ___ French, enough to introduce myself.", options: ["a little", "little", "a few"], correctAnswer: "a little", hint: "'A little' indica que sei um pouco de francês." },
-
         { id: 46, type: 'mc', question: "The town has ___ buses at night, so getting home is difficult.", options: ["few", "a few", "a little"], correctAnswer: "few", hint: "'Few buses' enfatiza que quase não há ônibus." },
         { id: 47, type: 'mc', question: "Add ___ salt to the soup; it tastes bland.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Salt' é incontável. Use 'a little' para indicar uma pequena quantidade." },
         { id: 48, type: 'mc', question: "There was ___ traffic, so we arrived much earlier than expected.", options: ["little", "a little", "a few"], correctAnswer: "little", hint: "'Little traffic' indica que havia pouco trânsito." },
@@ -78,7 +77,40 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 57, type: 'mc', question: "I found ___ useful websites for my research.", options: ["a few", "a little", "little"], correctAnswer: "a few", hint: "'Websites' é contável e plural. Use 'a few'." },
         { id: 58, type: 'mc', question: "There is ___ oil in the pan, enough to cook the eggs.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Oil' é incontável. 'A little' indica uma pequena quantidade suficiente." },
         { id: 59, type: 'mc', question: "Few ___ understood the instructions, so the activity had to be explained again.", options: ["student", "students", "homework"], correctAnswer: "students", hint: "'Few' acompanha substantivos contáveis no plural." },
-        { id: 60, type: 'mc', question: "We have ___ information about the event, so we cannot make a decision yet.", options: ["little", "a little", "a few"], correctAnswer: "little", hint: "'Little information' enfatiza que quase não temos informação." }
+        { id: 60, type: 'mc', question: "We have ___ information about the event, so we cannot make a decision yet.", options: ["little", "a little", "a few"], correctAnswer: "little", hint: "'Little information' enfatiza que quase não temos informação." },
+
+        // Bloco 3: contraste e aplicação em diferentes contextos
+        { id: 61, type: 'mc', question: "There are ___ cookies left, so we can share them.", options: ["a few", "a little", "little"], correctAnswer: "a few", hint: "'Cookies' é contável e plural; 'a few' indica que ainda há alguns." },
+        { id: 62, type: 'mc', question: "We have ___ fuel left, so we should stop at the next gas station.", options: ["a few", "little", "few"], correctAnswer: "little", hint: "'Fuel' é incontável; 'little' enfatiza que quase não resta." },
+        { id: 63, type: 'mc', question: "Could you give me ___ advice about choosing a laptop?", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Advice' é incontável. Use 'a little'." },
+        { id: 64, type: 'mc', question: "Only ___ houses in this area have solar panels.", options: ["a little", "few", "little"], correctAnswer: "few", hint: "'Houses' é contável e plural; 'few' significa poucas." },
+        { id: 65, type: 'mc', question: "I still have ___ work to do, but I should finish soon.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Work' é incontável; 'a little' indica que ainda resta algum trabalho." },
+        { id: 66, type: 'mc', question: "Very ___ customers complained about the new menu.", options: ["little", "a little", "few"], correctAnswer: "few", hint: "'Customers' é contável e plural. Use 'few'." },
+        { id: 67, type: 'mc', question: "There is ___ cheese in the fridge, enough for one sandwich.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Cheese' é incontável. Use 'a little'." },
+        { id: 68, type: 'mc', question: "We received ___ replies to the email, so we need to contact more people.", options: ["little", "few", "a little"], correctAnswer: "few", hint: "'Replies' é contável e plural; 'few' indica que foram poucas." },
+        { id: 69, type: 'mc', question: "She has ___ knowledge of the subject, so she can help us.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Knowledge' é incontável. Use 'a little'." },
+        { id: 70, type: 'mc', question: "There are ___ mistakes in your essay. Most of it is excellent.", options: ["a few", "a little", "little"], correctAnswer: "a few", hint: "'Mistakes' é contável e plural; 'a few' indica alguns erros." },
+        { id: 71, type: 'mc', question: "We had ___ luggage, so we carried everything easily.", options: ["few", "little", "a few"], correctAnswer: "little", hint: "'Luggage' é incontável. 'Little luggage' indica pouca bagagem." },
+        { id: 72, type: 'mc', question: "Few ___ remember the town before the new bridge was built.", options: ["resident", "residents", "furniture"], correctAnswer: "residents", hint: "'Few' acompanha substantivos contáveis no plural." },
+        { id: 73, type: 'mc', question: "I have ___ cash with me, but I can pay for the bus.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Cash' é incontável. 'A little' indica uma pequena quantia disponível." },
+        { id: 74, type: 'mc', question: "There are ___ job opportunities in this small village.", options: ["little", "few", "a little"], correctAnswer: "few", hint: "'Opportunities' é contável e plural. Use 'few'." },
+        { id: 75, type: 'mc', question: "He added ___ flour to the mixture, just enough to thicken it.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Flour' é incontável. Use 'a little'." },
+
+        { id: 76, type: 'mc', question: "A few ___ volunteered to help clean the park.", options: ["person", "people", "advice"], correctAnswer: "people", hint: "'A few' acompanha substantivos contáveis no plural." },
+        { id: 77, type: 'mc', question: "There is ___ possibility of rain today, so take an umbrella.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Possibility' é contável, mas aqui aparece no singular; a frase pede 'a little' antes do nome incontável? Revise: use 'a little possibility' não é natural." },
+        { id: 78, type: 'mc', question: "We have ___ clean plates, so we need to wash some more.", options: ["few", "little", "a little"], correctAnswer: "few", hint: "'Plates' é contável e plural; 'few' indica que restam poucas." },
+        { id: 79, type: 'mc', question: "Could you wait ___ longer? The meeting is almost over.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Longer' indica duração. Use 'a little' para pedir mais um pouco de tempo." },
+        { id: 80, type: 'mc', question: "Few ___ were available for rent near the university.", options: ["apartment", "apartments", "traffic"], correctAnswer: "apartments", hint: "'Few' acompanha substantivos contáveis no plural." },
+        { id: 81, type: 'mc', question: "There is ___ evidence to support the claim, so we need to investigate further.", options: ["little", "a few", "few"], correctAnswer: "little", hint: "'Evidence' é incontável; 'little evidence' indica evidência insuficiente." },
+        { id: 82, type: 'mc', question: "I invited ___ colleagues over, and we had a pleasant evening.", options: ["a few", "a little", "little"], correctAnswer: "a few", hint: "'Colleagues' é contável e plural. Use 'a few'." },
+        { id: 83, type: 'mc', question: "She showed ___ interest in the offer, so we chose another candidate.", options: ["a little", "little", "a few"], correctAnswer: "little", hint: "'Little interest' indica pouco interesse." },
+        { id: 84, type: 'mc', question: "We need ___ more minutes to finish setting up the room.", options: ["a little", "a few", "little"], correctAnswer: "a few", hint: "'Minutes' é contável e plural. Use 'a few'." },
+        { id: 85, type: 'mc', question: "There is ___ light in the hallway, so please turn on the lamp.", options: ["little", "few", "a few"], correctAnswer: "little", hint: "'Light', no sentido de iluminação, é incontável. Use 'little'." },
+        { id: 86, type: 'mc', question: "A few ___ stayed after class to ask questions.", options: ["student", "students", "homework"], correctAnswer: "students", hint: "'A few' acompanha substantivos contáveis no plural." },
+        { id: 87, type: 'mc', question: "I drank ___ water during the hike, but I still feel thirsty.", options: ["a few", "little", "few"], correctAnswer: "little", hint: "'Water' é incontável; 'little' indica que bebi pouca água." },
+        { id: 88, type: 'mc', question: "We have ___ options to choose from, so let's compare them.", options: ["a few", "a little", "little"], correctAnswer: "a few", hint: "'Options' é contável e plural. Use 'a few'." },
+        { id: 89, type: 'mc', question: "There is ___ paint left, enough to touch up the door.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Paint' é incontável. 'A little' indica uma pequena quantidade suficiente." },
+        { id: 90, type: 'mc', question: "Few ___ knew that the museum was free on Sundays.", options: ["tourist", "tourists", "information"], correctAnswer: "tourists", hint: "'Few' acompanha substantivos contáveis no plural." }
     ];
 
     function updateStudentProgress(isCorrect) {
