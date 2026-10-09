@@ -46,7 +46,40 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 27, question: "Before ___ the house, please turn off the lights.", options: ["leave", "leaving", "to leave"], correctAnswer: "leaving", hint: "Depois de 'before', use o verbo com -ing." },
         { id: 28, question: "He is afraid of ___ mistakes in the test.", options: ["make", "making", "to make"], correctAnswer: "making", hint: "Depois da preposição 'of', use o verbo com -ing." },
         { id: 29, question: "They succeeded in ___ the problem.", options: ["solve", "solving", "to solve"], correctAnswer: "solving", hint: "Depois de 'in', use o verbo com -ing." },
-        { id: 30, question: "She left the party without ___ goodbye.", options: ["say", "saying", "to say"], correctAnswer: "saying", hint: "Depois de 'without', use o verbo com -ing." }
+        { id: 30, question: "She left the party without ___ goodbye.", options: ["say", "saying", "to say"], correctAnswer: "saying", hint: "Depois de 'without', use o verbo com -ing." },
+
+        { id: 31, question: "She is excited about ___ her new classmates.", options: ["meet", "meeting", "to meet"], correctAnswer: "meeting", hint: "Depois da preposição 'about', use o verbo com -ing." },
+        { id: 32, question: "He left the house without ___ his keys.", options: ["take", "taking", "to take"], correctAnswer: "taking", hint: "Depois de 'without', use o verbo com -ing." },
+        { id: 33, question: "They are interested in ___ a language course.", options: ["take", "taking", "to take"], correctAnswer: "taking", hint: "Depois da preposição 'in', use o verbo com -ing." },
+        { id: 34, question: "Thank you for ___ us to your party.", options: ["invite", "inviting", "to invite"], correctAnswer: "inviting", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 35, question: "He is good at ___ things by hand.", options: ["make", "making", "to make"], correctAnswer: "making", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 36, question: "We talked about ___ a weekend trip.", options: ["plan", "planning", "to plan"], correctAnswer: "planning", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 37, question: "She apologized for ___ the wrong address.", options: ["write", "writing", "to write"], correctAnswer: "writing", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 38, question: "I am looking forward to ___ the movie.", options: ["watch", "watching", "to watch"], correctAnswer: "watching", hint: "Em 'look forward to', 'to' é uma preposição; use o verbo com -ing." },
+        { id: 39, question: "He went to work after ___ breakfast.", options: ["have", "having", "to have"], correctAnswer: "having", hint: "Depois da preposição 'after', use o verbo com -ing." },
+        { id: 40, question: "She is afraid of ___ in front of a large audience.", options: ["speak", "speaking", "to speak"], correctAnswer: "speaking", hint: "Depois da preposição 'of', use o verbo com -ing." },
+
+        { id: 41, question: "They succeeded in ___ the old building.", options: ["repair", "repairing", "to repair"], correctAnswer: "repairing", hint: "Depois de 'in', use o verbo com -ing." },
+        { id: 42, question: "He is tired of ___ for the same bus every morning.", options: ["wait", "waiting", "to wait"], correctAnswer: "waiting", hint: "Depois de 'of', use o verbo com -ing." },
+        { id: 43, question: "Before ___ the email, check the spelling.", options: ["send", "sending", "to send"], correctAnswer: "sending", hint: "Depois de 'before', use o verbo com -ing." },
+        { id: 44, question: "She left without ___ anyone where she was going.", options: ["tell", "telling", "to tell"], correctAnswer: "telling", hint: "Depois de 'without', use o verbo com -ing." },
+        { id: 45, question: "He is responsible for ___ the weekly schedule.", options: ["organize", "organizing", "to organize"], correctAnswer: "organizing", hint: "Depois da preposição 'for', use o verbo com -ing." },
+        { id: 46, question: "We are thinking about ___ a dog.", options: ["get", "getting", "to get"], correctAnswer: "getting", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 47, question: "She is worried about ___ her flight.", options: ["miss", "missing", "to miss"], correctAnswer: "missing", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 48, question: "He thanked his friend for ___ him move.", options: ["help", "helping", "to help"], correctAnswer: "helping", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 49, question: "After ___ the dishes, I watched television.", options: ["wash", "washing", "to wash"], correctAnswer: "washing", hint: "Depois da preposição 'after', use o verbo com -ing." },
+        { id: 50, question: "She is interested in ___ how to cook Italian food.", options: ["learn", "learning", "to learn"], correctAnswer: "learning", hint: "Depois da preposição 'in', use o verbo com -ing." },
+
+        { id: 51, question: "He is very good at ___ complicated instructions.", options: ["follow", "following", "to follow"], correctAnswer: "following", hint: "Depois da preposição 'at', use o verbo com -ing." },
+        { id: 52, question: "They left the restaurant before ___ dessert.", options: ["order", "ordering", "to order"], correctAnswer: "ordering", hint: "Depois de 'before', use o verbo com -ing." },
+        { id: 53, question: "I am looking forward to ___ my new job.", options: ["start", "starting", "to start"], correctAnswer: "starting", hint: "Na expressão 'look forward to', use o verbo com -ing." },
+        { id: 54, question: "She apologized for ___ the appointment.", options: ["forget", "forgetting", "to forget"], correctAnswer: "forgetting", hint: "Depois de 'for', use o verbo com -ing." },
+        { id: 55, question: "He is afraid of ___ alone in the forest.", options: ["camp", "camping", "to camp"], correctAnswer: "camping", hint: "Depois da preposição 'of', use o verbo com -ing." },
+        { id: 56, question: "We talked about ___ a community garden.", options: ["create", "creating", "to create"], correctAnswer: "creating", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 57, question: "She improved her English by ___ podcasts every day.", options: ["listen to", "listening to", "to listen to"], correctAnswer: "listening to", hint: "Depois da preposição 'by', use o verbo com -ing." },
+        { id: 58, question: "He went to bed without ___ his alarm.", options: ["set", "setting", "to set"], correctAnswer: "setting", hint: "Depois de 'without', use o verbo com -ing." },
+        { id: 59, question: "They are excited about ___ in the school play.", options: ["perform", "performing", "to perform"], correctAnswer: "performing", hint: "Depois de 'about', use o verbo com -ing." },
+        { id: 60, question: "She succeeded in ___ her fear of public speaking.", options: ["overcome", "overcoming", "to overcome"], correctAnswer: "overcoming", hint: "Depois de 'in', use o verbo com -ing." }
     ];
 
     function updateStudentProgress(isCorrect) {
