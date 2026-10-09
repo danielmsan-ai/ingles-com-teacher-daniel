@@ -128,11 +128,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        if (exercise.hint) {
-            const hintElement = document.createElement('p');
-            hintElement.textContent = exercise.hint;
-            feedbackMessage.appendChild(hintElement);
-        }
+       const currentExercise = exercises[currentExerciseIndex];
+
+if (currentExercise.hint) {
+    const hintElement = document.createElement('p');
+    hintElement.textContent = currentExercise.hint;
+    feedbackMessage.appendChild(hintElement);
+}
 
         exerciseArea.appendChild(feedbackMessage);
         updateStudentProgress(isCorrect);
