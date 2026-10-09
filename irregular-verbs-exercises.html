@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Irregular Verbs Memorizer - English Practice</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .exercise-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .exercise-container h2 {
+            color: #4CAF50;
+            margin-bottom: 15px;
+            font-size: 2.2em;
+        }
+
+        .exercise-description {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .progress-status {
+            margin: 20px 0;
+            padding: 12px;
+            background-color: #f0f2f5;
+            border-radius: 5px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .exercise-area {
+            margin-top: 25px;
+            text-align: center;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .exercise-question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .tense-label {
+            color: #4CAF50;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-button {
+            background-color: #f0f2f5;
+            border: 1px solid #ddd;
+            padding: 12px 20px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            background-color: #e0e2e5;
+            border-color: #ccc;
+        }
+
+        .option-button:disabled {
+            cursor: default;
+        }
+
+        .option-button.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-button.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .feedback-message {
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .feedback-message.correct {
+            color: #28a745;
+        }
+
+        .feedback-message.incorrect {
+            color: #dc3545;
+        }
+
+        .navigation-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-buttons button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .navigation-buttons button:hover {
+            background-color: #0056b3;
+        }
+
+        .navigation-buttons button#back-to-dashboard {
+            background-color: #6c757d;
+        }
+
+        .navigation-buttons button#back-to-dashboard:hover {
+            background-color: #5a6268;
+        }
+
+        .completion-message {
+            color: #28a745;
+            font-size: 1.2em;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            .exercise-container {
+                margin: 20px 12px;
+                padding: 22px 16px;
+            }
+
+            .exercise-container h2 {
+                font-size: 1.8em;
+            }
+
+            .exercise-question {
+                font-size: 1.15em;
+            }
+
+            .option-button {
+                min-width: 100px;
+                padding: 11px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Memorizador de Verbos Irregulares</h1>
+    </header>
+
+    <main>
+        <div class="exercise-container">
+            <h2>Irregular Verbs Memorizer</h2>
+
+            <p class="exercise-description">
+                Complete as frases afirmativas praticando as formas dos verbos no
+                Simple Present, Simple Past e Present Perfect. Cada forma que você
+                acertar deixará de aparecer; as formas ainda não acertadas continuarão
+                no ciclo.
+            </p>
+
+            <div class="progress-status" id="progress-status">
+                Preparando a atividade...
+            </div>
+
+            <div class="exercise-area" id="exercise-area">
+                <p>Carregando a atividade...</p>
+            </div>
+
+            <div class="navigation-buttons">
+                <button id="next-exercise" type="button" style="display: none;">
+                    Próxima forma
+                </button>
+                <button
+                    id="back-to-dashboard"
+                    type="button"
+                    onclick="location.href='student-dashboard.html'">
+                    Voltar ao Painel
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 English Practice. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="irregular-verbs-exercises.js"></script>
+</body>
+</html>
