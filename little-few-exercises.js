@@ -1,7 +1,10 @@
+import { db } from './firebase-config.js';
+import { doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-    if (!loggedInUser || loggedInUser.type !== 'student') {
+    if (!loggedInUser || loggedInUser.tipo !== 'aluno') {
         alert('Acesso não autorizado. Por favor, faça login como aluno.');
         window.location.href = 'index.html';
         return;
@@ -97,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 75, type: 'mc', question: "He added ___ flour to the mixture, just enough to thicken it.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Flour' é incontável. Use 'a little'." },
 
         { id: 76, type: 'mc', question: "A few ___ volunteered to help clean the park.", options: ["person", "people", "advice"], correctAnswer: "people", hint: "'A few' acompanha substantivos contáveis no plural." },
-        { id: 77, type: 'mc', question: "There is ___ possibility of rain today, so take an umbrella.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "'Possibility' é contável, mas aqui aparece no singular; a frase pede 'a little' antes do nome incontável? Revise: use 'a little possibility' não é natural." },
+        { id: 77, type: 'mc', question: "There is ___ possibility of rain today, so take an umbrella.", options: ["a little", "a few", "few"], correctAnswer: "a little", hint: "Use 'a little' diante de substantivos incontáveis como 'possibility' neste contexto." },
         { id: 78, type: 'mc', question: "We have ___ clean plates, so we need to wash some more.", options: ["few", "little", "a little"], correctAnswer: "few", hint: "'Plates' é contável e plural; 'few' indica que restam poucas." },
         { id: 79, type: 'mc', question: "Could you wait ___ longer? The meeting is almost over.", options: ["a few", "a little", "few"], correctAnswer: "a little", hint: "'Longer' indica duração. Use 'a little' para pedir mais um pouco de tempo." },
         { id: 80, type: 'mc', question: "Few ___ were available for rent near the university.", options: ["apartment", "apartments", "traffic"], correctAnswer: "apartments", hint: "'Few' acompanha substantivos contáveis no plural." },
@@ -113,29 +116,16 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 90, type: 'mc', question: "Few ___ knew that the museum was free on Sundays.", options: ["tourist", "tourists", "information"], correctAnswer: "tourists", hint: "'Few' acompanha substantivos contáveis no plural." }
     ];
 
-    function updateStudentProgress(isCorrect) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(user => user.id === loggedInUser.id);
-
-        if (userIndex === -1) {
-            return;
+    async function updateStudentProgress(isCorrect) {
+        try {
+            const progressRef = doc(db, 'usuarios', loggedInUser.uid, 'progresso', TOPIC_NAME);
+            await setDoc(progressRef, {
+                correct: increment(isCorrect ? 1 : 0),
+                incorrect: increment(isCorrect ? 0 : 1)
+            }, { merge: true });
+        } catch (error) {
+            console.error('Erro ao salvar progresso no Firestore:', error);
         }
-
-        if (!users[userIndex].progress) {
-            users[userIndex].progress = {};
-        }
-
-        if (!users[userIndex].progress[TOPIC_NAME]) {
-            users[userIndex].progress[TOPIC_NAME] = { correct: 0, incorrect: 0 };
-        }
-
-        if (isCorrect) {
-            users[userIndex].progress[TOPIC_NAME].correct++;
-        } else {
-            users[userIndex].progress[TOPIC_NAME].incorrect++;
-        }
-
-        localStorage.setItem('users', JSON.stringify(users));
     }
 
     function renderExercise() {
