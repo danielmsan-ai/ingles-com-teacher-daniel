@@ -1,52 +1,61 @@
+import { auth, db } from "./firebase-config.js";
+import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginMessage = document.getElementById('login-message');
 
-    // Função para inicializar usuários no localStorage se não existirem
-    function initializeUsers() {
-        if (!localStorage.getItem('users')) {
-            const defaultUsers = [
-                { username: 'professor', password: '123', type: 'teacher', id: 'prof1' },
-                { username: 'aluno1', password: 'abc', type: 'student', id: 'stu1', frequency: 0 },
-                { username: 'aluno2', password: 'def', type: 'student', id: 'stu2', frequency: 0 }
-            ];
-            localStorage.setItem('users', JSON.stringify(defaultUsers));
-        }
-    }
-
-    initializeUsers(); // Chama a função para garantir que os usuários existam
-
     if (loginForm) {
-        loginForm.addEventListener('submit', (event) => {
+        loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
+            loginMessage.textContent = '';
 
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
 
-            const username = usernameInput.value;
-            const password = passwordInput.value;
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
-            const users = JSON.parse(localStorage.getItem('users'));
-            const foundUser = users.find(user => user.username === username && user.password === password);
+                const userDocRef = doc(db, "usuarios", user.uid);
+                const userDocSnap = await getDoc(userDocRef);
 
-            if (foundUser) {
-                loginMessage.textContent = `Login de ${foundUser.type} bem-sucedido!`;
+                if (!userDocSnap.exists()) {
+                    loginMessage.textContent = 'Usuário não encontrado no sistema.';
+                    loginMessage.style.color = '#e74c3c';
+                    return;
+                }
+
+                const userData = userDocSnap.data();
+
+                localStorage.setItem('loggedInUser', JSON.stringify({
+                    uid: user.uid,
+                    nome: userData.nome,
+                    email: userData.email,
+                    tipo: userData.tipo
+                }));
+
+                loginMessage.textContent = `Login de ${userData.tipo} bem-sucedido!`;
                 loginMessage.style.color = '#4CAF50';
 
-                // Armazena o usuário logado e seu tipo no localStorage
-                localStorage.setItem('loggedInUser', JSON.stringify(foundUser));
-
-                if (foundUser.type === 'teacher') {
+                if (userData.tipo === 'professor') {
                     window.location.href = 'teacher-dashboard.html';
-                } else { // type === 'student'
-                    // Atualiza a frequência do aluno ao logar
-                    foundUser.frequency = (foundUser.frequency || 0) + 1;
-                    localStorage.setItem('users', JSON.stringify(users)); // Salva a lista atualizada
+                } else {
                     window.location.href = 'student-dashboard.html';
                 }
-            } else {
-                loginMessage.textContent = 'Usuário ou senha incorretos.';
+
+            } catch (error) {
                 loginMessage.style.color = '#e74c3c';
+                if (error.code === 'auth/invalid-credential' ||
+                    error.code === 'auth/wrong-password' ||
+                    error.code === 'auth/user-not-found') {
+                    loginMessage.textContent = 'E-mail ou senha incorretos.';
+                } else if (error.code === 'auth/invalid-email') {
+                    loginMessage.textContent = 'E-mail inválido.';
+                } else {
+                    loginMessage.textContent = 'Erro ao fazer login. Tente novamente.';
+                }
             }
         });
     }
