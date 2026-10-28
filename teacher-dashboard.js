@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-    if (!loggedInUser || loggedInUser.type !== 'teacher') {
+    if (!loggedInUser || loggedInUser.tipo !== 'professor') {
         alert('Acesso não autorizado. Por favor, faça login como professor.');
         window.location.href = 'index.html';
         return;
