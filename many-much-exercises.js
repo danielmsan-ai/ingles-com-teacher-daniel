@@ -1,7 +1,10 @@
+import { db } from './firebase-config.js';
+import { doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-    if (!loggedInUser || loggedInUser.type !== 'student') {
+    if (!loggedInUser || loggedInUser.tipo !== 'aluno') {
         alert('Acesso não autorizado. Por favor, faça login como aluno.');
         window.location.href = 'index.html';
         return;
@@ -51,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 30, type: 'mc', question: "Did you bring ___ bags?", options: ["many", "much", "a lot of"], correctAnswer: "many", hint: "'Bags' é contável. Use 'many' em perguntas." },
 
         // --- Bloco 2: MAIS EXERCÍCIOS E REESCRITA (30 exercícios) ---
-        // --- Múltipla Escolha (15 mc) ---
         { id: 31, type: 'mc', question: "There are ___ beautiful flowers in the garden.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
         { id: 32, type: 'mc', question: "She doesn't have ___ patience with noisy children.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Patience' é incontável. Use 'much' em negativas." },
         { id: 33, type: 'mc', question: "How ___ experience do you have in this field?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Experience' (geral) é incontável. Use 'much' com 'how'." },
@@ -68,7 +70,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 44, type: 'mc', question: "He has ___ friends in different countries.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
         { id: 45, type: 'mc', question: "Is there ___ milk left?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Milk' é incontável. Use 'much' em perguntas." },
 
-        // --- Reescrita (15 rewrite) ---
         { id: 46, type: 'rewrite', question: "Rewrite using 'many' or 'much': I don't have (a lot of) books.", correctAnswer: "I don't have many books.", hint: "'Books' é contável. Use 'many' em negativas." },
         { id: 47, type: 'rewrite', question: "Rewrite using 'many' or 'much': She didn't bring (a lot of) luggage.", correctAnswer: "She didn't bring much luggage.", hint: "'Luggage' é incontável. Use 'much' em negativas." },
         { id: 48, type: 'rewrite', question: "Rewrite using 'many' or 'much': Did you see (a lot of) birds in the park?", correctAnswer: "Did you see many birds in the park?", hint: "'Birds' é contável. Use 'many' em perguntas." },
@@ -85,8 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 59, type: 'rewrite', question: "Rewrite using 'many' or 'much': Did you buy (a lot of) food for the party?", correctAnswer: "Did you buy much food for the party?", hint: "'Food' é incontável. Use 'much' em perguntas." },
         { id: 60, type: 'rewrite', question: "Rewrite using 'many' or 'much': There isn't (a lot of) space in this room.", correctAnswer: "There isn't much space in this room.", hint: "'Space' é incontável. Use 'much' em negativas." },
 
-        // --- Bloco 3: CONTRASTE MANY/MUCH/A LOT OF (30 exercícios) ---
-        // --- Múltipla Escolha (15 mc) ---
         { id: 61, type: 'mc', question: "We have ___ apples in the fridge.", options: ["many", "much", "a lot of"], correctAnswer: "a lot of", hint: "Em afirmativas, 'a lot of' é comum para contáveis." },
         { id: 62, type: 'mc', question: "I don't have ___ patience for this.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Patience' é incontável. Use 'much' em negativas." },
         { id: 63, type: 'mc', question: "How ___ money do you need?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Money' é incontável. Use 'much' com 'how'." },
@@ -103,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 74, type: 'mc', question: "There isn't ___ traffic on Sundays.", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Traffic' é incontável. Use 'much' em negativas." },
         { id: 75, type: 'mc', question: "How ___ sugar do you put in your coffee?", options: ["many", "much", "a lot of"], correctAnswer: "much", hint: "'Sugar' é incontável. Use 'much' com 'how'." },
 
-        // --- Reescrita (15 rewrite) ---
         { id: 76, type: 'rewrite', question: "Rewrite using 'many', 'much' or 'a lot of': I have (a large quantity of) books.", correctAnswer: "I have a lot of books.", hint: "Em afirmativas, 'a lot of' é mais natural." },
         { id: 77, type: 'rewrite', question: "Rewrite using 'many', 'much' or 'a lot of': She doesn't have (a large quantity of) patience.", correctAnswer: "She doesn't have much patience.", hint: "'Patience' é incontável. Use 'much' em negativas." },
         { id: 78, type: 'rewrite', question: "Rewrite using 'many', 'much' or 'a lot of': Do you have (a large quantity of) friends?", correctAnswer: "Do you have many friends?", hint: "'Friends' é contável. Use 'many' em perguntas." },
@@ -121,26 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 90, type: 'rewrite', question: "Rewrite using 'many', 'much' or 'a lot of': There isn't (a large quantity of) space for everyone.", correctAnswer: "There isn't much space for everyone.", hint: "'Space' é incontável. Use 'much' em negativas." }
     ];
 
-    // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
-    function updateStudentProgress(isCorrect) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(u => u.id === loggedInUser.id);
-
-        if (userIndex !== -1) {
-            if (!users[userIndex].progress) {
-                users[userIndex].progress = {};
-            }
-            if (!users[userIndex].progress[TOPIC_NAME]) {
-                users[userIndex].progress[TOPIC_NAME] = { correct: 0, incorrect: 0 };
-            }
-
-            if (isCorrect) {
-                users[userIndex].progress[TOPIC_NAME].correct++;
-            } else {
-                users[userIndex].progress[TOPIC_NAME].incorrect++;
-            }
-
-            localStorage.setItem('users', JSON.stringify(users));
+    // --- FUNÇÃO DE REGISTRO DE DESEMPENHO (AGORA NO FIRESTORE) ---
+    async function updateStudentProgress(isCorrect) {
+        try {
+            const progressRef = doc(db, 'usuarios', loggedInUser.uid, 'progresso', TOPIC_NAME);
+            await setDoc(progressRef, {
+                correct: increment(isCorrect ? 1 : 0),
+                incorrect: increment(isCorrect ? 0 : 1)
+            }, { merge: true });
+        } catch (error) {
+            console.error('Erro ao salvar progresso no Firestore:', error);
         }
     }
 
