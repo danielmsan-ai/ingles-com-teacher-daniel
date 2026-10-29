@@ -23,77 +23,77 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const verbs = [
-        { base: 'cost', past: ['cost'], participle: ['cost'], sentence: 'The ticket ___ ten dollars.' },
-        { base: 'cut', past: ['cut'], participle: ['cut'], sentence: 'I ___ the paper with scissors.' },
-        { base: 'hit', past: ['hit'], participle: ['hit'], sentence: 'The player ___ the ball.' },
-        { base: 'hurt', past: ['hurt'], participle: ['hurt'], sentence: 'I ___ my arm while playing.' },
-        { base: 'let', past: ['let'], participle: ['let'], sentence: 'My parents ___ me stay up late.' },
-        { base: 'put', past: ['put'], participle: ['put'], sentence: 'She ___ the book on the table.' },
-        { base: 'read', past: ['read'], participle: ['read'], sentence: 'I ___ a book every week.' },
+        { base: 'cost', past: ['cost'], participle: ['cost'], sentences: { base: 'Train tickets usually ___ a lot of money.', past: 'The ticket ___ ten dollars.', participle: 'The repairs have ___ more than we expected.' } },
+        { base: 'cut', past: ['cut'], participle: ['cut'], sentences: { base: 'I always ___ the vegetables before cooking.', past: 'I ___ the paper with scissors.', participle: 'She has ___ her hair short this year.' } },
+        { base: 'hit', past: ['hit'], participle: ['hit'], sentences: { base: 'Strong waves often ___ the rocks.', past: 'The player ___ the ball.', participle: 'The storm has ___ the coast hard.' } },
+        { base: 'hurt', past: ['hurt'], participle: ['hurt'], sentences: { base: "Harsh words can really ___ people's feelings.", past: 'I ___ my arm while playing.', participle: 'He has ___ his knee during training.' } },
+        { base: 'let', past: ['let'], participle: ['let'], sentences: { base: 'Good teachers ___ students ask questions.', past: 'My parents ___ me stay up late.', participle: 'They have ___ us use their car before.' } },
+        { base: 'put', past: ['put'], participle: ['put'], sentences: { base: 'I usually ___ my keys on the table.', past: 'She ___ the book on the table.', participle: 'We have ___ a lot of effort into this project.' } },
+        { base: 'read', past: ['read'], participle: ['read'], sentences: { base: 'I ___ a book every week.', past: 'Yesterday, I ___ an interesting article.', participle: 'I have never ___ that author before.' } },
 
-        { base: 'beat', past: ['beat'], participle: ['beaten'], sentence: 'Our team ___ the other team.' },
-        { base: 'bite', past: ['bit'], participle: ['bitten'], sentence: 'The dog ___ the toy.' },
-        { base: 'hide', past: ['hid'], participle: ['hidden'], sentence: 'The child ___ behind the door.' },
+        { base: 'beat', past: ['beat'], participle: ['beaten'], sentences: { base: 'Strong teams usually ___ weaker opponents.', past: 'Our team ___ the other team.', participle: 'They have ___ the record for the fastest time.' } },
+        { base: 'bite', past: ['bit'], participle: ['bitten'], sentences: { base: 'Dogs sometimes ___ when they are scared.', past: 'The dog ___ the toy.', participle: 'The dog has ___ the mailman twice.' } },
+        { base: 'hide', past: ['hid'], participle: ['hidden'], sentences: { base: 'Children often ___ during this game.', past: 'The child ___ behind the door.', participle: 'She has ___ the present in her closet.' } },
 
-        { base: 'begin', past: ['began'], participle: ['begun'], sentence: 'The class ___ at nine o’clock.' },
-        { base: 'drink', past: ['drank'], participle: ['drunk'], sentence: 'I ___ water every morning.' },
-        { base: 'ring', past: ['rang'], participle: ['rung'], sentence: 'The telephone ___ during dinner.' },
-        { base: 'run', past: ['ran'], participle: ['run'], sentence: 'She ___ in the park yesterday.' },
-        { base: 'sing', past: ['sang'], participle: ['sung'], sentence: 'They ___ their favorite song.' },
-        { base: 'swim', past: ['swam'], participle: ['swum'], sentence: 'We ___ in the lake last summer.' },
+        { base: 'begin', past: ['began'], participle: ['begun'], sentences: { base: "Classes usually ___ at nine o'clock.", past: "The class ___ at nine o'clock.", participle: 'The meeting has already ___.' } },
+        { base: 'drink', past: ['drank'], participle: ['drunk'], sentences: { base: 'I ___ water every morning.', past: 'Yesterday, I ___ two cups of coffee.', participle: 'I have never ___ coffee before.' } },
+        { base: 'ring', past: ['rang'], participle: ['rung'], sentences: { base: 'Church bells usually ___ at noon.', past: 'The telephone ___ during dinner.', participle: 'The phone has ___ three times already.' } },
+        { base: 'run', past: ['ran'], participle: ['run'], sentences: { base: 'They usually ___ every morning.', past: 'She ___ in the park yesterday.', participle: 'We have ___ five kilometers today.' } },
+        { base: 'sing', past: ['sang'], participle: ['sung'], sentences: { base: 'They often ___ in the school choir.', past: 'They ___ their favorite song.', participle: 'She has ___ that song many times.' } },
+        { base: 'swim', past: ['swam'], participle: ['swum'], sentences: { base: 'We often ___ in the lake in summer.', past: 'We ___ in the lake last summer.', participle: 'They have ___ across the lake before.' } },
 
-        { base: 'become', past: ['became'], participle: ['become'], sentence: 'He ___ a doctor last year.' },
-        { base: 'come', past: ['came'], participle: ['come'], sentence: 'My friends ___ to my house yesterday.' },
+        { base: 'become', past: ['became'], participle: ['become'], sentences: { base: 'People often ___ nervous before exams.', past: 'He ___ a doctor last year.', participle: 'She has ___ a great teacher.' } },
+        { base: 'come', past: ['came'], participle: ['come'], sentences: { base: 'My friends usually ___ to my house on weekends.', past: 'My friends ___ to my house yesterday.', participle: 'They have just ___ back from vacation.' } },
 
-        { base: 'hold', past: ['held'], participle: ['held'], sentence: 'She ___ the baby carefully.' },
-        { base: 'send', past: ['sent'], participle: ['sent'], sentence: 'I ___ an email to my teacher.' },
-        { base: 'spend', past: ['spent'], participle: ['spent'], sentence: 'They ___ the weekend at home.' },
+        { base: 'hold', past: ['held'], participle: ['held'], sentences: { base: 'They usually ___ the baby carefully.', past: 'She ___ the baby carefully.', participle: 'We have ___ this tradition for years.' } },
+        { base: 'send', past: ['sent'], participle: ['sent'], sentences: { base: 'I often ___ emails to my teacher.', past: 'I ___ an email to my teacher.', participle: 'She has already ___ the invitations.' } },
+        { base: 'spend', past: ['spent'], participle: ['spent'], sentences: { base: 'They usually ___ the weekend at home.', past: 'They ___ the weekend at home.', participle: 'We have ___ too much money this month.' } },
 
-        { base: 'draw', past: ['drew'], participle: ['drawn'], sentence: 'The student ___ a picture in class.' },
-        { base: 'fly', past: ['flew'], participle: ['flown'], sentence: 'We ___ to another city last week.' },
-        { base: 'grow', past: ['grew'], participle: ['grown'], sentence: 'The children ___ quickly.' },
-        { base: 'know', past: ['knew'], participle: ['known'], sentence: 'I ___ the answer yesterday.' },
-        { base: 'throw', past: ['threw'], participle: ['thrown'], sentence: 'He ___ the ball to his friend.' },
+        { base: 'draw', past: ['drew'], participle: ['drawn'], sentences: { base: 'Students usually ___ pictures in class.', past: 'The student ___ a picture in class.', participle: 'She has ___ many beautiful paintings.' } },
+        { base: 'fly', past: ['flew'], participle: ['flown'], sentences: { base: 'We often ___ to other cities for work.', past: 'We ___ to another city last week.', participle: 'They have ___ over twenty countries.' } },
+        { base: 'grow', past: ['grew'], participle: ['grown'], sentences: { base: 'Children usually ___ quickly.', past: 'The children ___ quickly.', participle: 'This tree has ___ a lot since last year.' } },
+        { base: 'know', past: ['knew'], participle: ['known'], sentences: { base: 'I usually ___ the answers in class.', past: 'I ___ the answer yesterday.', participle: 'We have ___ each other for years.' } },
+        { base: 'throw', past: ['threw'], participle: ['thrown'], sentences: { base: 'They often ___ the ball to each other.', past: 'He ___ the ball to his friend.', participle: 'She has ___ the ball three times already.' } },
 
-        { base: 'break', past: ['broke'], participle: ['broken'], sentence: 'The boy ___ the window by accident.' },
-        { base: 'choose', past: ['chose'], participle: ['chosen'], sentence: 'She ___ the blue dress.' },
-        { base: 'drive', past: ['drove'], participle: ['driven'], sentence: 'My father ___ to work yesterday.' },
-        { base: 'ride', past: ['rode'], participle: ['ridden'], sentence: 'We ___ our bikes in the park.' },
-        { base: 'write', past: ['wrote'], participle: ['written'], sentence: 'He ___ a letter to his cousin.' },
-        { base: 'wake', past: ['woke'], participle: ['woken'], sentence: 'I ___ early this morning.' },
-        { base: 'take', past: ['took'], participle: ['taken'], sentence: 'She ___ the bus to school.' },
-        { base: 'steal', past: ['stole'], participle: ['stolen'], sentence: 'Someone ___ my bicycle yesterday.' },
-        { base: 'speak', past: ['spoke'], participle: ['spoken'], sentence: 'They ___ English during the lesson.' },
+        { base: 'break', past: ['broke'], participle: ['broken'], sentences: { base: 'Children sometimes ___ their toys.', past: 'The boy ___ the window by accident.', participle: 'He has ___ his arm before.' } },
+        { base: 'choose', past: ['chose'], participle: ['chosen'], sentences: { base: 'Students usually ___ their own topics.', past: 'She ___ the blue dress.', participle: 'They have already ___ a winner.' } },
+        { base: 'drive', past: ['drove'], participle: ['driven'], sentences: { base: 'My parents usually ___ to work.', past: 'My father ___ to work yesterday.', participle: 'She has ___ this car for ten years.' } },
+        { base: 'ride', past: ['rode'], participle: ['ridden'], sentences: { base: 'We often ___ our bikes in the park.', past: 'We ___ our bikes in the park.', participle: 'He has never ___ a horse before.' } },
+        { base: 'write', past: ['wrote'], participle: ['written'], sentences: { base: 'They often ___ letters to their cousins.', past: 'He ___ a letter to his cousin.', participle: 'She has ___ three books so far.' } },
+        { base: 'wake', past: ['woke'], participle: ['woken'], sentences: { base: 'I usually ___ early in the morning.', past: 'I ___ early this morning.', participle: 'She has already ___ up.' } },
+        { base: 'take', past: ['took'], participle: ['taken'], sentences: { base: 'They usually ___ the bus to school.', past: 'She ___ the bus to school.', participle: 'I have already ___ my medicine.' } },
+        { base: 'steal', past: ['stole'], participle: ['stolen'], sentences: { base: 'Thieves sometimes ___ bicycles in this area.', past: 'Someone ___ my bicycle yesterday.', participle: 'Someone has ___ my bicycle before.' } },
+        { base: 'speak', past: ['spoke'], participle: ['spoken'], sentences: { base: 'They usually ___ English during the lesson.', past: 'They ___ English during the lesson.', participle: 'She has ___ to the manager already.' } },
 
-        { base: 'bring', past: ['brought'], participle: ['brought'], sentence: 'He ___ some food to the party.' },
-        { base: 'buy', past: ['bought'], participle: ['bought'], sentence: 'I ___ a new notebook yesterday.' },
-        { base: 'catch', past: ['caught'], participle: ['caught'], sentence: 'The player ___ the ball.' },
-        { base: 'fight', past: ['fought'], participle: ['fought'], sentence: 'The two teams ___ hard.' },
-        { base: 'find', past: ['found'], participle: ['found'], sentence: 'She ___ her keys under the sofa.' },
-        { base: 'seek', past: ['sought'], participle: ['sought'], sentence: 'They ___ help from their teacher.' },
-        { base: 'think', past: ['thought'], participle: ['thought'], sentence: 'I ___ about the question last night.' },
-        { base: 'teach', past: ['taught'], participle: ['taught'], sentence: 'Mr. Brown ___ us English last year.' },
+        { base: 'bring', past: ['brought'], participle: ['brought'], sentences: { base: 'They often ___ food to the party.', past: 'He ___ some food to the party.', participle: 'She has already ___ the documents.' } },
+        { base: 'buy', past: ['bought'], participle: ['bought'], sentences: { base: 'I often ___ notebooks for school.', past: 'I ___ a new notebook yesterday.', participle: 'We have already ___ the tickets.' } },
+        { base: 'catch', past: ['caught'], participle: ['caught'], sentences: { base: 'The players usually ___ the ball well.', past: 'The player ___ the ball.', participle: 'She has ___ a bad cold.' } },
+        { base: 'fight', past: ['fought'], participle: ['fought'], sentences: { base: 'The two teams usually ___ hard for the trophy.', past: 'The two teams ___ hard.', participle: 'They have ___ about this before.' } },
+        { base: 'find', past: ['found'], participle: ['found'], sentences: { base: 'I usually ___ my keys quickly.', past: 'She ___ her keys under the sofa.', participle: 'I have already ___ the solution.' } },
+        { base: 'seek', past: ['sought'], participle: ['sought'], sentences: { base: 'Students often ___ help from their teachers.', past: 'They ___ help from their teacher.', participle: 'They have already ___ professional advice.' } },
+        { base: 'think', past: ['thought'], participle: ['thought'], sentences: { base: 'I often ___ about difficult questions.', past: 'I ___ about the question last night.', participle: 'I have ___ about this a lot.' } },
+        { base: 'teach', past: ['taught'], participle: ['taught'], sentences: { base: 'Teachers usually ___ English here.', past: 'Mr. Brown ___ us English last year.', participle: 'She has ___ here for ten years.' } },
 
-        { base: 'deal', past: ['dealt'], participle: ['dealt'], sentence: 'She ___ with the problem yesterday.' },
-        { base: 'feel', past: ['felt'], participle: ['felt'], sentence: 'He ___ happy after the game.' },
-        { base: 'keep', past: ['kept'], participle: ['kept'], sentence: 'I ___ the photo in my room.' },
-        { base: 'leave', past: ['left'], participle: ['left'], sentence: 'They ___ the house at eight.' },
-        { base: 'lend', past: ['lent'], participle: ['lent'], sentence: 'My friend ___ me a pencil.' },
-        { base: 'mean', past: ['meant'], participle: ['meant'], sentence: 'Her message ___ a lot to me.' },
-        { base: 'meet', past: ['met'], participle: ['met'], sentence: 'We ___ our new neighbors yesterday.' },
-        { base: 'sleep', past: ['slept'], participle: ['slept'], sentence: 'The baby ___ for three hours.' },
+        { base: 'deal', past: ['dealt'], participle: ['dealt'], sentences: { base: 'They usually ___ with problems calmly.', past: 'She ___ with the problem yesterday.', participle: 'We have already ___ with this issue.' } },
+        { base: 'feel', past: ['felt'], participle: ['felt'], sentences: { base: 'They often ___ happy after a game.', past: 'He ___ happy after the game.', participle: 'I have ___ tired all week.' } },
+        { base: 'keep', past: ['kept'], participle: ['kept'], sentences: { base: 'I usually ___ my photos in a box.', past: 'I ___ the photo in my room.', participle: 'She has ___ the same job for years.' } },
+        { base: 'leave', past: ['left'], participle: ['left'], sentences: { base: 'They usually ___ the house at eight.', past: 'They ___ the house at eight.', participle: 'He has already ___ for the airport.' } },
+        { base: 'lend', past: ['lent'], participle: ['lent'], sentences: { base: 'My friends often ___ me pencils.', past: 'My friend ___ me a pencil.', participle: 'She has ___ me money before.' } },
+        { base: 'mean', past: ['meant'], participle: ['meant'], sentences: { base: 'Her messages usually ___ a lot to me.', past: 'Her message ___ a lot to me.', participle: 'This gift has always ___ a lot to her.' } },
+        { base: 'meet', past: ['met'], participle: ['met'], sentences: { base: 'We often ___ our neighbors at the park.', past: 'We ___ our new neighbors yesterday.', participle: 'I have never ___ him in person.' } },
+        { base: 'sleep', past: ['slept'], participle: ['slept'], sentences: { base: 'Babies usually ___ for hours.', past: 'The baby ___ for three hours.', participle: 'I have barely ___ this week.' } },
 
-        { base: 'forgive', past: ['forgave'], participle: ['forgiven'], sentence: 'She ___ her friend after the argument.' },
-        { base: 'give', past: ['gave'], participle: ['given'], sentence: 'He ___ me a present yesterday.' },
+        { base: 'forgive', past: ['forgave'], participle: ['forgiven'], sentences: { base: 'They usually ___ each other quickly.', past: 'She ___ her friend after the argument.', participle: 'I have already ___ him for that.' } },
+        { base: 'give', past: ['gave'], participle: ['given'], sentences: { base: 'They often ___ presents on birthdays.', past: 'He ___ me a present yesterday.', participle: 'She has already ___ her answer.' } },
 
-        { base: 'forget', past: ['forgot'], participle: ['forgotten'], sentence: 'I ___ my homework at home.' },
-        { base: 'get', past: ['got'], participle: ['got'], sentence: 'She ___ a message this morning.' },
-        { base: 'wear', past: ['wore'], participle: ['worn'], sentence: 'He ___ a blue jacket yesterday.' },
-        { base: 'swear', past: ['swore'], participle: ['sworn'], sentence: 'The witness ___ to tell the truth.' },
+        { base: 'forget', past: ['forgot'], participle: ['forgotten'], sentences: { base: 'I sometimes ___ my homework.', past: 'I ___ my homework at home.', participle: 'I have never ___ that day.' } },
+        { base: 'get', past: ['got'], participle: ['got'], sentences: { base: 'They usually ___ messages in the morning.', past: 'She ___ a message this morning.', participle: 'I have just ___ some good news.' } },
+        { base: 'wear', past: ['wore'], participle: ['worn'], sentences: { base: 'They often ___ blue jackets.', past: 'He ___ a blue jacket yesterday.', participle: 'She has never ___ that dress.' } },
+        { base: 'swear', past: ['swore'], participle: ['sworn'], sentences: { base: 'Witnesses usually ___ to tell the truth.', past: 'The witness ___ to tell the truth.', participle: 'He has ___ he will come.' } },
 
-        { base: 'lay', past: ['laid'], participle: ['laid'], sentence: 'She ___ the blanket on the bed.' },
-        { base: 'pay', past: ['paid'], participle: ['paid'], sentence: 'We ___ for lunch yesterday.' },
-        { base: 'say', past: ['said'], participle: ['said'], sentence: 'He ___ hello to his neighbor.' },
+        { base: 'lay', past: ['laid'], participle: ['laid'], sentences: { base: 'They usually ___ the blanket on the bed.', past: 'She ___ the blanket on the bed.', participle: 'The hens have already ___ their eggs.' } },
+        { base: 'pay', past: ['paid'], participle: ['paid'], sentences: { base: 'We usually ___ for lunch together.', past: 'We ___ for lunch yesterday.', participle: 'They have already ___ the bill.' } },
+        { base: 'say', past: ['said'], participle: ['said'], sentences: { base: 'They often ___ hello to their neighbors.', past: 'He ___ hello to his neighbor.', participle: 'She has already ___ goodbye.' } },
 
         {
             base: 'be',
@@ -105,25 +105,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 participle: 'I have ___ very busy this week.'
             }
         },
-        { base: 'build', past: ['built'], participle: ['built'], sentence: 'They ___ a new house last year.' },
+        { base: 'build', past: ['built'], participle: ['built'], sentences: { base: 'They usually ___ houses quickly.', past: 'They ___ a new house last year.', participle: 'We have already ___ the foundation.' } },
 
-        { base: 'do', past: ['did'], participle: ['done'], sentence: 'I ___ my homework after school.' },
-        { base: 'eat', past: ['ate'], participle: ['eaten'], sentence: 'We ___ dinner at seven yesterday.' },
-        { base: 'fall', past: ['fell'], participle: ['fallen'], sentence: 'The leaves ___ from the tree.' },
-        { base: 'go', past: ['went'], participle: ['gone'], sentence: 'She ___ to the library yesterday.' },
-        { base: 'lie', past: ['lay'], participle: ['lain'], sentence: 'The dog ___ on the floor all afternoon.' },
-        { base: 'see', past: ['saw'], participle: ['seen'], sentence: 'I ___ a rainbow after the rain.' },
+        { base: 'do', past: ['did'], participle: ['done'], sentences: { base: 'I usually ___ my homework after school.', past: 'I ___ my homework yesterday.', participle: 'I have already ___ my homework.' } },
+        { base: 'eat', past: ['ate'], participle: ['eaten'], sentences: { base: 'We usually ___ dinner at seven.', past: 'We ___ dinner at seven yesterday.', participle: 'I have already ___ breakfast.' } },
+        { base: 'fall', past: ['fell'], participle: ['fallen'], sentences: { base: 'Leaves usually ___ in autumn.', past: 'The leaves ___ from the tree.', participle: 'She has ___ twice this week.' } },
+        { base: 'go', past: ['went'], participle: ['gone'], sentences: { base: 'They usually ___ to the library.', past: 'She ___ to the library yesterday.', participle: 'I have already ___ to that place.' } },
+        { base: 'lie', past: ['lay'], participle: ['lain'], sentences: { base: 'Dogs usually ___ on the floor.', past: 'The dog ___ on the floor all afternoon.', participle: 'The cat has ___ there all day.' } },
+        { base: 'see', past: ['saw'], participle: ['seen'], sentences: { base: 'I often ___ rainbows after it rains.', past: 'I ___ a rainbow after the rain.', participle: 'I have never ___ such a beautiful view.' } },
 
-        { base: 'have', past: ['had'], participle: ['had'], sentence: 'We ___ a great time at the party.' },
-        { base: 'hear', past: ['heard'], participle: ['heard'], sentence: 'She ___ a strange noise last night.' },
-        { base: 'lose', past: ['lost'], participle: ['lost'], sentence: 'He ___ his wallet on the bus.' },
-        { base: 'make', past: ['made'], participle: ['made'], sentence: 'My mother ___ a cake yesterday.' },
-        { base: 'sell', past: ['sold'], participle: ['sold'], sentence: 'They ___ their old car last month.' },
-        { base: 'sit', past: ['sat'], participle: ['sat'], sentence: 'The students ___ near the window.' },
-        { base: 'stand', past: ['stood'], participle: ['stood'], sentence: 'We ___ outside the classroom.' },
-        { base: 'tell', past: ['told'], participle: ['told'], sentence: 'He ___ us a funny story.' },
-        { base: 'understand', past: ['understood'], participle: ['understood'], sentence: 'I ___ the instructions after the lesson.' },
-        { base: 'win', past: ['won'], participle: ['won'], sentence: 'Our team ___ the game yesterday.' }
+        { base: 'have', past: ['had'], participle: ['had'], sentences: { base: 'We usually ___ a great time at parties.', past: 'We ___ a great time at the party.', participle: 'I have already ___ lunch.' } },
+        { base: 'hear', past: ['heard'], participle: ['heard'], sentences: { base: 'They often ___ strange noises at night.', past: 'She ___ a strange noise last night.', participle: 'I have never ___ that song before.' } },
+        { base: 'lose', past: ['lost'], participle: ['lost'], sentences: { base: 'They sometimes ___ their wallets.', past: 'He ___ his wallet on the bus.', participle: 'She has never ___ a game.' } },
+        { base: 'make', past: ['made'], participle: ['made'], sentences: { base: 'My parents usually ___ a cake on Sundays.', past: 'My mother ___ a cake yesterday.', participle: 'We have already ___ the decision.' } },
+        { base: 'sell', past: ['sold'], participle: ['sold'], sentences: { base: 'They usually ___ old cars at this shop.', past: 'They ___ their old car last month.', participle: 'She has already ___ her house.' } },
+        { base: 'sit', past: ['sat'], participle: ['sat'], sentences: { base: 'The students usually ___ near the window.', past: 'The students ___ near the window.', participle: 'I have already ___ for the exam.' } },
+        { base: 'stand', past: ['stood'], participle: ['stood'], sentences: { base: 'We usually ___ outside the classroom.', past: 'We ___ outside the classroom.', participle: 'They have ___ in line for hours.' } },
+        { base: 'tell', past: ['told'], participle: ['told'], sentences: { base: 'They often ___ funny stories.', past: 'He ___ us a funny story.', participle: 'She has already ___ me the news.' } },
+        { base: 'understand', past: ['understood'], participle: ['understood'], sentences: { base: 'I usually ___ the instructions quickly.', past: 'I ___ the instructions after the lesson.', participle: 'I have finally ___ this topic.' } },
+        { base: 'win', past: ['won'], participle: ['won'], sentences: { base: 'Good teams usually ___ most of their games.', past: 'Our team ___ the game yesterday.', participle: 'They have already ___ three matches this year.' } }
     ];
 
     const formInfo = {
@@ -241,20 +241,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getSentence(verb, formType) {
-    if (verb.sentences && verb.sentences[formType]) {
-        return verb.sentences[formType];
+        if (verb.sentences && verb.sentences[formType]) {
+            return verb.sentences[formType];
+        }
+
+        if (formType === 'base') {
+            return `I ___ ${verb.base} every day.`;
+        }
+
+        if (formType === 'past') {
+            return `Yesterday, I ___ ${verb.base}.`;
+        }
+
+        return `I have ___ ${verb.base}.`;
     }
 
-    if (formType === 'base') {
-        return verb.sentence || `I ___ ${verb.base} every day.`;
-    }
-
-    if (formType === 'past') {
-        return verb.sentence || `Yesterday, I ___ ${verb.base}.`;
-    }
-
-    return verb.sentence || `I have ___ ${verb.base}.`;
-}
     function getCorrectAnswers(verb, formType) {
         if (formType === 'base') {
             return [verb.base];
