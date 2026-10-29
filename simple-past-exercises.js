@@ -1,7 +1,10 @@
+import { db } from './firebase-config.js';
+import { doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-    if (!loggedInUser || loggedInUser.type !== 'student') {
+    if (!loggedInUser || loggedInUser.tipo !== 'aluno') {
         alert('Acesso não autorizado. Por favor, faça login como aluno.');
         window.location.href = 'index.html';
         return;
@@ -174,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 129, type: 'mc', question: "___ your parents on vacation?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'Your parents' é plural, use 'Were'." },
         { id: 130, type: 'mc', question: "___ you in London two years ago?", options: ["Was", "Were", "Did"], correctAnswer: "Were", hint: "'You' usa 'Were' nas perguntas com 'to be'." },
 
-        // --- INTERROGATIVOS: VERBOS REGULARES (10 mc, com distratores DID+passado e WAS/WERE) ---
+        // --- INTERROGATIVOS: VERBOS REGULARES (10 mc) ---
         { id: 131, type: 'mc', question: "___ you walk to school yesterday?", options: ["Did", "Did you walked", "Were"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base ('walk'), sem '-ed'." },
         { id: 132, type: 'mc', question: "___ she study for the test?", options: ["Did", "Was", "Did she studied"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
         { id: 133, type: 'mc', question: "___ they stop the car?", options: ["Did", "Were", "Did they stopped"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
@@ -186,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 139, type: 'mc', question: "___ they arrive late?", options: ["Did", "Were", "Did they arrived"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
         { id: 140, type: 'mc', question: "___ we clean the house?", options: ["Did", "Were", "Did we cleaned"], correctAnswer: "Did", hint: "Use 'Did' + verbo na forma base, sem '-ed'." },
 
-        // --- INTERROGATIVOS: VERBOS IRREGULARES (10 mc, com distratores DID+passado e WAS/WERE) ---
+        // --- INTERROGATIVOS: VERBOS IRREGULARES (10 mc) ---
         { id: 141, type: 'mc', question: "___ you go to the beach?", options: ["Did", "Did you went", "Were"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'go', não 'went'." },
         { id: 142, type: 'mc', question: "___ she see a movie?", options: ["Did", "Was", "Did she saw"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'see', não 'saw'." },
         { id: 143, type: 'mc', question: "___ they have a party?", options: ["Did", "Were", "Did they had"], correctAnswer: "Did", hint: "Use 'Did' + a forma base 'have', não 'had'." },
@@ -236,25 +239,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     // --- FUNÇÃO DE REGISTRO DE DESEMPENHO ---
-    function updateStudentProgress(isCorrect) {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(u => u.id === loggedInUser.id);
-
-        if (userIndex !== -1) {
-            if (!users[userIndex].progress) {
-                users[userIndex].progress = {};
-            }
-            if (!users[userIndex].progress[TOPIC_NAME]) {
-                users[userIndex].progress[TOPIC_NAME] = { correct: 0, incorrect: 0 };
-            }
-
-            if (isCorrect) {
-                users[userIndex].progress[TOPIC_NAME].correct++;
-            } else {
-                users[userIndex].progress[TOPIC_NAME].incorrect++;
-            }
-
-            localStorage.setItem('users', JSON.stringify(users));
+    async function updateStudentProgress(isCorrect) {
+        try {
+            const progressRef = doc(db, 'usuarios', loggedInUser.uid, 'progresso', TOPIC_NAME);
+            await setDoc(progressRef, {
+                correct: increment(isCorrect ? 1 : 0),
+                incorrect: increment(isCorrect ? 0 : 1)
+            }, { merge: true });
+        } catch (error) {
+            console.error('Erro ao salvar progresso no Firestore:', error);
         }
     }
 
