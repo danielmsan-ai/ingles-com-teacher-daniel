@@ -241,21 +241,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getSentence(verb, formType) {
-        if (verb.sentences && verb.sentences[formType]) {
-            return verb.sentences[formType];
-        }
-
-        if (formType === 'base') {
-            return verb.sentence || `I ___ ${verb.base} every day.`;
-        }
-
-        if (formType === 'past') {
-            return verb.sentence || `Yesterday, I ___ ${verb.base}.`;
-        }
-
-        return `I have ___ ${verb.base}.`;
+    if (verb.sentences && verb.sentences[formType]) {
+        return verb.sentences[formType];
     }
 
+    if (formType === 'base') {
+        return verb.sentence || `I ___ ${verb.base} every day.`;
+    }
+
+    if (formType === 'past') {
+        return verb.sentence || `Yesterday, I ___ ${verb.base}.`;
+    }
+
+    return verb.sentence || `I have ___ ${verb.base}.`;
+}
     function getCorrectAnswers(verb, formType) {
         if (formType === 'base') {
             return [verb.base];
