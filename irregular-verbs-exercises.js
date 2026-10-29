@@ -1,14 +1,17 @@
+import { db } from './firebase-config.js';
+import { doc, setDoc, increment } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-    if (!loggedInUser || loggedInUser.type !== 'student') {
+    if (!loggedInUser || loggedInUser.tipo !== 'aluno') {
         alert('Acesso não autorizado. Por favor, faça login como aluno.');
         window.location.href = 'index.html';
         return;
     }
 
     const TOPIC_NAME = 'Irregular Verbs Memorizer';
-    const STORAGE_KEY = `irregularVerbsProgress_${loggedInUser.id}`;
+    const STORAGE_KEY = `irregularVerbsProgress_${loggedInUser.uid}`;
 
     const exerciseArea = document.getElementById('exercise-area');
     const progressStatus = document.getElementById('progress-status');
@@ -261,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return verb[formType];
     }
 
-       function getDistractors(correctAnswers) {
+    function getDistractors(correctAnswers) {
         const correctSet = new Set(
             correctAnswers.map(answer => answer.toLowerCase())
         );
@@ -291,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return shuffleArray(possibleAnswers).slice(0, 2);
     }
+
     function createOptions(correctAnswers) {
         const distractors = getDistractors(correctAnswers);
         const options = [...correctAnswers, ...distractors];
@@ -403,29 +407,16 @@ document.addEventListener('DOMContentLoaded', () => {
         nextButton.style.display = 'inline-block';
     }
 
-    function updateStudentProgress(isCorrect) {
-        const users = JSON.parse(localStorage.getItem('users')) || [];
-        const userIndex = users.findIndex(user => user.id === loggedInUser.id);
-
-        if (userIndex === -1) {
-            return;
+    async function updateStudentProgress(isCorrect) {
+        try {
+            const progressRef = doc(db, 'usuarios', loggedInUser.uid, 'progresso', TOPIC_NAME);
+            await setDoc(progressRef, {
+                correct: increment(isCorrect ? 1 : 0),
+                incorrect: increment(isCorrect ? 0 : 1)
+            }, { merge: true });
+        } catch (error) {
+            console.error('Erro ao salvar progresso no Firestore:', error);
         }
-
-        if (!users[userIndex].progress) {
-            users[userIndex].progress = {};
-        }
-
-        if (!users[userIndex].progress[TOPIC_NAME]) {
-            users[userIndex].progress[TOPIC_NAME] = { correct: 0, incorrect: 0 };
-        }
-
-        if (isCorrect) {
-            users[userIndex].progress[TOPIC_NAME].correct++;
-        } else {
-            users[userIndex].progress[TOPIC_NAME].incorrect++;
-        }
-
-        localStorage.setItem('users', JSON.stringify(users));
     }
 
     function renderCompletionMessage() {
